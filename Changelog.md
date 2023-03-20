@@ -9,9 +9,15 @@ This is the file that would be subject to testing. Does it make sense? a dApp is
 
 Tasty, QuickCheck and its analogs.
 
-- [ ] Helios -> cborHex
+~~- [ ] Helios -> cborHex~~
 - [ ] How do we test onchain code?
 - [ ] Good tests vs Bad tests - what's the difference?
+
+cborHex - what is it? 
+It's a .plutus file: it's in PBL 2022, compile your first plutus script.
+Well, anyway there may be a way to get it locally. So this gives me an idea.
+I need to find an existing testing harness that runs a transaction.
+
 
 16 March
 
