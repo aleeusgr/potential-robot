@@ -1,3 +1,11 @@
+21 March:
+Thanks to Randall:
+indicating the source-language-agnostic, compiled-and-encoded representation of untyped-plutus-core that is the basis for executing contracts on-chain.
+
+It was done by shell scripting in plutus starter, but now I think Ben suggested I should try 
+- [ ] `plutus-simple-model` 
+- [ ] `plutip`
+
 20 March
 And now I feel like I am not moving anywhere, or rather that I misunderstood a lot.
 
