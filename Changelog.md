@@ -1,3 +1,9 @@
+24 March
+I don't need black box testing tool.
+Deno is Enhancements.
+
+- [ ] run a test
+
 21 March:
 Thanks to Randall:
 indicating the source-language-agnostic, compiled-and-encoded representation of untyped-plutus-core that is the basis for executing contracts on-chain.
