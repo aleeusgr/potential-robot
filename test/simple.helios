@@ -1,0 +1,35 @@
+spending testing
+
+struct Datum {
+    test: String
+}
+
+enum Redeemer {
+    TEST1 { test: String }
+    TEST2 { test: String }
+}
+
+func main(datum: Datum, redeemer: Redeemer, ctx: ScriptContext) -> Bool {
+    redeemer.switch {
+        pz: TEST1 => {
+            pz.test == "this works!"
+        },
+        pz: TEST2 => {
+            pz.test == "this also works!"
+        },
+        else => {
+            // Since datum, and ctx are included in the signature, they have to be used or it won't compile
+            // Also, it seems you HAVE to have all three params in the signature on a spending script
+            datum.test != datum.test || ctx.tx != ctx.tx
+        }
+        // NOTE! If any statements are included after the switch, the switch result is not returned.
+        // This is why the "fake" usage of datum and ctx are included in the switch statement.
+    }
+}
+
+const test1_true_redeemer = Redeemer::TEST1 { "this works!" }
+const test1_false_redeemer = Redeemer::TEST1 { "this doesn't work :(" }
+const test2_true_redeemer = Redeemer::TEST2 { "this also works!" }
+const test2_false_redeemer = Redeemer::TEST2 { "this also doesn't work :(" }
+const empty_datum = Datum { "" }
+const default_ctx = ScriptContext::new_spending(Tx{}, TxOutputId{})
