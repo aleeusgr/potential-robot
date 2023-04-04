@@ -5,6 +5,7 @@
   "description": "test",
   "main": "index.js",
   "dependencies": {
+    "@hyperionbt/helios": "0.13.2",
     "acorn": "^8.8.1",
     "acorn-jsx": "^5.3.2",
     "ajv": "^6.12.6",
