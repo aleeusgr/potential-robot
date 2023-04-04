@@ -1,8 +1,9 @@
 import * as helios from "@hyperionbt/helios"
 import fs from "fs";
-// import {Color} from '../colors.js'
+import {Color} from '../colors.js'
 
-const contract = fs.readFileSync("./simple.helios").toString();
+// 
+const contract = fs.readFileSync("simple.helios").toString();
 // test helpers and fixtures can be loaded from a different files and concatenated
 // const helpers = fs.readFileSync("./test_helpers.helios").toString();
 // const fixtures = fs.readFileSync("./simple_fixtures.helios").toString();
@@ -16,8 +17,7 @@ async function testSuccess(testName, paramNames) {
   testContract.runWithPrint(args).then((res) => {
       const assertion = res[0].toString() == "()";
       if (assertion) {
-        console.log(`Ok`);
-        console.log(`OK`);
+	console.log(`${Color.FgGreen}Test ${testName} was successful!${Color.Reset}`);
       } else {
           logFail(testName, res, args);
       }
