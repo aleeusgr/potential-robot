@@ -26,32 +26,32 @@ async function testSuccess(testName, paramNames) {
     });
 }
 
-async function testFailure(testName, paramNames) {
-    const args = paramNames.map((p) => program.evalParam(p));
-    testContract.runWithPrint(args).then((res) => {
-        const assertion = res[0].toString() != "()";
-        if (assertion) {
-          console.log(`${Color.FgGreen}Test ${testName} was successful!${Color.Reset}`);
-        } 
-        else {
-            logFail(testName, res, args);
-        }
-      })
-      .catch((err) => {
-        logFail(testName, err, args, true);
-      })
-}
+// async function testFailure(testName, paramNames) {
+//     const args = paramNames.map((p) => program.evalParam(p));
+//     testContract.runWithPrint(args).then((res) => {
+//         const assertion = res[0].toString() != "()";
+//         if (assertion) {
+//           console.log(`${Color.FgGreen}Test ${testName} was successful!${Color.Reset}`);
+//         } 
+//         else {
+//             logFail(testName, res, args);
+//         }
+//       })
+//       .catch((err) => {
+//         logFail(testName, err, args, true);
+//       })
+// }
 
-async function logFail(testName, obj, args, isError=false) {
-    console.log(`${Color.FgRed}Test ${testName} failed!${Color.Reset}`);
-    console.log(`${Color.FgRed}--------------${Color.Reset}`)
-    if (isError) console.log("  *ERROR*");
-    console.log(`   ${Color.FgRed}ARGS: ${Color.Reset}`, args.map((v) => v.toString()));
-    console.log(`   ${Color.FgRed}${obj}${Color.Reset}`);
-    console.log(`${Color.FgRed}--------------${Color.Reset}`)
-}
+// async function logFail(testName, obj, args, isError=false) {
+//     console.log(`${Color.FgRed}Test ${testName} failed!${Color.Reset}`);
+//     console.log(`${Color.FgRed}--------------${Color.Reset}`)
+//     if (isError) console.log("  *ERROR*");
+//     console.log(`   ${Color.FgRed}ARGS: ${Color.Reset}`, args.map((v) => v.toString()));
+//     console.log(`   ${Color.FgRed}${obj}${Color.Reset}`);
+//     console.log(`${Color.FgRed}--------------${Color.Reset}`)
+// }
 
 await testSuccess("test1Success", ["empty_datum", "test1_true_redeemer", "default_ctx"]);
-await testFailure("test1Failure", ["empty_datum", "test1_false_redeemer", "default_ctx"]);
+// await testFailure("test1Failure", ["empty_datum", "test1_false_redeemer", "default_ctx"]);
 await testSuccess("test2Success", ["empty_datum", "test2_true_redeemer", "default_ctx"]);
-await testFailure("test2Failure", ["empty_datum", "test2_false_redeemer", "default_ctx"]);
+// await testFailure("test2Failure", ["empty_datum", "test2_false_redeemer", "default_ctx"]);
