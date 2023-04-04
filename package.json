@@ -1,6 +1,7 @@
 {
   "name": "potential-robot",
   "version": "1.0.0",
+  "type":"module",
   "description": "test",
   "main": "index.js",
   "dependencies": {
