@@ -1,7 +1,6 @@
 {
   "name": "potential-robot",
   "version": "1.0.0",
-  "type":"module",
   "description": "test",
   "main": "index.js",
   "dependencies": {
@@ -252,7 +251,11 @@
     "yocto-queue": "^0.1.0"
   },
   "scripts": {
-    "test": "node simple-test.js"
+    "dev":   "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint":  "next lint",
+    "test":  "node simple-test.js"
   },
   "repository": {
     "type": "git",
