@@ -9,7 +9,7 @@ It's the process more then the result.
 I don't need black box testing tool.
 Deno is Enhancements.
 
-- [ ] run a test
+- [x] run a test
 
 21 March:
 Thanks to Randall:
