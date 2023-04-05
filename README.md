@@ -1,3 +1,9 @@
+# potential-robot
+[source](https://github.com/koralabs/handles-personalization/tree/master/simple_example_wth_tests)
+
+`npm install`
+`npm test`
+
 [Original source](https://github.com/lley154/helios-examples)
 Thanks to Lawrence, Randall and Helios team.
 

@@ -1,3 +1,10 @@
+2 April
+Monday reflection lands in this file.
+How do I bring Certification and DevX together?
+SDLC? What is SDLC? 
+It's the process more then the result. 
+"Avoid Success at all costs"
+
 24 March
 I don't need black box testing tool.
 Deno is Enhancements.
