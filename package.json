@@ -2,7 +2,6 @@
   "name": "potential-robot",
   "version": "1.0.0",
   "description": "test",
-  "type":"module",
   "main": "index.js",
   "dependencies": {
     "@hyperionbt/helios": "^0.12.12",
@@ -256,7 +255,7 @@
     "build": "next build",
     "start": "next start",
     "lint":  "next lint",
-    "test":  "node simple-test.js"
+    "test":  "mocha --reporter list"
   },
   "repository": {
     "type": "git",
