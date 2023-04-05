@@ -252,7 +252,7 @@
     "yocto-queue": "^0.1.0"
   },
   "scripts": {
-    "test": "node simple.js"
+    "test": "node simple-test.js"
   },
   "repository": {
     "type": "git",
