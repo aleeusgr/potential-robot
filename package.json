@@ -240,7 +240,7 @@
     "yocto-queue": "^0.1.0"
   },
   "scripts": {
-    "test": "mocha --reporter list"
+    "test": "node simple.js"
   },
   "repository": {
     "type": "git",

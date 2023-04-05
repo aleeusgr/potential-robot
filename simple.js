@@ -1,6 +1,6 @@
 import * as helios from "@hyperionbt/helios"
 import fs from "fs";
-import {Color} from '../colors.js'
+import {Color} from './colors.js'
 
 // 
 const contract = fs.readFileSync("simple.helios").toString();
