@@ -1,12 +1,16 @@
 # potential-robot
-[source](https://github.com/koralabs/handles-personalization/tree/master/simple_example_wth_tests)
+Thanks to  Randall, Romain, Lawrence and the Helios team.
 
 `npm install`
 `npm test`
 
-[Original source](https://github.com/lley154/helios-examples)
-Thanks to Lawrence, Randall and Helios team.
+to run helios, `git checkout edd03b98ed39e52a3cc96c007b0884896296e50d` 
+then follow along helios exaple docs.
 
+[koralabs](https://github.com/koralabs/handles-personalization/tree/master/simple_example_wth_tests)
+
+# helios example
+[Ley, L & Helios team](https://github.com/lley154/helios-examples)
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
