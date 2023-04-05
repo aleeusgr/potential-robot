@@ -3,9 +3,7 @@ Thanks to  Randall, Romain, Lawrence and the Helios team.
 
 `npm install`
 `npm test`
-
-to run helios, `git checkout edd03b98ed39e52a3cc96c007b0884896296e50d` 
-then follow along helios exaple docs.
+`npm run dev`
 
 [koralabs](https://github.com/koralabs/handles-personalization/tree/master/simple_example_wth_tests)
 
