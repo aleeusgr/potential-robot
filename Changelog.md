@@ -1,3 +1,14 @@
+6 April
+https://dev.to/anichidera/how-to-write-a-simple-test-for-your-nextjs-app-2k1j
+Stuck; 
+
+simple 
+--simple.js
+----simple.helios
+
+nft-minter
+--pages/:x
+
 2 April
 Monday reflection lands in this file.
 How do I bring Certification and DevX together?
