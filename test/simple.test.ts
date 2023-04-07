@@ -1,7 +1,6 @@
 import * as helios from "@hyperionbt/helios"
 import { describe, it, beforeAll, expect } from 'vitest'
 import fs from "fs";
-// import {Color} from '../colors.js'
 
 let program;
 let testContract;
@@ -39,7 +38,7 @@ describe('simple test', () => {
 
 // evalParam(p) and runWithPrint(p[]). Look for unit "()" response
     
-    it(`should ...`, async () => {
+    it(`test success`, async () => {
 
         const args = ["empty_datum", "test1_true_redeemer", "default_ctx"].map((p) => program.evalParam(p))
         return await testContract
