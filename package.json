@@ -6,8 +6,18 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test": "vitest",
     "lint": "next lint"
   },
+  "devDependencies": {
+      "@testing-library/react": "^13.2.0",
+      "@types/node": "latest",
+      "@types/react": "latest",
+      "@vitejs/plugin-react": "latest",
+      "jsdom": "latest",
+      "typescript": "^4.8.4",
+      "vitest": "latest"
+    },
   "dependencies": {
     "@hyperionbt/helios": "^0.13.13",
     "@next/font": "13.1.2",
