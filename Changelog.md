@@ -1,4 +1,8 @@
-2 April
+Apr, 7th, Fr:
+Test is passing, there should be some improvements.
+I want to move on to NFT-minter.
+
+2 April:
 Monday reflection lands in this file.
 How do I bring Certification and DevX together?
 SDLC? What is SDLC? 
