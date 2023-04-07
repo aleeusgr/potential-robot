@@ -8,7 +8,7 @@ Thanks to  Randall, Romain, Lawrence and the Helios team.
 [koralabs](https://github.com/koralabs/handles-personalization/tree/master/simple_example_wth_tests)
 
 # helios example
-[Ley, L & Helios team](https://github.com/lley154/helios-examples)
+[repo](https://github.com/lley154/helios-examples)
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
