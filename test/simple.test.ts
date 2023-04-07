@@ -6,7 +6,7 @@ import fs from "fs";
 let program;
 let testContract;
 
-describe('Raffle Vault works appropriately', () => {
+describe('simple test', () => {
 
     beforeAll(() => {
 
@@ -15,8 +15,8 @@ describe('Raffle Vault works appropriately', () => {
             // fixtures: [
             //     './tests/vault_fixtures.hl'
             // ],
-            helpers: [
-            ],
+             helpers: [
+             ]
             // replacements: [
             //     []
             // ]
@@ -30,11 +30,10 @@ describe('Raffle Vault works appropriately', () => {
 
         // testSetup.fixtures.forEach(fixture => contractSources.push(fs.readFileSync(fixture).toString()))
 
-        // const source = contractSources
-        //     .join("\n")
-        //     .replace('context.get_current_validator_hash()', 'ValidatorHash::new(#01234567890123456789012345678901234567890123456789000001)')
-
-        program = Program.new(source);
+        const source = contractSources
+            .join("\n")
+            
+        program = helios.Program.new(source);
         testContract = program.compile();
     })
 
@@ -42,7 +41,7 @@ describe('Raffle Vault works appropriately', () => {
     
     it(`should ...`, async () => {
 
-        const args = paramNames.map((p) => program.evalParam(p))
+        const args = ["empty_datum", "test1_true_redeemer", "default_ctx"].map((p) => program.evalParam(p))
         return await testContract
             .runWithPrint(args)
             .then((res) => {
