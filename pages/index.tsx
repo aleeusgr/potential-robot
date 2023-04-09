@@ -4,7 +4,7 @@ import type { NextPage } from 'next'
 import styles from '../styles/Home.module.css'
 import { useState, useEffect } from "react";
 import WalletInfo from '../components/WalletInfo';
-import { readFile } from 'node:fs';
+import fs from 'fs';
 import {
   Assets,
   Address,
