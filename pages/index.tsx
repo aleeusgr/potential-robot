@@ -1,10 +1,10 @@
-import { promises as fs } from 'fs';
 import Head from 'next/head'
 import MintNFT from '../components/MintNFT';
 import type { NextPage } from 'next'
 import styles from '../styles/Home.module.css'
 import { useState, useEffect } from "react";
 import WalletInfo from '../components/WalletInfo';
+import { readFile } from 'node:fs';
 import {
   Assets,
   Address,
