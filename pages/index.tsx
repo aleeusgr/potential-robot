@@ -149,7 +149,7 @@ const Home: NextPage = () => {
     // Add the UTXO as inputs
     tx.addInputs(utxos[0]);
 
-    const mintScript = await fs.readFile("./helios/minter.hl", 'utf8');
+    const mintScript = await readFile("./helios/minter.hl", 'utf8');
 
     // Compile the helios minting script
     const mintProgram = Program.new(mintScript).compile(optimize);
