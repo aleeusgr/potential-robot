@@ -1,3 +1,4 @@
+import { promises as fs } from 'fs';
 import Head from 'next/head'
 import MintNFT from '../components/MintNFT';
 import type { NextPage } from 'next'
@@ -148,29 +149,7 @@ const Home: NextPage = () => {
     // Add the UTXO as inputs
     tx.addInputs(utxos[0]);
 
-    const mintScript =`minting nft
-
-    const TX_ID: ByteArray = #` + utxos[0][0].txId.hex + `
-    const txId: TxId = TxId::new(TX_ID)
-    const outputId: TxOutputId = TxOutputId::new(txId, ` + utxos[0][0].utxoIdx + `)
-    
-    func main(_, ctx: ScriptContext) -> Bool {
-        tx: Tx = ctx.tx;
-        mph: MintingPolicyHash = ctx.get_current_minting_policy_hash();
-    
-        assetclass: AssetClass = AssetClass::new(
-            mph, 
-            "` + name + `".encode_utf8()
-        );
-        value_minted: Value = tx.minted;
-    
-        // Validator logic starts
-        (value_minted == Value::new(assetclass, 1)).trace("NFT:1 ") &&
-        tx.inputs.any((input: TxInput) -> Bool {
-                                        (input.output_id == outputId).trace("NFT2: ")
-                                        }
-        )
-    }`
+    const mintScript = await fs.readFile("./helios/minter.hl", 'utf8');
 
     // Compile the helios minting script
     const mintProgram = Program.new(mintScript).compile(optimize);
