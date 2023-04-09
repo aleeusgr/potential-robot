@@ -10,7 +10,7 @@ describe('simple test', () => {
     beforeAll(() => {
 
         const testSetup = {
-            contract: './test/simple.hl',
+            contract: './helios/simple.hl',
             // fixtures: [
             //     './tests/vault_fixtures.hl'
             // ],
