@@ -4,7 +4,6 @@ import type { NextPage } from 'next'
 import styles from '../styles/Home.module.css'
 import { useState, useEffect } from "react";
 import WalletInfo from '../components/WalletInfo';
-import fs from 'fs';
 import {
   Assets,
   Address,
@@ -14,11 +13,12 @@ import {
   ConstrData,
   hexToBytes,
   NetworkParams,
-  Program,
   Value,
   TxOutput,
   Tx,
   WalletHelper} from "@hyperionbt/helios";
+
+import Program from "./minter.hl"
 
 declare global {
   interface Window {
@@ -149,10 +149,10 @@ const Home: NextPage = () => {
     // Add the UTXO as inputs
     tx.addInputs(utxos[0]);
 
-    const mintScript = await readFile("./helios/minter.hl", 'utf8');
+    const mintScript = new Program();
 
     // Compile the helios minting script
-    const mintProgram = Program.new(mintScript).compile(optimize);
+    const mintProgram = mintScript.compile(optimize);
 
     // Add the script as a witness to the transaction
     tx.attachScript(mintProgram);

@@ -5,19 +5,19 @@ const txId: TxId = TxId::new(TX_ID)
 const outputId: TxOutputId = TxOutputId::new(txId, ` + utxos[0][0].utxoIdx + `)
 
 func main(_, ctx: ScriptContext) -> Bool {
-tx: Tx = ctx.tx;
-mph: MintingPolicyHash = ctx.get_current_minting_policy_hash();
+	tx: Tx = ctx.tx;
+	mph: MintingPolicyHash = ctx.get_current_minting_policy_hash();
 
-assetclass: AssetClass = AssetClass::new(
-    mph, 
-    "` + name + `".encode_utf8()
-);
-value_minted: Value = tx.minted;
+	assetclass: AssetClass = AssetClass::new(
+	    mph, 
+	    "` + name + `".encode_utf8()
+	);
+	value_minted: Value = tx.minted;
 
-// Validator logic starts
-(value_minted == Value::new(assetclass, 1)).trace("NFT:1 ") &&
-tx.inputs.any((input: TxInput) -> Bool {
-				(input.output_id == outputId).trace("NFT2: ")
-				}
-)
+	// Validator logic starts
+	(value_minted == Value::new(assetclass, 1)).trace("NFT:1 ") &&
+	tx.inputs.any((input: TxInput) -> Bool {
+					(input.output_id == outputId).trace("NFT2: ")
+					}
+	)
 }
