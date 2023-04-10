@@ -18,7 +18,7 @@ import {
   Tx,
   WalletHelper} from "@hyperionbt/helios";
 
-import Program from "./minter.hl"
+import Program from ".helios/minter.hl"
 
 declare global {
   interface Window {
