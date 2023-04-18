@@ -1,3 +1,12 @@
+Apr, 18th, Tue
+
+Coming back, I'd like to experiment with various testing approaches.
+one step that is achieved elsewhere is to get uplc; 
+uplc -> test transactions.
+uplc -> X, where X:= {Emulator | plutip};
+
+Emulator is a simpler path, my task is to test simple.hl with Lucid Emulator, or Helios Emulator.
+
 Apr, 7th, Fr:
 Test is passing, there should be some improvements.
 I want to move on to NFT-minter.
