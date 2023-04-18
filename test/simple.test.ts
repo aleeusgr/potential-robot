@@ -39,7 +39,7 @@ describe('simple test', () => {
 
 // evalParam(p) and runWithPrint(p[]). Look for unit "()" response
     
-    it(`test success`, async () => {
+    it(`evalParam`, async () => {
 
         const args = ["empty_datum", "test1_true_redeemer", "default_ctx"].map((p) => program.evalParam(p))
         return await testContract
@@ -48,6 +48,20 @@ describe('simple test', () => {
                 console.log('res', JSON.stringify(res))
                 expect(res[0].toString()).toBe("()");
             })
+    })
+
+    it(`produces right cborHex`, async () => {
+	// what would be our next test?
+	// I need to submit transaction to the emulator and see what it does.
+	// check what it should do; and compare.
+	
+        const args = ["empty_datum", "test1_true_redeemer", "default_ctx"].map((p) => program.evalParam(p))
+        return await testContract
+            .runWithPrint(args)
+            .then((res) => {
+                console.log('res', JSON.stringify(res))
+                expect(JSON.parse(res).cborHex.toBe("58cf58cd01000032323232323232323232323232323232222533357346660080060040022930b111191992999ab9a3370e0029000091980a18040009809a490b7468697320776f726b73210015333573466e1c0052002123301430070013013491107468697320616c736f20776f726b732100123301213300f3009006300900613300e300b004300b00435573a6ea800400400801401000480040048d5d0980100091aab9e375400200400244600666ebc0080048ccd5cd000a504a244a666ae6940085288a80091ba93730002002ebc1"));
+	    })
     })
   // async function testSuccess(testName, paramNames) {
   //   const args = paramNames.map((p) => program.evalParam(p));
