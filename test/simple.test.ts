@@ -34,6 +34,7 @@ describe('simple test', () => {
             
         program = helios.Program.new(source);
         testContract = program.compile();
+	console.log(JSON.parse(testContract.serialize()).cborHex)
     })
 
 // evalParam(p) and runWithPrint(p[]). Look for unit "()" response
