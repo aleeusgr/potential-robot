@@ -3,6 +3,3 @@
 
 `npm install`
 `npm test`
-
-TODO:
-- [ ] reimplement tests

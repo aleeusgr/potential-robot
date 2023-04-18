@@ -7,11 +7,15 @@ uplc -> X, where X:= {Emulator | plutip};
 
 Emulator is a simpler path, my task is to test simple.hl with Lucid Emulator, or Helios Emulator.
 
+13 April
+
+rethink
+
 Apr, 7th, Fr:
 Test is passing, there should be some improvements.
 I want to move on to NFT-minter.
 
-2 April:
+2 April
 Monday reflection lands in this file.
 How do I bring Certification and DevX together?
 SDLC? What is SDLC? 
