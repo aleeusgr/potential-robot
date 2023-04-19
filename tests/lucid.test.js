@@ -1,20 +1,63 @@
-import { Blockfrost, Lucid } from "lucid-cardano"; // NPM
+import {
+  Emulator,
+  fromText,
+  generatePrivateKey,
+  getAddressDetails,
+  Lucid,
+  toUnit,
+  TxHash,
+} from "lucid-cardano"; // NPM
 
-const lucid = await Lucid.new(
-  new Blockfrost("https://cardano-preview.blockfrost.io/api/v0", "testnetXWdDgoYImp12FdSKhIGNL9oNJZAN7evl"),
-  "Preview",
-);
+const privateKey = generatePrivateKey();
 
-// Assumes you are in a browser environment
-const api = await window.cardano.nami.enable();
-lucid.selectWallet(api);
+const address = await (await Lucid.new(undefined, "Custom"))
+  .selectWalletFromPrivateKey(privateKey).wallet.address();
 
-const tx = await lucid.newTx()
-  .payToAddress("addr...", { lovelace: 5000000n })
-  .complete();
+const { paymentCredential } = getAddressDetails(address);
 
-const signedTx = await tx.sign().complete();
+const emulator = new Emulator([{ address, assets: { lovelace: 3000000000n } }]);
 
-const txHash = await signedTx.submit();
+const lucid = await Lucid.new(emulator);
 
-console.log(txHash);
+lucid.selectWalletFromPrivateKey(privateKey);
+
+const mintingPolicy = lucid.utils.nativeScriptFromJson({
+  type: "all",
+  scripts: [
+    {
+      type: "before",
+      slot: lucid.utils.unixTimeToSlot(emulator.now() + 60000),
+    },
+    { type: "sig", keyHash: paymentCredential?.hash! },
+  ],
+});
+
+const policyId = lucid.utils.mintingPolicyToId(mintingPolicy);
+
+async function mint(): Promise<TxHash> {
+  const tx = await lucid.newTx()
+    .mintAssets({
+      [toUnit(policyId, fromText("Wow"))]: 123n,
+    })
+    .validTo(emulator.now() + 30000)
+    .attachMintingPolicy(mintingPolicy)
+    .complete();
+  const signedTx = await tx.sign().complete();
+
+  return signedTx.submit();
+}
+
+await mint();
+
+emulator.awaitBlock(4);
+
+console.log(await lucid.wallet.getUtxos());
+
+// This should fail
+try {
+  await mint();
+} catch (_e) {
+  console.error(
+    "Error: Second transaction failed because upper bound exceeded in mint script.",
+  );
+}
