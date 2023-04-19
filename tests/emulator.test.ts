@@ -9,7 +9,7 @@ import {
   SpendingValidator,
   toUnit,
   TxHash,
-} from "../src/mod.ts";
+} from "lucid-cardano"; // NPM
 import {
   assert,
   assertEquals,
