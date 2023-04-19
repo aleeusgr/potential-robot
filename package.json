@@ -12,7 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@hyperionbt/helios": "^0.13.14"
+    "@hyperionbt/helios": "^0.13.14",
+    "lucid-cardano": "^0.10.1"
   },
   "devDependencies": {
     "@vitest/ui": "^0.30.1",
