@@ -1,5 +1,26 @@
 {
+  "name": "potential-robot",
+  "version": "1.0.0",
+  "description": "test",
+  "type": "module",
+  "compilerOptions": {
+    "esModuleInterop": true
+  },
   "dependencies": {
     "lucid-cardano": "^0.10.1"
-  }
+  },
+  "scripts": {
+    "dev": "node emulate-something.ts",  
+    "test": "vitest"
+  },
+  "devDependencies": {
+      "@testing-library/react": "^13.2.0",
+      "@types/node": "latest",
+      "@types/react": "latest",
+      "@vitejs/plugin-react": "latest",
+      "jsdom": "latest",
+      "typescript": "^4.8.4",
+      "vitest": "latest"
+    }
+
 }

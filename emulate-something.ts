@@ -1,3 +1,4 @@
+
 import {
   Emulator,
   fromText,
@@ -6,7 +7,7 @@ import {
   Lucid,
   toUnit,
   TxHash,
-} from "../../mod.ts";
+} from 	"lucid-cardano";
 
 const privateKey = generatePrivateKey();
 
