@@ -10,7 +10,7 @@
     "lucid-cardano": "^0.10.1"
   },
   "scripts": {
-    "dev": "node emulate-something.ts",  
+    "dev": "node emulate-something.mjs",  
     "test": "vitest"
   },
   "devDependencies": {
