@@ -72,7 +72,7 @@ describe('ThreadToken Positive Test Cases', () => {
 	  recipient,
 	);
         // return true;
-        return typeof utxos;
+        return parseInt(utxos[0].assets.lovelace) == 3000000;
     
         } catch (err) {
             //console.error("Mint tx failed", err);
