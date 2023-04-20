@@ -54,9 +54,25 @@ describe('ThreadToken Positive Test Cases', () => {
 	const lucid = await Lucid.new(emulator);
 
 	lucid.selectWalletFromSeed(ACCOUNT_0.seedPhrase);
+	const recipient =
+    "addr_test1qrupyvhe20s0hxcusrzlwp868c985dl8ukyr44gfvpqg4ek3vp92wfpentxz4f853t70plkp3vvkzggjxknd93v59uysvc54h7";
 
+	const datum = Data.to(123n);
+	const lovelace = 3000000n;
+
+	const tx = await lucid.newTx().payToAddressWithData(recipient, {
+	  inline: datum,
+	}, { lovelace }).complete();
+
+	const signedTx = await tx.sign().complete();
+	const txHash = await signedTx.submit();
+	await lucid.awaitTx(txHash);
+
+	const utxos = await lucid.utxosAt(
+	  recipient,
+	);
         // return true;
-        return lucid;
+        return typeof utxos;
     
         } catch (err) {
             //console.error("Mint tx failed", err);
