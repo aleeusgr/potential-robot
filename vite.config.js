@@ -6,6 +6,6 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   test: {
-    include: ['tests/lucid.test.js'],
+    include: ['tests/lucid.test.*'],
   },
 });
