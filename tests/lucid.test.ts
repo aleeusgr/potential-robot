@@ -12,12 +12,16 @@ import {
   TxOutput,
   Tx, 
 } from "@hyperionbt/helios";
+
 import {
+  Assets,
+  Data,
   Emulator,
   fromText,
-  generatePrivateKey,
+  generateSeedPhrase,
   getAddressDetails,
   Lucid,
+  SpendingValidator,
   toUnit,
   TxHash,
 } from "lucid-cardano"; // NPM
@@ -26,10 +30,33 @@ describe('ThreadToken Positive Test Cases', () => {
 
     const main = async () => {
 
-    
-        try {
+	// Set the Helios compiler optimizer flag
+        let optimize = false;
+        const minAda = BigInt(2000000);  // minimum lovelace needed to send an NFT
 
-            return true;
+        try {
+	// https://github.com/spacebudz/lucid/blob/main/tests/emulator.test.ts
+	async function generateAccount(assets: Assets) {
+	  const seedPhrase = generateSeedPhrase();
+	  return {
+	    seedPhrase,
+	    address: await (await Lucid.new(undefined, "Custom"))
+	      .selectWalletFromSeed(seedPhrase).wallet.address(),
+	    assets,
+	  };
+	}
+
+	const ACCOUNT_0 = await generateAccount({ lovelace: 75000000000n });
+	const ACCOUNT_1 = await generateAccount({ lovelace: 100000000n });
+
+	const emulator = new Emulator([ACCOUNT_0, ACCOUNT_1]);
+
+	const lucid = await Lucid.new(emulator);
+
+	lucid.selectWalletFromSeed(ACCOUNT_0.seedPhrase);
+
+        // return true;
+        return lucid;
     
         } catch (err) {
             //console.error("Mint tx failed", err);
@@ -37,7 +64,7 @@ describe('ThreadToken Positive Test Cases', () => {
         }
     }
 
-    it('must only mint 1 token', async () => {
+    it(' .', async () => {
 
         const logMsgs = new Set();
         const logSpy = vi.spyOn(global.console, 'log')
