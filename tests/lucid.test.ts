@@ -46,17 +46,18 @@ describe('ThreadToken Positive Test Cases', () => {
 	  };
 	}
 
-	const ACCOUNT_0 = await generateAccount({ lovelace: 75000000000n });
-	const ACCOUNT_1 = await generateAccount({ lovelace: 100000000n });
+	const lender = await generateAccount({ lovelace: 75000000000n });
+	const borrower = await generateAccount({ lovelace: 100000000n });
 
-	const emulator = new Emulator([ACCOUNT_0, ACCOUNT_1]);
+	const emulator = new Emulator([lender, borrower]);
 
 	const lucid = await Lucid.new(emulator);
 
-	lucid.selectWalletFromSeed(ACCOUNT_0.seedPhrase);
+	lucid.selectWalletFromSeed(lender.seedPhrase);
 	const recipient =
     "addr_test1qrupyvhe20s0hxcusrzlwp868c985dl8ukyr44gfvpqg4ek3vp92wfpentxz4f853t70plkp3vvkzggjxknd93v59uysvc54h7";
 
+	// this needs to change.
 	const datum = Data.to(123n);
 	const lovelace = 3000000n;
 
@@ -72,15 +73,14 @@ describe('ThreadToken Positive Test Cases', () => {
 	  recipient,
 	);
         // return true;
-        return parseInt(utxos[0].assets.lovelace) == 3000000;
-    
+        return parseInt(utxos[0].assets.lovelace) == 3000000
         } catch (err) {
-            //console.error("Mint tx failed", err);
+            //console.error("something failed:", err);
             return false;
         }
     }
 
-    it(' .', async () => {
+    it('expects a wallet to hold some ada', async () => {
 
         const logMsgs = new Set();
         const logSpy = vi.spyOn(global.console, 'log')
