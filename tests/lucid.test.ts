@@ -1,16 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { promises as fs } from 'fs';
 import {
-  Assets, 
-  ConstrData, 
-  MintingPolicyHash,
-  NetworkEmulator,
-  NetworkParams,
-  Program, 
-  Value, 
-  textToBytes,
-  TxOutput,
-  Tx, 
+
 } from "@hyperionbt/helios";
 
 import {
@@ -21,8 +12,6 @@ import {
   generateSeedPhrase,
   getAddressDetails,
   Lucid,
-  SpendingValidator,
-  toUnit,
   TxHash,
 } from "lucid-cardano"; // NPM
 
@@ -62,20 +51,7 @@ describe('TestSuite: ', () => {
 
 	const lucid = await Lucid.new(emulator);
 
-	//
-	const mintingPolicy: MintingPolicy = lucid.utils.nativeScriptFromJson(
-	  {
-	    type: "all",
-	    scripts: [
-	      { type: "sig", keyHash: paymentCredential?.hash! },
-	      {
-		type: "before",
-		slot: lucid.utils.unixTimeToSlot(Date.now() + 1000000),
-	      },
-	    ],
-	  },
-	);
-	//why this?
+	//what's this?
 	lucid.selectWalletFromSeed(lender.seedPhrase);
 	const recipient =
     "addr_test1qrupyvhe20s0hxcusrzlwp868c985dl8ukyr44gfvpqg4ek3vp92wfpentxz4f853t70plkp3vvkzggjxknd93v59uysvc54h7";
