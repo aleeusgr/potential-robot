@@ -62,6 +62,7 @@ describe('TestSuite: ', () => {
 
 	const lucid = await Lucid.new(emulator);
 
+	//why this?
 	lucid.selectWalletFromSeed(lender.seedPhrase);
 	const recipient =
     "addr_test1qrupyvhe20s0hxcusrzlwp868c985dl8ukyr44gfvpqg4ek3vp92wfpentxz4f853t70plkp3vvkzggjxknd93v59uysvc54h7";
