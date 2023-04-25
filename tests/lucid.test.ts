@@ -26,7 +26,16 @@ import {
   TxHash,
 } from "lucid-cardano"; // NPM
 
-describe('ThreadToken Positive Test Cases', () => {
+describe('TestSuite: ', () => {
+	// single test, 
+	// it checks the status of the main function, while the main() takes care of logging and IO;
+	// API methods:
+	// set up the emulator;
+	// execute a transaction;
+	// Is there a way to add nft into a wallet in the emulate without using minting script?
+	// If not, I need to add a code block that will output a uplc consumable by the transaction builder.
+	// I need to find a method or code example in lucid that will show a transaction with a uplc involved
+	//
 
     const main = async () => {
 
@@ -57,7 +66,6 @@ describe('ThreadToken Positive Test Cases', () => {
 	const recipient =
     "addr_test1qrupyvhe20s0hxcusrzlwp868c985dl8ukyr44gfvpqg4ek3vp92wfpentxz4f853t70plkp3vvkzggjxknd93v59uysvc54h7";
 
-	// this needs to change.
 	const datum = Data.to(123n);
 	const lovelace = 3000000n;
 
@@ -80,7 +88,7 @@ describe('ThreadToken Positive Test Cases', () => {
         }
     }
 
-    it('expects a wallet to hold some ada', async () => {
+    it(' ', async () => {
 
         const logMsgs = new Set();
         const logSpy = vi.spyOn(global.console, 'log')
