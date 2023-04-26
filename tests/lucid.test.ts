@@ -75,7 +75,7 @@ describe('ThreadToken Positive Test Cases', () => {
         // return true;
         return parseInt(utxos[0].assets.lovelace) == 3000000
         } catch (err) {
-            //console.error("something failed:", err);
+            console.error("something failed:", err);
             return false;
         }
     }
@@ -91,6 +91,7 @@ describe('ThreadToken Positive Test Cases', () => {
         if (!mainStatus) {
             console.log("Smart Contract Messages: ", logMsgs);
         }
+	console.log(logMsgs)
         expect(mainStatus).toBe(true);
 
     })
