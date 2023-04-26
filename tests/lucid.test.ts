@@ -53,25 +53,57 @@ describe('ThreadToken Positive Test Cases', () => {
 
 	const lucid = await Lucid.new(emulator);
 
-	lucid.selectWalletFromSeed(lender.seedPhrase);
+	lucid.selectWalletFromSeed(borrower.seedPhrase);
+	// https://lucid.spacebudz.io/docs/getting-started/mint-assets/
+	const { paymentCredential } = lucid.utils.getAddressDetails(
+  		await lucid.wallet.address(),
+	);
+	const mintingPolicy = lucid.utils.nativeScriptFromJson(
+	  {
+	    type: "all",
+	    scripts: [
+	      { type: "sig", keyHash: paymentCredential.hash },
+	      {
+		type: "before",
+		slot: lucid.utils.unixTimeToSlot(Date.now() + 1000000),
+	      },
+	    ],
+	  },
+	);
+	const policyId = lucid.utils.mintingPolicyToId(mintingPolicy);
+
+	const unit = policyId + fromText("MyMintedToken");
+
+	const mintTx = await lucid.newTx()
+	     .mintAssets({ [unit]: 1n })
+	     .validTo(Date.now() + 200000)
+	     .attachMintingPolicy(mintingPolicy)
+	     .complete();
+
+	const signedMintTx = await mintTx.sign().complete();
+
+	const mintTxHash = await signedMintTx.submit();
+	console.log(mintTxHash);
+
 	const recipient =
     "addr_test1qrupyvhe20s0hxcusrzlwp868c985dl8ukyr44gfvpqg4ek3vp92wfpentxz4f853t70plkp3vvkzggjxknd93v59uysvc54h7";
 
 	// this needs to change.
-	const datum = Data.to(123n);
-	const lovelace = 3000000n;
+	// const datum = Data.to(123n);
+	// const lovelace = 3000000n;
 
-	const tx = await lucid.newTx().payToAddressWithData(recipient, {
-	  inline: datum,
-	}, { lovelace }).complete();
+	// const tx = await lucid.newTx().payToAddressWithData(recipient, {
+	//   inline: datum,
+	// }, { lovelace }).complete();
 
-	const signedTx = await tx.sign().complete();
-	const txHash = await signedTx.submit();
-	await lucid.awaitTx(txHash);
+	// const signedTx = await tx.sign().complete();
+	// const txHash = await signedTx.submit();
+	// await lucid.awaitTx(txHash);
 
 	const utxos = await lucid.utxosAt(
 	  recipient,
 	);
+	console.log(utxos.assets);
         // return true;
         return parseInt(utxos[0].assets.lovelace) == 3000000
         } catch (err) {
