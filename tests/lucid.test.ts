@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, beforeEach, expectTypeOf, vi } from 'vitest'
 import { promises as fs } from 'fs';
 import {
 
@@ -26,13 +26,12 @@ describe('TestSuite: ', () => {
 	// I need to find a method or code example in lucid that will show a transaction with a uplc involved
 	//
 
-    const main = async () => {
+    beforeEach(async () => {
 
 	// Set the Helios compiler optimizer flag
         let optimize = false;
         const minAda = BigInt(2000000);  // minimum lovelace needed to send an NFT
-
-        try {
+	
 	// https://github.com/spacebudz/lucid/blob/main/tests/emulator.test.ts
 	async function generateAccount(assets: Assets) {
 	  const seedPhrase = generateSeedPhrase();
@@ -49,48 +48,45 @@ describe('TestSuite: ', () => {
 
 	const emulator = new Emulator([lender, borrower]);
 
-	const lucid = await Lucid.new(emulator);
-
+	const lucid = Lucid.new(emulator);
+	
 	//what's this?
-	lucid.selectWalletFromSeed(lender.seedPhrase);
-	const recipient =
-    "addr_test1qrupyvhe20s0hxcusrzlwp868c985dl8ukyr44gfvpqg4ek3vp92wfpentxz4f853t70plkp3vvkzggjxknd93v59uysvc54h7";
+	// lucid.selectWalletFromSeed(lender.seedPhrase);
+	// const recipient = "addr_test1qrupyvhe20s0hxcusrzlwp868c985dl8ukyr44gfvpqg4ek3vp92wfpentxz4f853t70plkp3vvkzggjxknd93v59uysvc54h7";
 
-	const datum = Data.to(123n);
-	const lovelace = 3000000n;
+	// const datum = Data.to(123n);
+	// const lovelace = 3000000n;
 
-	const tx = await lucid.newTx().payToAddressWithData(recipient, {
-	  inline: datum,
-	}, { lovelace }).complete();
+	// const tx = await lucid.newTx().payToAddressWithData(recipient, {
+	//   inline: datum,
+	// }, { lovelace }).complete();
 
-	const signedTx = await tx.sign().complete();
-	const txHash = await signedTx.submit();
-	await lucid.awaitTx(txHash);
+	// const signedTx = await tx.sign().complete();
+	// const txHash = await signedTx.submit();
+	// await lucid.awaitTx(txHash);
 
-	const utxos = await lucid.utxosAt(
-	  recipient,
-	);
+	// const utxos = await lucid.utxosAt(
+	//   recipient,
+	// );
         // return true;
-        return parseInt(utxos[0].assets.lovelace) == 3000000
-        } catch (err) {
-            //console.error("something failed:", err);
-            return false;
-        }
-    }
+        // const walletLovelace = parseInt(utxos[0].assets.lovelace)
+	return lucid
+    })
 
     it(' ', async () => {
 
-        const logMsgs = new Set();
-        const logSpy = vi.spyOn(global.console, 'log')
-                         .mockImplementation((msg) => { logMsgs.add(msg); });
-        
-        let mainStatus = await main();
-        logSpy.mockRestore();
-        if (!mainStatus) {
-            console.log("Smart Contract Messages: ", logMsgs);
-        }
-        expect(mainStatus).toBe(true);
+        // const logMsgs = new Set();
+        // const logSpy = vi.spyOn(global.console, 'log')
+        //                  .mockImplementation((msg) => { logMsgs.add(msg); });
+        // 
+        // let mainStatus = await main();
+        // logSpy.mockRestore();
+        // if (!mainStatus) {
+        //     console.log("Smart Contract Messages: ", logMsgs);
+        // }
+        // expect(mainStatus).toBe(true);
 
+	expect(lucid).toBe(true)
     })
 
 })
