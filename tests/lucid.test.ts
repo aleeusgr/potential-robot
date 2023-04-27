@@ -53,12 +53,14 @@ describe('Verbose test', () => {
 
 	const lucid = await Lucid.new(emulator);
 
+	// emulator state changes:
 	lucid.selectWalletFromSeed(borrower.seedPhrase);
 	
 	// https://lucid.spacebudz.io/docs/getting-started/mint-assets/
 	const recipient = await lucid.wallet.address();
 	const { paymentCredential } = lucid.utils.getAddressDetails( recipient );
 
+	const txTime = emulator.now();
 	const mintingPolicy = lucid.utils.nativeScriptFromJson(
 	  {
 	    type: "all",
@@ -66,7 +68,7 @@ describe('Verbose test', () => {
 	      { type: "sig", keyHash: paymentCredential.hash },
 	      {
 		type: "before",
-		slot: lucid.utils.unixTimeToSlot(Date.now() + 1000000),
+		slot: lucid.utils.unixTimeToSlot(txTime + 1000000),
 	      },
 	    ],
 	  },
@@ -77,19 +79,22 @@ describe('Verbose test', () => {
 
 	const mintTx = await lucid.newTx()
 	     .mintAssets({ [unit]: 1n })
-	     .validTo(Date.now() + 200000)
+	     .validTo(txTime + 200000)
 	     .attachMintingPolicy(mintingPolicy)
 	     .complete();
 
 	const signedMintTx = await mintTx.sign().complete();
-
 	const mintTxHash = await signedMintTx.submit();
-
-
+	//                  lucid.wallet.getUtxos()
 	const utxos = await lucid.utxosAt(
 	  recipient,
+	  //lender.address,
+	  //borrower.address,
 	);
+
 	console.log(utxos);
+
+//	console.log(signedMintTx);
         return true
         } catch (err) {
             console.error("something failed:", err);
