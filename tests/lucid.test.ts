@@ -75,26 +75,31 @@ describe('Verbose test', () => {
 	);
 
 	const policyId = lucid.utils.mintingPolicyToId(mintingPolicy);
-	const unit = policyId + fromText("nft");
-
-	const mintTx = await lucid.newTx()
-	     .mintAssets({ [unit]: 1n })
-	     .validTo(txTime + 200000)
-	     .attachMintingPolicy(mintingPolicy)
-	     .complete();
-
-	const signedMintTx = await mintTx.sign().complete();
-	const mintTxHash = await signedMintTx.submit();
+	
 	//                  lucid.wallet.getUtxos()
+	async function mint(): Promise<TxHash> {
+	  const tx = await lucid.newTx()
+	    .mintAssets({
+	      [toUnit(policyId, fromText("Collateral"))]: 1n,
+	    })
+	    .validTo(emulator.now() + 30000)
+	    .attachMintingPolicy(mintingPolicy)
+	    .complete();
+	  const signedTx = await tx.sign().complete();
+
+	  return signedTx.submit();
+	}
+
+	await mint();
+
+	emulator.awaitBlock(4);
 	const utxos = await lucid.utxosAt(
 	  recipient,
 	  //lender.address,
 	  //borrower.address,
 	);
+	console.log(utxos[0].assets);
 
-	console.log(utxos);
-
-//	console.log(signedMintTx);
         return true
         } catch (err) {
             console.error("something failed:", err);
