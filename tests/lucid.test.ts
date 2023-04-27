@@ -26,7 +26,7 @@ import {
   TxHash,
 } from "lucid-cardano"; // NPM
 
-describe('ThreadToken Positive Test Cases', () => {
+describe('Verbose test', () => {
 
     const main = async () => {
 
@@ -54,13 +54,11 @@ describe('ThreadToken Positive Test Cases', () => {
 	const lucid = await Lucid.new(emulator);
 
 	lucid.selectWalletFromSeed(borrower.seedPhrase);
-	//
+	
 	// https://lucid.spacebudz.io/docs/getting-started/mint-assets/
-	const { paymentCredential } = lucid.utils.getAddressDetails(
-  		await lucid.wallet.address(),
-	);
+	const recipient = await lucid.wallet.address();
+	const { paymentCredential } = lucid.utils.getAddressDetails( recipient );
 
-	console.log(paymentCredential);
 	const mintingPolicy = lucid.utils.nativeScriptFromJson(
 	  {
 	    type: "all",
@@ -75,7 +73,7 @@ describe('ThreadToken Positive Test Cases', () => {
 	);
 
 	const policyId = lucid.utils.mintingPolicyToId(mintingPolicy);
-	const unit = policyId + fromText("MyMintedToken");
+	const unit = policyId + fromText("nft");
 
 	const mintTx = await lucid.newTx()
 	     .mintAssets({ [unit]: 1n })
@@ -86,28 +84,12 @@ describe('ThreadToken Positive Test Cases', () => {
 	const signedMintTx = await mintTx.sign().complete();
 
 	const mintTxHash = await signedMintTx.submit();
-	console.log(mintTxHash);
 
-	const recipient =
-    "addr_test1qrupyvhe20s0hxcusrzlwp868c985dl8ukyr44gfvpqg4ek3vp92wfpentxz4f853t70plkp3vvkzggjxknd93v59uysvc54h7";
-
-	// this needs to change.
-	// const datum = Data.to(123n);
-	// const lovelace = 3000000n;
-
-	// const tx = await lucid.newTx().payToAddressWithData(recipient, {
-	//   inline: datum,
-	// }, { lovelace }).complete();
-
-	// const signedTx = await tx.sign().complete();
-	// const txHash = await signedTx.submit();
-	// await lucid.awaitTx(txHash);
 
 	const utxos = await lucid.utxosAt(
 	  recipient,
 	);
-
-        // return true;
+	console.log(utxos);
         return true
         } catch (err) {
             console.error("something failed:", err);
@@ -115,7 +97,7 @@ describe('ThreadToken Positive Test Cases', () => {
         }
     }
 
-    it('checks main() status', async () => {
+    it('adds logging', async () => {
 
         const logMsgs = new Set();
         const logSpy = vi.spyOn(global.console, 'log')
