@@ -67,6 +67,9 @@ const main = async () => {
       const nftCompiledProgram = nftProgram.compile(optimize);
       const nftMPH = nftCompiledProgram.mintingPolicyHash;
 
+	console.log("needle:");
+	console.log(await nftProgram);
+	
       // Start building the transaction
       const tx = new Tx();
 

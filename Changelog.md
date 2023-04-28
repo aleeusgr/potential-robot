@@ -1,3 +1,8 @@
+28 April, Friday
+
+I could add an nft to a wallet.
+I need to look at src/mint.mjs, and add helios uplc to the main();
+
 25 April
 
 - [ ] refactor test

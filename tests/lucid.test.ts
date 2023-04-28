@@ -59,7 +59,6 @@ describe('Verbose test', () => {
 	// https://lucid.spacebudz.io/docs/getting-started/mint-assets/
 	const recipient = await lucid.wallet.address();
 	const { paymentCredential } = lucid.utils.getAddressDetails( recipient );
-
 	const txTime = emulator.now();
 	const mintingPolicy = lucid.utils.nativeScriptFromJson(
 	  {
@@ -75,8 +74,21 @@ describe('Verbose test', () => {
 	);
 
 	const policyId = lucid.utils.mintingPolicyToId(mintingPolicy);
+	console.log(policyId);
 	
-	//                  lucid.wallet.getUtxos()
+	const txUtxo = await lucid.utxosAt(recipient);
+	const txHash = txUtxo[0].txHash;
+	const txIdx = txUtxo[0].outputIndex; 
+
+	const nftScript = await fs.readFile('./src/nft.hl', 'utf8');
+	const nftProgram = await Program.new(nftScript);
+	nftProgram.parameters = {["TX_ID"] : txUtxo};
+	nftProgram.parameters = {["TX_IDX"] : txIdx};
+	const nftCompiledProgram = nftProgram.compile(optimize);
+	const nftMPH = nftCompiledProgram.mintingPolicyHash;
+
+	console.log(nftMPH);
+
 	async function mint(): Promise<TxHash> {
 	  const tx = await lucid.newTx()
 	    .mintAssets({
