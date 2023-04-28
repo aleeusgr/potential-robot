@@ -36,25 +36,29 @@ describe('Verbose test', () => {
 
         try {
 	// https://github.com/spacebudz/lucid/blob/main/tests/emulator.test.ts
-	async function generateAccount(assets: Assets) {
-	  const seedPhrase = generateSeedPhrase();
-	  return {
-	    seedPhrase,
-	    address: await (await Lucid.new(undefined, "Custom"))
-	      .selectWalletFromSeed(seedPhrase).wallet.address(),
-	    assets,
-	  };
-	}
+	async function instantiateEmulator() {
+		async function generateAccount(assets: Assets) {
+		  const seedPhrase = generateSeedPhrase();
+		  return {
+		    seedPhrase,
+		    address: await (await Lucid.new(undefined, "Custom"))
+		      .selectWalletFromSeed(seedPhrase).wallet.address(),
+		    assets,
+		  };
+		}
 
 	const lender = await generateAccount({ lovelace: 75000000000n });
 	const borrower = await generateAccount({ lovelace: 100000000n });
 
 	const emulator = new Emulator([lender, borrower]);
 
-	const lucid = await Lucid.new(emulator);
+	return Lucid.new(emulator)
+	};
 
+	const lucid = await instantiateEmulator();
+	console.log(lucid);
 	// emulator state changes:
-	lucid.selectWalletFromSeed(borrower.seedPhrase);
+	lucid.selectWalletFromSeed();
 	
 	// https://lucid.spacebudz.io/docs/getting-started/mint-assets/
 	const recipient = await lucid.wallet.address();
@@ -98,6 +102,7 @@ describe('Verbose test', () => {
 	  //lender.address,
 	  //borrower.address,
 	);
+	console.log(policyId);
 	console.log(utxos[0].assets);
 
         return true
