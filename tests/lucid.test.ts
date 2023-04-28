@@ -37,33 +37,35 @@ describe('Verbose test', () => {
         try {
 	// https://github.com/spacebudz/lucid/blob/main/tests/emulator.test.ts
 	async function createEmulator() {
+
 		async function generateAccount(assets: Assets) {
-		  const seedPhrase = generateSeedPhrase();
-		  return {
-		    seedPhrase,
-		    address: await (await Lucid.new(undefined, "Custom"))
-		      .selectWalletFromSeed(seedPhrase).wallet.address(),
-		    assets,
-		  };
+			  const seedPhrase = generateSeedPhrase();
+			  return {
+			    seedPhrase,
+			    address: (Lucid.new(undefined, "Custom"))
+			      .selectWalletFromSeed(seedPhrase).wallet.address(),
+			    assets,
+			  };
 		}
+		const wallet1 = generateAccount({ lovelace: 75000000000n });
+		const wallet2 = generateAccount({ lovelace: 100000000n });
 
-	const lender = await generateAccount({ lovelace: 75000000000n });
-	const borrower = await generateAccount({ lovelace: 100000000n });
+		const emulator = new Emulator([wallet1, wallet2]);
 
-	const emulator = new Emulator([lender, borrower]);
+		const lucid = Lucid.new(emulator);
+		// lucid.selectWalletFromSeed(wallet1.seedPhrase);
 
-	return [await Lucid.new(emulator),await borrower.address];
-	};
+		return lucid
 
-	const emu = await createEmulator();
-	const lucid = emu[0];
-	const recipient = emu[1];
-	console.log(recipient[0]);
+	}
+	
+
+	const lucid = await createEmulator();
+	console.log(lucid.wallet.address);
 	// emulator state changes:
-	lucid.selectWalletFromSeed(recipient);
 	
 	// https://lucid.spacebudz.io/docs/getting-started/mint-assets/
-	// const recipient = await lucid.wallet.address();
+	const recipient = lucid.wallet.address();
 	const { paymentCredential } = lucid.utils.getAddressDetails( recipient );
 
 	const txTime = emulator.now();
