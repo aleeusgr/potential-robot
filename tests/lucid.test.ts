@@ -36,7 +36,7 @@ describe('Verbose test', () => {
 
         try {
 	// https://github.com/spacebudz/lucid/blob/main/tests/emulator.test.ts
-	async function instantiateEmulator() {
+	async function createEmulator() {
 		async function generateAccount(assets: Assets) {
 		  const seedPhrase = generateSeedPhrase();
 		  return {
@@ -52,16 +52,18 @@ describe('Verbose test', () => {
 
 	const emulator = new Emulator([lender, borrower]);
 
-	return Lucid.new(emulator)
+	return [await Lucid.new(emulator),await borrower.address];
 	};
 
-	const lucid = await instantiateEmulator();
-	console.log(lucid);
+	const emu = await createEmulator();
+	const lucid = emu[0];
+	const recipient = emu[1];
+	console.log(recipient[0]);
 	// emulator state changes:
-	lucid.selectWalletFromSeed();
+	lucid.selectWalletFromSeed(recipient);
 	
 	// https://lucid.spacebudz.io/docs/getting-started/mint-assets/
-	const recipient = await lucid.wallet.address();
+	// const recipient = await lucid.wallet.address();
 	const { paymentCredential } = lucid.utils.getAddressDetails( recipient );
 
 	const txTime = emulator.now();
