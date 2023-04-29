@@ -6,7 +6,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   test: {
-    // include: ['tests/lucid.test.*', 'tests/mint-onchain-positive.test.*'],
     include: ['tests/new*.test.ts', ],
+    //include: ['tests/*.test.ts', ],
   },
 });
