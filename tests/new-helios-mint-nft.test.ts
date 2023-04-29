@@ -7,7 +7,7 @@ import {
   PolicyId,
   TxHash,
   Unit,
-} from "../mod.ts";
+} from "lucid-cardano"; // NPM
 
 /*
   MintSimpleNFT Example
