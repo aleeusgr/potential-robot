@@ -1,3 +1,8 @@
+29 Apr, Sat
+
+I am stuck with both refactoring and using Helios nft minter contract to mint an nft in Lucid emulator.
+- [ ] look at tutorial Lucid smart contract interaction.
+
 25 April
 
 - [ ] refactor test
