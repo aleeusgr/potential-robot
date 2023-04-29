@@ -80,14 +80,16 @@ describe('Verbose test', () => {
 	const txHash = txUtxo[0].txHash;
 	const txIdx = txUtxo[0].outputIndex; 
 
-	const nftScript = await fs.readFile('./src/nft.hl', 'utf8');
-	const nftProgram = await Program.new(nftScript);
-	nftProgram.parameters = {["TX_ID"] : txUtxo};
-	nftProgram.parameters = {["TX_IDX"] : txIdx};
-	const nftCompiledProgram = nftProgram.compile(optimize);
-	const nftMPH = nftCompiledProgram.mintingPolicyHash;
+	//I need to get mintingPolicy and policyId from nftCompiledProgram
+	// fails at compilation
+	// const nftScript = await fs.readFile('./src/nft.hl', 'utf8');
+	// const nftProgram = Program.new(nftScript);
+	// nftProgram.parameters = {["TX_ID"] : txUtxo};
+	// nftProgram.parameters = {["TX_IDX"] : txIdx};
+	// nftCompiledProgram = nftProgram.compile(optimize);
+	// console.log(nftCompiledProgram);
+	// const nftMPH = nftCompiledProgram.mintingPolicyHash;
 
-	console.log(nftMPH);
 
 	async function mint(): Promise<TxHash> {
 	  const tx = await lucid.newTx()

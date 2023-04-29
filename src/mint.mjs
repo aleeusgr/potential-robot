@@ -51,12 +51,12 @@ const main = async () => {
 
       // Now we are able to get the UTxOs in Alices wallet
       const utxos = await network.getUtxos(alice.address);
-      console.log("************ PRE-TEST ************");
+      // console.log("************ PRE-TEST ************");
 
-      console.log("Wallet UTXOs:");
+      // console.log("Wallet UTXOs:");
       for (const utxo of utxos) {
-        console.log("txId", utxo.txId.hex + "#" + utxo.utxoIdx);
-        console.log("value", utxo.value.dump());
+        // console.log("txId", utxo.txId.hex + "#" + utxo.utxoIdx);
+        // console.log("value", utxo.value.dump());
       }
 
       // Pull in the NFT minting script, update params and compile
@@ -65,10 +65,8 @@ const main = async () => {
       nftProgram.parameters = {["TX_ID"] : utxos[0].txId.hex};
       nftProgram.parameters = {["TX_IDX"] : utxos[0].utxoIdx};
       const nftCompiledProgram = nftProgram.compile(optimize);
+      console.log(nftCompiledProgram);
       const nftMPH = nftCompiledProgram.mintingPolicyHash;
-
-	console.log("needle:");
-	console.log(await nftProgram);
 	
       // Start building the transaction
       const tx = new Tx();
@@ -101,26 +99,27 @@ const main = async () => {
       const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
       const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
-      console.log("");
-      console.log("************ EXECUTE SMART CONTRACT ************");
+      // console.log("");
+      // console.log("************ EXECUTE SMART CONTRACT ************");
+	  // 
       await tx.finalize(networkParams, alice.address, utxos);
 
-      console.log("");
-      console.log("************ SUBMIT TX ************");
+      // console.log("");
+      // console.log("************ SUBMIT TX ************");
       // Submit Tx to the network
       const txId = await network.submitTx(tx);
-      console.log("TxId", txId.dump());
+      // console.log("TxId", txId.dump());
 
       // Tick the network on 10 more slots,
       network.tick(BigInt(10));
 
       const utxosFinal = await network.getUtxos(alice.address);
-      console.log("");
-      console.log("************ POST-TEST ************");
-      console.log("Wallet UTXOs:");
+      // console.log("");
+      // console.log("************ POST-TEST ************");
+      // console.log("Wallet UTXOs:");
       for (const utxo of utxosFinal) {
-        console.log("txId", utxo.txId.hex + "#" + utxo.utxoIdx);
-        console.log("value", utxo.value.dump());
+        // console.log("txId", utxo.txId.hex + "#" + utxo.utxoIdx);
+        // console.log("value", utxo.value.dump());
       }
       
   } catch (err) {
