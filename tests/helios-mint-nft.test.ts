@@ -15,7 +15,7 @@ import {
  */
 
 const lucid = await Lucid.new(
-  new Blockfrost("https://cardano-preview.blockfrost.io/api/v0", "<projectId>"),
+  new Blockfrost("https://cardano-preview.blockfrost.io/api/v0", "testnetXWdDgoYImp12FdSKhIGNL9oNJZAN7evl"),
   "Preview",
 );
 
