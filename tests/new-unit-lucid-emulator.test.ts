@@ -56,25 +56,50 @@ describe('Verbose test', () => {
 
 	const emulator = new Emulator([wallet1, wallet2]);
 
-	const lucid = await Lucid.new(emulator);
-
-	return lucid
+	return await Lucid.new(emulator);
+ 
 
 } 
 
     const main = async () => {
 	
-	//how do I access wallets on instantiated emulator? 
-	    //
-	// const lucid = await Lucid.new(
-	//   new Blockfrost("https://cardano-preview.blockfrost.io/api/v0", "<projectId>"),
-	//   "Preview",
-	// );
-
 	try {
 		const lucid = await createEmulator();
 		lucid.selectWalletFromSeed("order jacket breeze senior wire crunch twin any warrior lonely confirm enrich army foam slice direct defense manual public balcony hunt upon festival club");
+		const recipient = await lucid.wallet.address();
+		const { paymentCredential } = lucid.utils.getAddressDetails( recipient );
 
+		const mintingPolicy: MintingPolicy = lucid.utils.nativeScriptFromJson(
+			  {
+			    type: "all",
+			    scripts: [
+			      { type: "sig", keyHash: paymentCredential?.hash! },
+			      {
+				type: "before",
+				slot: lucid.utils.unixTimeToSlot(Date.now() + 1000000),
+			      },
+			    ],
+			  },
+		);
+
+
+		const datum = Data.to(123n);
+		const lovelace = 3000000n;
+
+		console.log(mintingPolicy);
+		console.log(recipient);
+		const tx = await lucid.newTx().payToAddressWithData(recipient, {
+		  inline: datum,
+		}, { lovelace }).complete();
+
+		const signedTx = await tx.sign().complete();
+		const txHash = await signedTx.submit();
+		await lucid.awaitTx(txHash);
+
+		const utxos = await lucid.utxosAt(
+		  recipient,
+		);
+		// return parseInt(utxos[0].assets.lovelace) == 3000000
 		return true
 	} catch (err) {
 	    console.error("something failed:", err);
@@ -93,7 +118,7 @@ describe('Verbose test', () => {
 	if (!mainStatus) {
 	    console.log("Smart Contract Messages: ", logMsgs);
 	}
-	console.log(logMsgs)
+	// console.log(logMsgs)
 	expect(mainStatus).toBe(true);
 
     })
