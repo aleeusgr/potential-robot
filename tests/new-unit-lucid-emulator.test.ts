@@ -109,7 +109,7 @@ describe('Verbose test', () => {
 		  const tx = await lucid
 		    .newTx()
 		    .payToContract(matchingNumberAddress, Datum(number), { lovelace })
-		  //  .complete();
+		    .complete();
 
 		  //const signedTx = await tx.sign().complete();
 
