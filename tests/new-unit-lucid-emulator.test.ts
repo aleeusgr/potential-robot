@@ -99,8 +99,6 @@ describe('Verbose test', () => {
 		  matchingNumberScript,
 		);
 
-		const number = 100n;
-		
 		const Datum = (number: number) => Data.to(BigInt(number));
 		const Redeemer = (number: number) => Data.to(BigInt(number));
 
@@ -111,26 +109,27 @@ describe('Verbose test', () => {
 		  const tx = await lucid
 		    .newTx()
 		    .payToContract(matchingNumberAddress, Datum(number), { lovelace })
-		    .complete();
+		  //  .complete();
 
-		  const signedTx = await tx.sign().complete();
+		  //const signedTx = await tx.sign().complete();
 
-		  const txHash = await signedTx.submit();
+		  //const txHash = await signedTx.submit();
 
-		  return txHash;
+		  //return txHash;
+		  return tx;
 		}
 
-		const txHash = await lockUtxo({ inline: Data.to(100n) }, { lovelace: 20000000n });
+		const txHash = await lockUtxo(11, 100000);
 		// -[ ] https://lucid.spacebudz.io/docs/getting-started/smart-contract/
-		// const tx = lucid
-		// 	.newTx() // not a function?!
-		// 	.payToContract(matchingNumberAddress, { inline: Data.to(100n) }, { lovelace: 20000000n })
+		const tx = lucid
+		  	.newTx() 
+		 	.payToContract(matchingNumberAddress, { inline: Data.to(100n) }, { lovelace: 20000000n })
 		// 	.complete();
 
 		// const signedTx = await tx.sign().complete();
 
 		// const txHash = await signedTx.submit();
-		// console.log(await lucid.newTx().payToContract(matchingNumberAddress, { inline: Data.to(100n) }, { lovelace: 20000000n }));
+
 		console.log(txHash);
 
 		return true
