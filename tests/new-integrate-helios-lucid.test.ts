@@ -66,7 +66,8 @@ describe('Verbose test', () => {
 	const myUplcProgram = JSON.parse(Uplc.serialize());
 
 	const matchingNumberScript: SpendingValidator = {
-	  type: "PlutusV1",
+	  type: "PlutusV2",
+	  // type: myUplcProgram.type,
 	  // script: myUplcProgram.cborHex
 	  script: myUplcProgram.cborHex
 
@@ -76,6 +77,7 @@ describe('Verbose test', () => {
 	const matchingNumberAddress: Address = lucid.utils.validatorToAddress(
 	  matchingNumberScript,
 	);
+
 
 	const Datum = (number: number) => Data.to(BigInt(number));
 	const Redeemer = (number: number) => Data.to(BigInt(number));
@@ -96,15 +98,19 @@ describe('Verbose test', () => {
 	  return txHash;
 	}
 
-	await lockUtxo(1,10000000);
+	await lockUtxo(1,100); 
 	emulator.awaitBlock(4);
+
 	const utxos = await lucid.wallet.getUtxos(
 	  lucid.wallet.address(),
 	);
-
 	const difference = zeroState[0].assets.lovelace - utxos[0].assets.lovelace;
-	console.log(difference);
+	console.log(difference)
 	
+	// if I place this before tx, it shows 100000000n
+	const walletUtxo = await lucid.wallet.getUtxos(matchingNumberAddress)
+	console.log(walletUtxo[0].assets.lovelace);
+
 	return utxos[0].txHash != zeroState
 	} catch (err) {
 	    console.error("something failed:", err);
