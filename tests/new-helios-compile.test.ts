@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { promises as fs } from 'fs';
 import {
 
+	Program
 
 } from "@hyperionbt/helios";
 
@@ -21,10 +22,11 @@ describe('Verbose test', () => {
 
 
 		try {
-			const program = helios.Program.new(src)
+			const program = Program.new(src)
 
-		
-		return program
+		const myUplcProgram = program.compile();	
+		console.log(myUplcProgram.serialize());
+		return true
 		} catch (err) {
 		    console.error("something failed:", err);
 		    return false;
