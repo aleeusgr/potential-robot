@@ -63,7 +63,7 @@ describe('Verbose test', () => {
 	
 	const program = Program.new(src)
 	const Uplc = program.compile();	
-	const myUplcProgram = Uplc.serialize();
+	const myUplcProgram = JSON.parse(Uplc.serialize());
 
 	console.log(myUplcProgram);
 
