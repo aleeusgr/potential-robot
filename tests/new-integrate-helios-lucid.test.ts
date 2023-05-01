@@ -67,6 +67,7 @@ describe('Verbose test', () => {
 
 	const matchingNumberScript: SpendingValidator = {
 	  type: "PlutusV1",
+	  // script: myUplcProgram.cborHex
 	  script: myUplcProgram.cborHex
 
 	};
@@ -94,13 +95,15 @@ describe('Verbose test', () => {
 
 	  return txHash;
 	}
-	await lockUtxo(1,10000);
+
+	await lockUtxo(1,10000000);
 	emulator.awaitBlock(4);
-	//                  lucid.wallet.getUtxos()
 	const utxos = await lucid.wallet.getUtxos(
 	  lucid.wallet.address(),
 	);
 
+	const difference = zeroState[0].assets.lovelace - utxos[0].assets.lovelace;
+	console.log(difference);
 	
 	return utxos[0].txHash != zeroState
 	} catch (err) {
