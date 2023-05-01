@@ -65,15 +65,12 @@ describe('Verbose test', () => {
 	const Uplc = program.compile();	
 	const myUplcProgram = JSON.parse(Uplc.serialize());
 
-	console.log(myUplcProgram);
-
 	const matchingNumberScript: SpendingValidator = {
 	  type: "PlutusV1",
-	  script: ""
+	  script: myUplcProgram.cborHex
 
 	};
 
-	console.log(matchingNumberScript);
 
 	const matchingNumberAddress: Address = lucid.utils.validatorToAddress(
 	  matchingNumberScript,
@@ -104,8 +101,7 @@ describe('Verbose test', () => {
 	  lucid.wallet.address(),
 	);
 
-	console.log()
-
+	
 	return utxos[0].txHash != zeroState
 	} catch (err) {
 	    console.error("something failed:", err);
