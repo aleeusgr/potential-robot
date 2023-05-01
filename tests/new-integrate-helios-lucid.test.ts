@@ -26,7 +26,7 @@ import {
   TxHash,
 } from "lucid-cardano"; // NPM
 
-describe('Verbose test', () => {
+describe('introduces Helios, a source of a new template', () => {
 
 	const main = async () => {
 

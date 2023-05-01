@@ -26,7 +26,7 @@ import {
   TxHash,
 } from "lucid-cardano"; // NPM
 
-describe('Verbose test', () => {
+describe('creates lucid emulator, prepares and submits a minting transaction', () => {
 
     const main = async () => {
 
@@ -80,7 +80,7 @@ describe('Verbose test', () => {
 	async function mint(): Promise<TxHash> {
 	  const tx = await lucid.newTx()
 	    .mintAssets({
-	      [toUnit(policyId, fromText("Collateral"))]: 1n,
+	      [toUnit(policyId, fromText("Collateral"))]: 1n, //number of tokens minted!
 	    })
 	    .validTo(emulator.now() + 30000)
 	    .attachMintingPolicy(mintingPolicy)
@@ -98,6 +98,7 @@ describe('Verbose test', () => {
 	  //lender.address,
 	  //borrower.address,
 	);
+	
 	console.log(utxos[0].assets);
 
         return true

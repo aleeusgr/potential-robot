@@ -26,7 +26,7 @@ import {
   TxHash,
 } from "lucid-cardano"; // NPM
 
-describe('Verbose test', () => {
+describe('creates a lucid emulator instance and runs a transaction with a determenistic cborHex', () => {
 
 	const main = async () => {
 
