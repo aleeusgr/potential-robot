@@ -1,3 +1,10 @@
+May 1, Monday
+
+I am unstuck big time; now I have a nicer repo;
+9 tests are passing, out of which I know 5;
+
+Now I take a break.
+
 29 Apr, Sat
 
 I am stuck with both refactoring and using Helios nft minter contract to mint an nft in Lucid emulator.
