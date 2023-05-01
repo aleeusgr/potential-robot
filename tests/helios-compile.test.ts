@@ -24,8 +24,8 @@ describe('Verbose test', () => {
 		try {
 			const program = Program.new(src)
 
-		const myUplcProgram = program.compile();	
-		console.log(myUplcProgram.serialize());
+			const myUplcProgram = program.compile();	
+			console.log(myUplcProgram.serialize());
 		return true
 		} catch (err) {
 		    console.error("something failed:", err);
