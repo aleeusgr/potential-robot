@@ -10,7 +10,7 @@ import {
 
 } from "lucid-cardano"; // NPM
 
-describe('Verbose test', () => {
+describe('turns a sting into uplc', () => {
 
 	const main = async () => {
 		const src = `
