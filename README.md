@@ -1,5 +1,7 @@
 # potential-robot
 
+development branch will become new main, a milestone.
+
 `npm install`
 `npm test`
 

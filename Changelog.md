@@ -1,3 +1,7 @@
+May 2, Tuesday
+
+https://github.com/aleeusgr/potential-robot/issues/70
+
 May 1, Monday
 
 I am unstuck big time; now I have a nicer repo;
