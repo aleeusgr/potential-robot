@@ -119,7 +119,6 @@ describe('creates lucid emulator, prepares and submits a minting transaction', (
         if (!mainStatus) {
             console.log("Smart Contract Messages: ", logMsgs);
         }
-	console.log(logMsgs)
         expect(mainStatus).toBe(true);
 
     })

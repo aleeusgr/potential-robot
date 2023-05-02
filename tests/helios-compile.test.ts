@@ -44,7 +44,6 @@ describe('turns a sting into uplc', () => {
 		if (!mainStatus) {
 		    console.log("Smart Contract Messages: ", logMsgs);
 	}
-	console.log(logMsgs)
 	expect(mainStatus).toBe(true);
 
 	})

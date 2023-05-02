@@ -130,7 +130,6 @@ describe('introduces Helios, a source of a new template', () => {
 	if (!mainStatus) {
 	    console.log("Smart Contract Messages: ", logMsgs);
 	}
-	console.log(logMsgs)
 	expect(mainStatus).toBe(true);
 
 	})

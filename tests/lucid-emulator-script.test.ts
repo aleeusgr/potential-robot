@@ -109,7 +109,6 @@ describe('creates a lucid emulator instance and runs a transaction with a determ
 	if (!mainStatus) {
 	    console.log("Smart Contract Messages: ", logMsgs);
 	}
-	console.log(logMsgs)
 	expect(mainStatus).toBe(true);
 
 	})
