@@ -54,12 +54,13 @@ describe('introduces Helios, a source of a new template', () => {
 	const zeroState = await lucid.wallet.getUtxos(lucid.wallet.address())
 	// https://github.com/spacebudz/lucid/blob/main/src/examples/matching_numbers.ts
 	
-	const src = `
-	spending always_succeeds
+	const src = await fs.readFile('./src/always-succeeds.hl', 'utf8');
+	// const src = `
+	// spending always_succeeds
 
-	func main(_, _, _) -> Bool {
-	    true
-	}`
+	// func main(_, _, _) -> Bool {
+	//     true
+	// }`
 	
 	const program = Program.new(src)
 	const Uplc = program.compile();	
