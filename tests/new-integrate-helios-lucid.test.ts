@@ -111,7 +111,7 @@ describe('introduces Helios, a source of a new template', () => {
 	const walletUtxo = await lucid.wallet.getUtxos(matchingNumberAddress)
 	console.log(walletUtxo[0].assets.lovelace);
 
-	return utxos[0].txHash != zeroState
+	return utxos[0].txHash != zeroState[0].txHash
 	} catch (err) {
 	    console.error("something failed:", err);
 	    return false;
