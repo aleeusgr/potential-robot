@@ -52,7 +52,6 @@ describe('creates a lucid emulator instance and runs a transaction with a determ
 	// emulator state changes, how do I encapsulate this?
 	lucid.selectWalletFromSeed(borrower.seedPhrase);
 	const zeroState = await lucid.wallet.getUtxos(lucid.wallet.address())
-	console.log(zeroState[0].txHash)
 	// https://github.com/spacebudz/lucid/blob/main/src/examples/matching_numbers.ts
 	const matchingNumberScript: SpendingValidator = {
 	  type: "PlutusV1",
@@ -68,30 +67,55 @@ describe('creates a lucid emulator instance and runs a transaction with a determ
 	const Redeemer = (number: number) => Data.to(BigInt(number));
 
 	async function lockUtxo(
-	  number: number,
-	  lovelace: Lovelace,
-	): Promise<TxHash> {
-	  const tx = await lucid
-	    .newTx()
-	    .payToContract(matchingNumberAddress, Datum(number), { lovelace })
-	    .complete();
+		number: number,
+		lovelace: Lovelace,
+		): Promise<TxHash> {
+		const tx = await lucid
+		.newTx()
+		.payToContract(matchingNumberAddress, Datum(number), { lovelace })
+		.complete();
 
-	  const signedTx = await tx.sign().complete();
+		const signedTx = await tx.sign().complete();
 
-	  const txHash = await signedTx.submit();
+		const txHash = await signedTx.submit();
 
-	  return txHash;
+		return txHash;
 	}
-	await lockUtxo(1,10000);
+
+	async function redeemUtxo(number: number): Promise<TxHash> {
+		// needs testing.
+		const utxo = (await lucid.utxosAt(matchingNumberAddress)).slice(-1)[0];
+
+		const tx = await lucid
+		.newTx()
+		.collectFrom([utxo], Redeemer(number))
+		.attachSpendingValidator(matchingNumberScript)
+		.complete();
+
+		const signedTx = await tx.sign().complete();
+
+		const txHash = await signedTx.submit();
+
+		return txHash;
+	}
+	await lockUtxo(1,1000);
 	emulator.awaitBlock(4);
-	//                  lucid.wallet.getUtxos()
-	const utxos = await lucid.wallet.getUtxos(
-	  lucid.wallet.address(),
-	);
 
-	console.log()
+	const utxos      = (await lucid.wallet.getUtxos(lucid.wallet.address()))[0];
+	// I am doing this wrong, see #77
+	const scriptUtxo = (await lucid.wallet.getUtxos(matchingNumberAddress));
 
-	return utxos[0].txHash != zeroState
+	console.log(utxos.assets.lovelace);
+
+	console.log(matchingNumberAddress);
+
+
+	// return utxos[0].txHash != zeroState
+	// - [x] test emulator
+	// - [ ] test lockUtxo
+	// - [ ] test redeemUtxo
+	// what is my oracle?
+	return true
 	} catch (err) {
 	    console.error("something failed:", err);
 	    return false;
@@ -110,6 +134,7 @@ describe('creates a lucid emulator instance and runs a transaction with a determ
 	    console.log("Smart Contract Messages: ", logMsgs);
 	}
 	expect(mainStatus).toBe(true);
+	console.log(logMsgs)
 
 	})
 
