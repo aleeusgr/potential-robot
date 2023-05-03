@@ -54,21 +54,21 @@ describe('introduces Helios, a source of a new template', () => {
 	const zeroState = await lucid.wallet.getUtxos(lucid.wallet.address())
 	// https://github.com/spacebudz/lucid/blob/main/src/examples/matching_numbers.ts
 	
+	// import and compile a Helios contract.
 	const src = await fs.readFile('./src/always-succeeds.hl', 'utf8');
 	const program = Program.new(src)
 	const Uplc = program.compile();	
 	const myUplcProgram = JSON.parse(Uplc.serialize());
 
-
-	const matchingNumberScript: SpendingValidator = {
+	const alwaysSucceedsScript: SpendingValidator = {
 	  type: "PlutusV2",
 	  // type: myUplcProgram.type,
 	  script: myUplcProgram.cborHex
 
 	};
 
-	const matchingNumberAddress: Address = lucid.utils.validatorToAddress(
-	  matchingNumberScript,
+	const alwaysSucceedsAddress: Address = lucid.utils.validatorToAddress(
+	  alwaysSucceedsScript,
 	);
 
 	const Datum = (number: number) => Data.to(BigInt(number));
@@ -80,7 +80,7 @@ describe('introduces Helios, a source of a new template', () => {
 	): Promise<TxHash> {
 	  const tx = await lucid
 	    .newTx()
-	    .payToContract(matchingNumberAddress, Datum(number), { lovelace })
+	    .payToContract(alwaysSucceedsAddress, Datum(number), { lovelace })
 	    .complete();
 
 	  const signedTx = await tx.sign().complete();
@@ -91,12 +91,12 @@ describe('introduces Helios, a source of a new template', () => {
 	}
 
 	async function redeemUtxo(number: number): Promise<TxHash> {
-		const utxo = (await lucid.utxosAt(matchingNumberAddress)).slice(-1)[0];
+		const utxo = (await lucid.utxosAt(alwaysSucceedsAddress)).slice(-1)[0];
 
 		const tx = await lucid
 		.newTx()
 		.collectFrom([utxo], Redeemer(number))
-		.attachSpendingValidator(matchingNumberScript)
+		.attachSpendingValidator(alwaysSucceedsScript)
 		.complete();
 
 		const signedTx = await tx.sign().complete();
@@ -110,19 +110,15 @@ describe('introduces Helios, a source of a new template', () => {
 	emulator.awaitBlock(4);
 
 	console.log((await lucid.utxosAt(await lucid.wallet.address()))[0]);
-	console.log((await lucid.utxosAt(matchingNumberAddress))[0]);
+	console.log((await lucid.utxosAt(alwaysSucceedsAddress))[0]);
 
 	await redeemUtxo(1);
 	emulator.awaitBlock(4);
-	// return utxos[0].txHash != zeroState
-	// - [x] test emulator
-	// - [x] test lockUtxo
-	// - [x] test redeemUtxo
-	//
 	// what is my oracle?
+	// - [x] wallet balance
+	//
 	console.log((await lucid.utxosAt(alice.address))[0]);
-	// // I am doing this wrong, see #77
-	console.log((await lucid.utxosAt(matchingNumberAddress))[0]);
+	console.log((await lucid.utxosAt(alwaysSucceedsAddress))[0]);
 
 	const balance = (await lucid.utxosAt(await lucid.wallet.address()))[0]
 	console.log(zeroState[0].assets.lovelace - balance.assets.lovelace );
