@@ -26,7 +26,7 @@ import {
   TxHash,
 } from "lucid-cardano"; // NPM
 
-describe('creates a lucid emulator instance and runs a transaction with a determenistic cborHex', () => {
+describe('creates a lucid emulator instance and runs two transactions with a plutus script', () => {
 
 	const main = async () => {
 
@@ -42,16 +42,18 @@ describe('creates a lucid emulator instance and runs a transaction with a determ
 	  };
 	}
 
-	const lender = await generateAccount({ lovelace: 75000000000n });
-	const borrower = await generateAccount({ lovelace: 100000000n });
+	const alice = await generateAccount({ lovelace: 75000000000n });
+	const bobrower = await generateAccount({ lovelace: 100000000n });
 
-	const emulator = new Emulator([lender, borrower]);
+	const emulator = new Emulator([alice, bobrower]);
 
 	const lucid = await Lucid.new(emulator);
 
 	// emulator state changes, how do I encapsulate this?
-	lucid.selectWalletFromSeed(borrower.seedPhrase);
-	const zeroState = await lucid.wallet.getUtxos(lucid.wallet.address())
+	lucid.selectWalletFromSeed(alice.seedPhrase);
+
+	// console.log(alice);
+	const zeroState = await lucid.wallet.getUtxos(alice.address)
 	// https://github.com/spacebudz/lucid/blob/main/src/examples/matching_numbers.ts
 	const matchingNumberScript: SpendingValidator = {
 	  type: "PlutusV1",
@@ -69,7 +71,9 @@ describe('creates a lucid emulator instance and runs a transaction with a determ
 	async function lockUtxo(
 		number: number,
 		lovelace: Lovelace,
+		// needs testing
 		): Promise<TxHash> {
+			console.log('lock');
 		const tx = await lucid
 		.newTx()
 		.payToContract(matchingNumberAddress, Datum(number), { lovelace })
@@ -83,7 +87,7 @@ describe('creates a lucid emulator instance and runs a transaction with a determ
 	}
 
 	async function redeemUtxo(number: number): Promise<TxHash> {
-		// needs testing.
+			console.log('redeem');
 		const utxo = (await lucid.utxosAt(matchingNumberAddress)).slice(-1)[0];
 
 		const tx = await lucid
@@ -98,24 +102,27 @@ describe('creates a lucid emulator instance and runs a transaction with a determ
 
 		return txHash;
 	}
-	await lockUtxo(1,1000);
+	await lockUtxo(1,10000000);
 	emulator.awaitBlock(4);
 
-	const utxos      = (await lucid.wallet.getUtxos(lucid.wallet.address()))[0];
-	// I am doing this wrong, see #77
-	const scriptUtxo = (await lucid.wallet.getUtxos(matchingNumberAddress));
+	// console.log((await lucid.utxosAt(alice.address))[0]);
+	// console.log((await lucid.utxosAt(matchingNumberAddress))[0]);
 
-	console.log(utxos.assets.lovelace);
-
-	console.log(matchingNumberAddress);
-
-
+	await redeemUtxo(1);
+	emulator.awaitBlock(4);
 	// return utxos[0].txHash != zeroState
 	// - [x] test emulator
-	// - [ ] test lockUtxo
-	// - [ ] test redeemUtxo
+	// - [x] test lockUtxo
+	// - [x] test redeemUtxo
+	//
 	// what is my oracle?
-	return true
+	// console.log((await lucid.utxosAt(alice.address))[0]);
+	// // I am doing this wrong, see #77
+	// console.log((await lucid.utxosAt(matchingNumberAddress))[0]);
+
+	const balance = (await lucid.utxosAt(alice.address))[0]
+	console.log(zeroState[0].assets.lovelace - balance.assets.lovelace );
+	return balance.assets.lovelace == 74999505143n 
 	} catch (err) {
 	    console.error("something failed:", err);
 	    return false;
