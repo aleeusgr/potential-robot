@@ -59,6 +59,7 @@ describe('introduces Helios, a source of a new template', () => {
 	const Uplc = program.compile();	
 	const myUplcProgram = JSON.parse(Uplc.serialize());
 
+
 	const matchingNumberScript: SpendingValidator = {
 	  type: "PlutusV2",
 	  // type: myUplcProgram.type,
@@ -119,9 +120,9 @@ describe('introduces Helios, a source of a new template', () => {
 	// - [x] test redeemUtxo
 	//
 	// what is my oracle?
-	// console.log((await lucid.utxosAt(alice.address))[0]);
+	console.log((await lucid.utxosAt(alice.address))[0]);
 	// // I am doing this wrong, see #77
-	// console.log((await lucid.utxosAt(matchingNumberAddress))[0]);
+	console.log((await lucid.utxosAt(matchingNumberAddress))[0]);
 
 	const balance = (await lucid.utxosAt(await lucid.wallet.address()))[0]
 	console.log(zeroState[0].assets.lovelace - balance.assets.lovelace );
@@ -146,7 +147,6 @@ describe('introduces Helios, a source of a new template', () => {
 		    console.log("Smart Contract Messages: ", logMsgs);
 	}
 	expect(mainStatus).toBe(true);
-	console.log(logMsgs);
 
 	})
 

@@ -141,7 +141,6 @@ describe('creates a lucid emulator instance and runs two transactions with a plu
 	    console.log("Smart Contract Messages: ", logMsgs);
 	}
 	expect(mainStatus).toBe(true);
-	console.log(logMsgs)
 
 	})
 
