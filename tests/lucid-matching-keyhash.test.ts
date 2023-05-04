@@ -53,80 +53,78 @@ describe('', () => {
 	lucid.selectWalletFromSeed(bob.seedPhrase);
 	const zeroState = await lucid.wallet.getUtxos(lucid.wallet.address())
 	// https://github.com/spacebudz/lucid/blob/main/src/examples/matching_numbers.ts
-	
+	// https://github.com/spacebudz/lucid/blob/main/src/examples/matching_keyhash.ts	
 	// import and compile a Helios contract.
 	// The validator scripts currently have a type
 	// Redeemer -> DataValue -> ScriptContext -> a -> ()
-	const src = `
-	spending always_succeeds
 
-	func main(_, _, _) -> Bool {
-	    true
-	}`
-	// const src = await fs.readFile('./src/loan-escrow.hl', 'utf8');
-	const program = Program.new(src)
-	const Uplc = program.compile();	
-	const myUplcProgram = JSON.parse(Uplc.serialize());
 
-	const alwaysSucceedsScript: SpendingValidator = {
-	  type: "PlutusV2",
-	  // type: myUplcProgram.type,
-	  script: myUplcProgram.cborHex
+	const script: SpendingValidator = {
+		  type: "PlutusV1",
+		  script: JSON.parse(
+		    Program.new(`
+		    spending matching_pubKeyHash
 
+		    struct Datum {
+			owner: PubKeyHash
+		    }
+
+		    struct Redeemer {
+			owner: PubKeyHash
+		    }
+
+		    func main(datum : Datum, redeemer: Redeemer) -> Bool {datum.owner == redeemer.owner}
+		`).compile().serialize(),
+		  ).cborHex,
 	};
 
-	const alwaysSucceedsAddress: Address = lucid.utils.validatorToAddress(
-	  alwaysSucceedsScript,
-	);
+	const scriptAddress = lucid.utils.validatorToAddress(script);
+	async function lockUtxo(lovelace: Lovelace): Promise<TxHash> {
+	  const { paymentCredential } = lucid.utils.getAddressDetails(
+	    await lucid.wallet.address(),
+	  );
 
-	const Datum = (number: number) => Data.to(BigInt(number));
-	const Redeemer = (number: number) => Data.to(BigInt(number));
+	  // This represents the Datum struct from the Helios on-chain code
+	  const datum = Data.to(
+	    new Constr(0, [new Constr(0, [paymentCredential?.hash!])]),
+	  );
 
-	async function lockUtxo(
-	  number: number,
-	  lovelace: Lovelace,
-	): Promise<TxHash> {
-	  const tx = await lucid
-	    .newTx()
-	    .payToContract(alwaysSucceedsAddress, Datum(number), { lovelace })
+	  const tx = await lucid.newTx().payToContract(scriptAddress, datum, {
+	    lovelace,
+	  })
 	    .complete();
 
 	  const signedTx = await tx.sign().complete();
 
-	  const txHash = await signedTx.submit();
-
-	  return txHash;
+	  return signedTx.submit();
 	}
 
-	async function redeemUtxo(number: number): Promise<TxHash> {
-		const utxo = (await lucid.utxosAt(alwaysSucceedsAddress)).slice(-1)[0];
+	async function redeemUtxo(): Promise<TxHash> {
+	  const { paymentCredential } = lucid.utils.getAddressDetails(
+	    await lucid.wallet.address(),
+	  );
 
-		const tx = await lucid
-		.newTx()
-		.collectFrom([utxo], Redeemer(number))
-		.attachSpendingValidator(alwaysSucceedsScript)
-		.complete();
+	  // This represents the Redeemer struct from the Helios on-chain code
+	  const redeemer = Data.to(
+	    new Constr(0, [new Constr(0, [paymentCredential?.hash!])]),
+	  );
 
-		const signedTx = await tx.sign().complete();
+	  const datumHash = lucid.utils.datumToHash(redeemer);
 
-		const txHash = await signedTx.submit();
+	  const utxos = await lucid.utxosAt(scriptAddress);
 
-		return txHash;
+	  const utxo = utxos.find((utxo) => utxo.datumHash === datumHash);
+
+	  if (!utxo) throw new Error("UTxO not found.");
+
+	  const tx = await lucid.newTx().collectFrom([utxo], redeemer)
+	    .attachSpendingValidator(script)
+	    .complete();
+
+	  const signedTx = await tx.sign().complete();
+
+	  return signedTx.submit();
 	}
-
-	await lockUtxo(123,100000); 
-	emulator.awaitBlock(4);
-
-	console.log((await lucid.utxosAt(await lucid.wallet.address()))[0]);
-	console.log((await lucid.utxosAt(alwaysSucceedsAddress))[0]);
-
-	await redeemUtxo(1);
-	emulator.awaitBlock(4);
-	// what is my oracle?
-	// - [x] wallet balance
-	//
-	console.log((await lucid.utxosAt(alice.address))[0]);
-	console.log((await lucid.utxosAt(alwaysSucceedsAddress))[0]);
 
 	const balance = (await lucid.utxosAt(await lucid.wallet.address()))[0]
 	console.log(zeroState[0].assets.lovelace - balance.assets.lovelace );
