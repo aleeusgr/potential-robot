@@ -4,7 +4,7 @@
   "description": "",
   "main": "mint.mjs",
   "scripts": {
-    "dev": "node ./src/mint.mjs",
+    "dev": "echo 'nope, sorry. Use test instead'",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run"
