@@ -1,3 +1,8 @@
+May 4, Thursday
+
+I am pretty exhausted; apathy and sleepiness on Wednesday;
+Now my goal is to buid without a manual. So I will start with building with a manual and see where it gets me.
+
 May 2, Tuesday
 
 https://github.com/aleeusgr/potential-robot/issues/70
