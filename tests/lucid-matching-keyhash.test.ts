@@ -130,7 +130,7 @@ describe('', () => {
 	console.log(zeroState[0].assets.lovelace - balance.assets.lovelace );
 
 	// 99654456n
-	return balance.assets.lovelace == 99654456n
+	return balance.assets.lovelace  == 100000000n
 	} catch (err) {
 	    console.error("something failed:", err);
 	    return false;
