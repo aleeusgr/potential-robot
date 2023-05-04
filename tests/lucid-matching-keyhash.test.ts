@@ -126,8 +126,22 @@ describe('', () => {
 	  return signedTx.submit();
 	}
 
+	await lockUtxo(123,100000); 
+	emulator.awaitBlock(4);
+
+	console.log((await lucid.utxosAt(await lucid.wallet.address()))[0]);
+	console.log((await lucid.utxosAt(alwaysSucceedsAddress))[0]);
+
+	// await redeemUtxo(1);
+	// emulator.awaitBlock(4);
+	// // what is my oracle?
+	// // - [x] wallet balance
+	// //
+	// console.log((await lucid.utxosAt(alice.address))[0]);
+	// console.log((await lucid.utxosAt(alwaysSucceedsAddress))[0]);
 	const balance = (await lucid.utxosAt(await lucid.wallet.address()))[0]
 	console.log(zeroState[0].assets.lovelace - balance.assets.lovelace );
+
 
 	// 99654456n
 	return balance.assets.lovelace  == 100000000n
