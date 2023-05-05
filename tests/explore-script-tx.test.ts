@@ -70,7 +70,14 @@ describe('', () => {
 		const { paymentCredential } = lucid.utils.getAddressDetails(await lucid.wallet.address(),);
 
 		// This represents the Datum struct from the Helios on-chain code
-		// 
+		// loan:
+		// struct Datum {
+		//     lender: PubKeyHash
+		//     borrower: PubKeyHash
+		//     collateral: policy id
+		// }
+		//
+		// vesting:
 		// struct Datum {
 		//     creator: PubKeyHash
 		//     beneficiary: PubKeyHash
@@ -78,7 +85,6 @@ describe('', () => {
 		// }
 		//
 		// my datum now is for matching_keyhash!!!
-		//
 		// struct Datum {
 		//     owner: PubKeyHash
 		// }
@@ -93,8 +99,51 @@ describe('', () => {
 		return signedTx.submit();
 	}
 	
-	await lockUtxo(2000000);
+	async function redeemUtxo(): Promise<TxHash> {
+		const { paymentCredential } = lucid.utils.getAddressDetails(
+			await lucid.wallet.address(),
+		);
 
+		// This represents the Redeemer struct from the Helios on-chain code
+		// loan:
+		// enum Redeemer {
+		//     Cancel
+		//     Claim
+		//     ...
+		// }
+		//
+		// vesting:
+		// enum Redeemer {
+		//     Cancel
+		//     Claim
+		// }
+		//
+		// current:
+		// struct Redeemer {
+		//     owner: PubKeyHash
+		// }
+		const redeemer = Data.to(
+			new Constr(0, [new Constr(0, [paymentCredential?.hash!])]),
+		);
+
+		const datumHash = lucid.utils.datumToHash(redeemer);
+
+		const utxos = await lucid.utxosAt(scriptAddress);
+
+		const utxo = utxos.find((utxo) => utxo.datumHash === datumHash);
+
+		if (!utxo) throw new Error("UTxO not found.");
+
+		const tx = await lucid.newTx().collectFrom([utxo], redeemer)
+			.attachSpendingValidator(script)
+			.complete();
+
+		const signedTx = await tx.sign().complete();
+
+		return signedTx.submit();
+	}
+
+	await lockUtxo(2000000);
 	emulator.awaitBlock(4);
 
 	// A Redeemer, Datum and UTXOs are all required as part of a
