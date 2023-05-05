@@ -32,4 +32,3 @@ func main(datum: Datum, redeemer: Redeemer, context: ScriptContext) -> Bool {
         }
     }
 }
-

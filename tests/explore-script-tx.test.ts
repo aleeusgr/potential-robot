@@ -57,7 +57,7 @@ describe('', () => {
 	const script: SpendingValidator = {
 		  type: "PlutusV1",
 		  script: JSON.parse(
-		    Program.new(await fs.readFile('./src/vesting.hl', 'utf8')).compile().serialize(),
+		    Program.new(await fs.readFile('./src/vesting.js', 'utf8')).compile().serialize(),
 		  ).cborHex,
 	};
 
@@ -94,6 +94,7 @@ describe('', () => {
 		);
 
 		console.log(datum);
+		// datum contains data needed for smart contract logic as a indexed list (?)
 		const tx = await lucid.newTx().payToContract(scriptAddress, datum, {lovelace,}).complete();
 
 		const signedTx = await tx.sign().complete();
@@ -107,6 +108,7 @@ describe('', () => {
 		);
 
 		// This represents the Redeemer struct from the Helios on-chain code
+		// Redeemer represents what can happen in a smart contract;
 		// loan:
 		// enum Redeemer {
 		//     Cancel
