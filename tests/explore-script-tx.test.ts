@@ -107,25 +107,6 @@ describe('', () => {
 			await lucid.wallet.address(),
 		);
 
-		// This represents the Redeemer struct from the Helios on-chain code
-		// Redeemer represents what can happen in a smart contract;
-		// loan:
-		// enum Redeemer {
-		//     Cancel
-		//     Claim
-		//     ...
-		// }
-		//
-		// vesting:
-		// enum Redeemer {
-		//     Cancel
-		//     Claim
-		// }
-		//
-		// current:
-		// struct Redeemer {
-		//     owner: PubKeyHash
-		// }
 		const redeemer = Data.to(
 			new Constr(0, [new Constr(0, [paymentCredential?.hash!])]),
 		);
