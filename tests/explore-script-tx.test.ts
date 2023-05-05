@@ -72,9 +72,10 @@ describe('', () => {
 		// This represents the Datum struct from the Helios on-chain code
 		// loan:
 		// struct Datum {
-		//     lender: PubKeyHash
-		//     borrower: PubKeyHash
+		//     ?lender: PubKeyHash
+		//     ?borrower: PubKeyHash
 		//     collateral: policy id
+		//     deadline: 
 		// }
 		//
 		// vesting:
@@ -92,6 +93,7 @@ describe('', () => {
 			new Constr(0, [new Constr(0, [paymentCredential?.hash!])]),
 		);
 
+		console.log(datum);
 		const tx = await lucid.newTx().payToContract(scriptAddress, datum, {lovelace,}).complete();
 
 		const signedTx = await tx.sign().complete();
