@@ -65,8 +65,6 @@ describe('creates a lucid emulator instance and runs two transactions with a plu
 	  matchingNumberScript,
 	);
 
-	const Datum = (number: number) => Data.to(BigInt(number));
-	const Redeemer = (number: number) => Data.to(BigInt(number));
 
 	async function lockUtxo(
 		number: number,
@@ -74,6 +72,7 @@ describe('creates a lucid emulator instance and runs two transactions with a plu
 		// needs testing
 		): Promise<TxHash> {
 			console.log('lock');
+		const Datum = (number: number) => Data.to(BigInt(number));
 		const tx = await lucid
 		.newTx()
 		.payToContract(matchingNumberAddress, Datum(number), { lovelace })
@@ -89,6 +88,7 @@ describe('creates a lucid emulator instance and runs two transactions with a plu
 	async function redeemUtxo(number: number): Promise<TxHash> {
 			console.log('redeem');
 		const utxo = (await lucid.utxosAt(matchingNumberAddress)).slice(-1)[0];
+		const Redeemer = (number: number) => Data.to(BigInt(number));
 
 		const tx = await lucid
 		.newTx()
