@@ -27,11 +27,12 @@ import {
   TxHash,
 } from "lucid-cardano"; // NPM
 
-describe('', () => {
+describe('instantiate the emulator, read and compile Helios script, lock funds in the script address, mint a token; query script address, query user wallet utxo - display minting policy.', () => {
 
 	const main = async () => {
 
 	try {
+	// 1. Instantiate the emulator:
 	// https://github.com/spacebudz/lucid/blob/main/tests/emulator.test.ts
 	async function generateAccount(assets: Assets) {
 	  const seedPhrase = generateSeedPhrase();
@@ -50,10 +51,7 @@ describe('', () => {
 
 	const lucid = await Lucid.new(emulator);
 
-	// emulator state changes, how do I encapsulate this?
-	lucid.selectWalletFromSeed(bob.seedPhrase);
-	// const zeroState = await lucid.wallet.getUtxos(lucid.wallet.address())
-
+	// 2. manipulate the validator
 	const script: SpendingValidator = {
 		  type: "PlutusV1",
 		  script: JSON.parse(
@@ -63,37 +61,14 @@ describe('', () => {
 
 	const scriptAddress = lucid.utils.validatorToAddress(script);
 
-	// The validator scripts currently have a type
-	// Redeemer -> DataValue -> ScriptContext -> a -> ()
-	
+	// Lock funds, populate datum
 	async function lockUtxo(lovelace: Lovelace): Promise<TxHash> {
 		const { paymentCredential } = lucid.utils.getAddressDetails(await lucid.wallet.address(),);
 
-		// This represents the Datum struct from the Helios on-chain code
-		// loan:
-		// struct Datum {
-		//     ?lender: PubKeyHash
-		//     ?borrower: PubKeyHash
-		//     collateral: policy id
-		//     deadline: 
-		// }
-		//
-		// vesting:
-		// struct Datum {
-		//     creator: PubKeyHash
-		//     beneficiary: PubKeyHash
-		//     deadline: Time
-		// }
-		//
-		// my datum now is for matching_keyhash!!!
-		// struct Datum {
-		//     owner: PubKeyHash
-		// }
 		const datum = Data.to(
 			new Constr(0, [new Constr(0, [paymentCredential?.hash!])]),
 		);
 
-		console.log(datum);
 		// datum contains data needed for smart contract logic as a indexed list (?)
 		const tx = await lucid.newTx().payToContract(scriptAddress, datum, {lovelace,}).complete();
 
@@ -101,36 +76,52 @@ describe('', () => {
 
 		return signedTx.submit();
 	}
-	
-	async function redeemUtxo(): Promise<TxHash> {
-		const { paymentCredential } = lucid.utils.getAddressDetails(
-			await lucid.wallet.address(),
-		);
 
-		const redeemer = Data.to(
-			new Constr(0, [new Constr(0, [paymentCredential?.hash!])]),
-		);
-
-		const datumHash = lucid.utils.datumToHash(redeemer);
-
-		const utxos = await lucid.utxosAt(scriptAddress);
-
-		const utxo = utxos.find((utxo) => utxo.datumHash === datumHash);
-
-		if (!utxo) throw new Error("UTxO not found.");
-
-		const tx = await lucid.newTx().collectFrom([utxo], redeemer)
-			.attachSpendingValidator(script)
-			.complete();
-
-		const signedTx = await tx.sign().complete();
-
-		return signedTx.submit();
-	}
-
+	// alice locks funds
+	lucid.selectWalletFromSeed(alice.seedPhrase);
 	await lockUtxo(2000000);
 	emulator.awaitBlock(4);
 
+	// bob gets a token
+	lucid.selectWalletFromSeed(bob.seedPhrase);
+	const { paymentCredential } = lucid.utils.getAddressDetails(await lucid.wallet.address());
+
+	const txTime = emulator.now();
+	const mintingPolicy = lucid.utils.nativeScriptFromJson(
+	  {
+	    type: "all",
+	    scripts: [
+	      { type: "sig", keyHash: paymentCredential.hash },
+	      {
+		type: "before",
+		slot: lucid.utils.unixTimeToSlot(txTime + 1000000),
+	      },
+	    ],
+	  },
+	);
+
+	const policyId = lucid.utils.mintingPolicyToId(mintingPolicy);
+	
+	async function mint(): Promise<TxHash> {
+	  const tx = await lucid.newTx()
+	    .mintAssets({
+	      [toUnit(policyId, fromText("Collateral"))]: 1n, //number of tokens minted!
+	    })
+	    .validTo(emulator.now() + 30000)
+	    .attachMintingPolicy(mintingPolicy)
+	    .complete();
+	  const signedTx = await tx.sign().complete();
+
+	  return signedTx.submit();
+	}
+
+	await mint();
+
+	emulator.awaitBlock(4);
+	
+	console.log(await lucid.utxosAt(alice.address)); 
+	console.log(await lucid.utxosAt(bob.address)); 
+	//
 	// A Redeemer, Datum and UTXOs are all required as part of a
 	// transaction when executing a validator smart contract script.
 	const cb = await lucid.utxosAt(scriptAddress);
