@@ -1,3 +1,7 @@
+May 5, Friday
+No wind. Eat, code, sleep, repeat. No life;
+
+
 May 4, Thursday
 Still apathy, but I am pressing forward;
 two parts: the contract, and the transactions that serve it, are inseparable; at least for now.
