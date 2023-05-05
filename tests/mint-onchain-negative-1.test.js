@@ -39,7 +39,7 @@ describe('ThreadToken Negative Test Cases #1', () => {
             const utxos = await network.getUtxos(alice.address);
     
             // NFT minting script
-            const nftScript = await fs.readFile('./src/nft.hl', 'utf8');
+            const nftScript = await fs.readFile('./helios/nft.hl', 'utf8');
             const nftProgram = Program.new(nftScript);
             nftProgram.parameters = {["TX_ID"] : utxos[0].txId.hex};
             nftProgram.parameters = {["TX_IDX"] : utxos[0].utxoIdx};

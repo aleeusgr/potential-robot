@@ -55,7 +55,7 @@ describe('introduces Helios, a source of a new template', () => {
 	// https://github.com/spacebudz/lucid/blob/main/src/examples/matching_numbers.ts
 	
 	// import and compile a Helios contract.
-	const src = await fs.readFile('./src/always-succeeds.hl', 'utf8');
+	const src = await fs.readFile('./helios/always-succeeds.js', 'utf8');
 	const program = Program.new(src)
 	const Uplc = program.compile();	
 	const myUplcProgram = JSON.parse(Uplc.serialize());

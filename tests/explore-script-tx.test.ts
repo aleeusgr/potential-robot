@@ -17,6 +17,7 @@ import {
   Assets,
   Data,
   Emulator,
+  Constr,
   fromText,
   generateSeedPhrase,
   getAddressDetails,
@@ -51,88 +52,89 @@ describe('', () => {
 
 	// emulator state changes, how do I encapsulate this?
 	lucid.selectWalletFromSeed(bob.seedPhrase);
-	const zeroState = await lucid.wallet.getUtxos(lucid.wallet.address())
-	// https://github.com/spacebudz/lucid/blob/main/src/examples/matching_numbers.ts
-	
-	// import and compile a Helios contract.
-	// The validator scripts currently have a type
-	// Redeemer -> DataValue -> ScriptContext -> a -> ()
-	const src = `
-	spending always_succeeds
+	// const zeroState = await lucid.wallet.getUtxos(lucid.wallet.address())
 
-	func main(_, _, _) -> Bool {
-	    true
-	}`
-	// const src = await fs.readFile('./src/loan-escrow.hl', 'utf8');
-	const program = Program.new(src)
-	const Uplc = program.compile();	
-	const myUplcProgram = JSON.parse(Uplc.serialize());
-
-	const alwaysSucceedsScript: SpendingValidator = {
-	  type: "PlutusV2",
-	  // type: myUplcProgram.type,
-	  script: myUplcProgram.cborHex
-
+	const script: SpendingValidator = {
+		  type: "PlutusV1",
+		  script: JSON.parse(
+		    Program.new(await fs.readFile('./helios/loan-escrow.js', 'utf8')).compile().serialize(),
+		  ).cborHex,
 	};
 
-	const alwaysSucceedsAddress: Address = lucid.utils.validatorToAddress(
-	  alwaysSucceedsScript,
-	);
+	const scriptAddress = lucid.utils.validatorToAddress(script);
 
-	const Datum = (number: number) => Data.to(BigInt(number));
-	const Redeemer = (number: number) => Data.to(BigInt(number));
+	// The validator scripts currently have a type
+	// Redeemer -> DataValue -> ScriptContext -> a -> ()
+	
+	async function lockUtxo(lovelace: Lovelace): Promise<TxHash> {
+		const { paymentCredential } = lucid.utils.getAddressDetails(await lucid.wallet.address(),);
 
-	async function lockUtxo(
-	  number: number,
-	  lovelace: Lovelace,
-	): Promise<TxHash> {
-	  const tx = await lucid
-	    .newTx()
-	    .payToContract(alwaysSucceedsAddress, Datum(number), { lovelace })
-	    .complete();
+		// This represents the Datum struct from the Helios on-chain code
+		// loan:
+		// struct Datum {
+		//     ?lender: PubKeyHash
+		//     ?borrower: PubKeyHash
+		//     collateral: policy id
+		//     deadline: 
+		// }
+		//
+		// vesting:
+		// struct Datum {
+		//     creator: PubKeyHash
+		//     beneficiary: PubKeyHash
+		//     deadline: Time
+		// }
+		//
+		// my datum now is for matching_keyhash!!!
+		// struct Datum {
+		//     owner: PubKeyHash
+		// }
+		const datum = Data.to(
+			new Constr(0, [new Constr(0, [paymentCredential?.hash!])]),
+		);
 
-	  const signedTx = await tx.sign().complete();
-
-	  const txHash = await signedTx.submit();
-
-	  return txHash;
-	}
-
-	async function redeemUtxo(number: number): Promise<TxHash> {
-		const utxo = (await lucid.utxosAt(alwaysSucceedsAddress)).slice(-1)[0];
-
-		const tx = await lucid
-		.newTx()
-		.collectFrom([utxo], Redeemer(number))
-		.attachSpendingValidator(alwaysSucceedsScript)
-		.complete();
+		console.log(datum);
+		// datum contains data needed for smart contract logic as a indexed list (?)
+		const tx = await lucid.newTx().payToContract(scriptAddress, datum, {lovelace,}).complete();
 
 		const signedTx = await tx.sign().complete();
 
-		const txHash = await signedTx.submit();
+		return signedTx.submit();
+	}
+	
+	async function redeemUtxo(): Promise<TxHash> {
+		const { paymentCredential } = lucid.utils.getAddressDetails(
+			await lucid.wallet.address(),
+		);
 
-		return txHash;
+		const redeemer = Data.to(
+			new Constr(0, [new Constr(0, [paymentCredential?.hash!])]),
+		);
+
+		const datumHash = lucid.utils.datumToHash(redeemer);
+
+		const utxos = await lucid.utxosAt(scriptAddress);
+
+		const utxo = utxos.find((utxo) => utxo.datumHash === datumHash);
+
+		if (!utxo) throw new Error("UTxO not found.");
+
+		const tx = await lucid.newTx().collectFrom([utxo], redeemer)
+			.attachSpendingValidator(script)
+			.complete();
+
+		const signedTx = await tx.sign().complete();
+
+		return signedTx.submit();
 	}
 
-	await lockUtxo(123,100000); 
+	await lockUtxo(2000000);
 	emulator.awaitBlock(4);
 
-	console.log((await lucid.utxosAt(await lucid.wallet.address()))[0]);
-	console.log((await lucid.utxosAt(alwaysSucceedsAddress))[0]);
-
-	await redeemUtxo(1);
-	emulator.awaitBlock(4);
-	// what is my oracle?
-	// - [x] wallet balance
-	//
-	console.log((await lucid.utxosAt(alice.address))[0]);
-	console.log((await lucid.utxosAt(alwaysSucceedsAddress))[0]);
-
-	const balance = (await lucid.utxosAt(await lucid.wallet.address()))[0]
-	console.log(zeroState[0].assets.lovelace - balance.assets.lovelace );
-
-	// 99654456n
-	return balance.assets.lovelace == 99654456n
+	// A Redeemer, Datum and UTXOs are all required as part of a
+	// transaction when executing a validator smart contract script.
+	const cb = await lucid.utxosAt(scriptAddress);
+	return cb[0].assets.lovelace == 2000000n
 	} catch (err) {
 	    console.error("something failed:", err);
 	    return false;
@@ -151,7 +153,7 @@ describe('', () => {
 		    console.log("Smart Contract Messages: ", logMsgs);
 	}
 	expect(mainStatus).toBe(true);
-
+	console.log(logMsgs);
 	})
 
 	})
