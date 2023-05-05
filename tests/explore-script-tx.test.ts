@@ -17,6 +17,7 @@ import {
   Assets,
   Data,
   Emulator,
+  Constr,
   fromText,
   generateSeedPhrase,
   getAddressDetails,
@@ -51,64 +52,55 @@ describe('', () => {
 
 	// emulator state changes, how do I encapsulate this?
 	lucid.selectWalletFromSeed(bob.seedPhrase);
-	const zeroState = await lucid.wallet.getUtxos(lucid.wallet.address())
-	// https://github.com/spacebudz/lucid/blob/main/src/examples/matching_numbers.ts
-	// https://github.com/spacebudz/lucid/blob/main/src/examples/matching_keyhash.ts	
-	// import and compile a Helios contract.
-	// The validator scripts currently have a type
-	// Redeemer -> DataValue -> ScriptContext -> a -> ()
-
+	// const zeroState = await lucid.wallet.getUtxos(lucid.wallet.address())
 
 	const script: SpendingValidator = {
 		  type: "PlutusV1",
 		  script: JSON.parse(
-		    Program.new(`
-				spending vesting
-
-			struct Datum {
-			    creator: PubKeyHash
-			    beneficiary: PubKeyHash
-			    deadline: Time
-			}
-
-			enum Redeemer {
-			    Cancel
-			    Claim
-			}
-
-			func main(datum: Datum, redeemer: Redeemer, context: ScriptContext) -> Bool {
-			    tx: Tx = context.tx;
-			    now: Time = tx.time_range.start;
-
-			    redeemer.switch {
-				Cancel => {
-				    // Check if deadline hasn't passed
-				    (now < datum.deadline).trace("VS1: ") && 
-
-				    // Check that the owner signed the transaction
-				    tx.is_signed_by(datum.creator).trace("VS2: ")
-				},
-				Claim => {
-				   // Check if deadline has passed.
-				   (now > datum.deadline).trace("VS3: ") &&
-
-				   // Check that the beneficiary signed the transaction.
-				   tx.is_signed_by(datum.beneficiary).trace("VS4: ")
-				}
-			    }
-			}
-		`).compile().serialize(),
+		    Program.new(await fs.readFile('./src/vesting.hl', 'utf8')).compile().serialize(),
 		  ).cborHex,
 	};
 
 	const scriptAddress = lucid.utils.validatorToAddress(script);
 
-	const balance = (await lucid.utxosAt(await lucid.wallet.address()))[0]
-	console.log(zeroState[0].assets.lovelace - balance.assets.lovelace );
+	// The validator scripts currently have a type
+	// Redeemer -> DataValue -> ScriptContext -> a -> ()
+	
+	async function lockUtxo(lovelace: Lovelace): Promise<TxHash> {
+		const { paymentCredential } = lucid.utils.getAddressDetails(await lucid.wallet.address(),);
 
-	// 99654456n
-	console.log(scriptAddress);
-	return balance.assets.lovelace  == 100000000n
+		// This represents the Datum struct from the Helios on-chain code
+		// 
+		// struct Datum {
+		//     creator: PubKeyHash
+		//     beneficiary: PubKeyHash
+		//     deadline: Time
+		// }
+		//
+		// my datum now is for matching_keyhash!!!
+		//
+		// struct Datum {
+		//     owner: PubKeyHash
+		// }
+		const datum = Data.to(
+			new Constr(0, [new Constr(0, [paymentCredential?.hash!])]),
+		);
+
+		const tx = await lucid.newTx().payToContract(scriptAddress, datum, {lovelace,}).complete();
+
+		const signedTx = await tx.sign().complete();
+
+		return signedTx.submit();
+	}
+	
+	await lockUtxo(2000000);
+
+	emulator.awaitBlock(4);
+
+	// A Redeemer, Datum and UTXOs are all required as part of a
+	// transaction when executing a validator smart contract script.
+	const cb = await lucid.utxosAt(scriptAddress);
+	return cb[0].assets.lovelace == 2000000n
 	} catch (err) {
 	    console.error("something failed:", err);
 	    return false;
