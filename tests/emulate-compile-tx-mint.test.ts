@@ -128,6 +128,26 @@ describe('instantiate the emulator, read and compile Helios script, lock funds i
 	//
 	// A Redeemer, Datum and UTXOs are all required as part of a
 	// transaction when executing a validator script.
+	async function claimLoan(nft: string): Promise<TxHash> {
+		const utxo = (await lucid.utxosAt(scriptAddress)).slice(-1)[0];
+		//deposit nft
+
+		// withdraw funds
+		const tx = await lucid
+		.newTx()
+		.collectFrom([utxo], Redeemer('Claim')) // How to create Redeemer?
+		.attachSpendingValidator(script)
+		.complete();
+
+		const signedTx = await tx.sign().complete();
+
+		const txHash = await signedTx.submit();
+
+		return txHash;
+	}
+	console.log(typeof(nft));
+	// await claimLoan(nft);
+	emulator.awaitBlock(4);
 
 	const aliceUtxos = await lucid.utxosAt(alice.address);
 	const scriptUtxos = await lucid.utxosAt(scriptAddress);
