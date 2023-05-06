@@ -51,7 +51,46 @@ describe('instantiate the emulator, read and compile Helios script, lock funds i
 
 	const lucid = await Lucid.new(emulator);
 
-	// 2. manipulate the validator
+	// 2. mint nft 
+	lucid.selectWalletFromSeed(alice.seedPhrase);
+	// should rename or encapsulate this: 
+	const { paymentCredential } = lucid.utils.getAddressDetails(await lucid.wallet.address());
+
+	const txTime = emulator.now();
+	const mintingPolicy = lucid.utils.nativeScriptFromJson(
+	  {
+	    type: "all",
+	    scripts: [
+	      { type: "sig", keyHash: paymentCredential.hash },
+	      {
+		type: "before",
+		slot: lucid.utils.unixTimeToSlot(txTime + 1000000),
+	      },
+	    ],
+	  },
+	);
+
+	const policyId = lucid.utils.mintingPolicyToId(mintingPolicy);
+	const nft = toUnit(policyId, fromText("Collateral"));
+
+	async function mint(): Promise<TxHash> {
+		// mint should have nft, mintingPolicy or policyId as an argument?
+		// or mint should not be a function at all?
+		// what good it does is to encapsulate tx
+	  const tx = await lucid.newTx()
+	    .mintAssets({
+	      [nft]: 1n, //number of tokens minted!
+	    })
+	    .validTo(emulator.now() + 30000)
+	    .attachMintingPolicy(mintingPolicy)
+	    .complete();
+	  const signedTx = await tx.sign().complete();
+
+	  return signedTx.submit();
+	}
+
+
+	// 3. manipulate the validator
 	const script: SpendingValidator = {
 		  type: "PlutusV1",
 		  script: JSON.parse(
@@ -77,55 +116,22 @@ describe('instantiate the emulator, read and compile Helios script, lock funds i
 		return signedTx.submit();
 	}
 
-	// alice locks funds
-	lucid.selectWalletFromSeed(alice.seedPhrase);
-	await lockUtxo(2000000);
+	await mint(); //parameters?
 	emulator.awaitBlock(4);
 
-	// bob gets a token
-	lucid.selectWalletFromSeed(bob.seedPhrase);
-	const { paymentCredential } = lucid.utils.getAddressDetails(await lucid.wallet.address());
-
-	const txTime = emulator.now();
-	const mintingPolicy = lucid.utils.nativeScriptFromJson(
-	  {
-	    type: "all",
-	    scripts: [
-	      { type: "sig", keyHash: paymentCredential.hash },
-	      {
-		type: "before",
-		slot: lucid.utils.unixTimeToSlot(txTime + 1000000),
-	      },
-	    ],
-	  },
-	);
-
-	const policyId = lucid.utils.mintingPolicyToId(mintingPolicy);
-	
-	async function mint(): Promise<TxHash> {
-	  const tx = await lucid.newTx()
-	    .mintAssets({
-	      [toUnit(policyId, fromText("Collateral"))]: 1n, //number of tokens minted!
-	    })
-	    .validTo(emulator.now() + 30000)
-	    .attachMintingPolicy(mintingPolicy)
-	    .complete();
-	  const signedTx = await tx.sign().complete();
-
-	  return signedTx.submit();
-	}
-
-	await mint();
-
+	const amt = 2000000n;
+	await lockUtxo(amt);
 	emulator.awaitBlock(4);
-	
-	console.log(await lucid.utxosAt(alice.address)); 
-	console.log(await lucid.utxosAt(bob.address)); 
+	// TODO: 
+	// await CancelLoan();
+
 	//
 	// A Redeemer, Datum and UTXOs are all required as part of a
 	// transaction when executing a validator smart contract script.
+
+	const aliceUtxos = await lucid.utxosAt(alice.address);
 	const cb = await lucid.utxosAt(scriptAddress);
-	return cb[0].assets.lovelace == 2000000n
+	return cb[0].assets.lovelace == amt && Object.keys(aliceUtxos[0].assets).includes(nft)
 	} catch (err) {
 	    console.error("something failed:", err);
 	    return false;
