@@ -127,18 +127,19 @@ describe('instantiate the emulator, read and compile Helios script, lock funds i
 
 	//
 	// A Redeemer, Datum and UTXOs are all required as part of a
-	// transaction when executing a validator smart contract script.
+	// transaction when executing a validator script.
 
 	const aliceUtxos = await lucid.utxosAt(alice.address);
-	const cb = await lucid.utxosAt(scriptAddress);
-	return cb[0].assets.lovelace == amt && Object.keys(aliceUtxos[0].assets).includes(nft)
+	const scriptUtxos = await lucid.utxosAt(scriptAddress);
+	return scriptUtxos[0].assets.lovelace == amt 
+		&& Object.keys(aliceUtxos[0].assets).includes(nft)
 	} catch (err) {
 	    console.error("something failed:", err);
 	    return false;
 	}
 	}
 
-	it('adds logging', async () => {
+	it('implements logging', async () => {
 
 		const logMsgs = new Set();
 		const logSpy = vi.spyOn(global.console, 'log')
