@@ -28,7 +28,6 @@ func main(datum: Datum, redeemer: Redeemer, context: ScriptContext) -> Bool {
 			(now > datum.deadline).trace("VS5: ") && 
 
 			tx.is_signed_by(datum.lender).trace("VS6: "))
-			)
         },
         BorrowerWithdraws => {
 		( 
