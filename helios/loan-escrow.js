@@ -1,44 +1,36 @@
-spending loan
+spending vesting
 
 struct Datum {
-    lender: PubKeyHash
-    borrower: PubKeyHash
+    creator: PubKeyHash
+    beneficiary: PubKeyHash
     deadline: Time
 }
 
 enum Redeemer {
-    LenderWithdraws
-    BorrowerWithdraws
+    Cancel
+    Claim
 }
 
 func main(datum: Datum, redeemer: Redeemer, context: ScriptContext) -> Bool {
     tx: Tx = context.tx;
     now: Time = tx.time_range.start;
 
+	// what is script context?
+	// how to print stuff here? see Book, p114, Troubleshooting.
     redeemer.switch {
-        LenderWithdraws => {
-		( // Lender Cancels 
-			// Contract address has only one utxo
+        Cancel => {
+            // Check if deadline hasn't passed
+            (now < datum.deadline).trace("VS1: ") && 
 
-			// Check that the owner signed the transaction
-			tx.is_signed_by(datum.lender).trace("VS6: "))
-		|| // Lender Claims
-			( 
-			// deadline is past
-			(now > datum.deadline).trace("VS5: ") && 
-
-			tx.is_signed_by(datum.lender).trace("VS6: "))
+            // Check that the owner signed the transaction
+            tx.is_signed_by(datum.creator).trace("VS2: ")
         },
-        BorrowerWithdraws => {
-		( 
-			// nft
+        Claim => {
+           // Check if deadline has passed.
+           (now > datum.deadline).trace("VS3: ") &&
 
-			// Check that the owner signed the transaction
-			tx.is_signed_by(datum.borrower).trace("VS6: "))
-		|| // 
-			( false
-			//
-			)
+           // Check that the beneficiary signed the transaction.
+           tx.is_signed_by(datum.beneficiary).trace("VS4: ")
         }
     }
 }
