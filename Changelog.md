@@ -1,3 +1,8 @@
+May 9th, Tuesday
+
+Feel better, last couple of days were hard;
+Merge helios emulator?
+
 May 5, Friday
 No wind. Eat, code, sleep, repeat. No life;
 
