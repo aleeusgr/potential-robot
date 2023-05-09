@@ -1,3 +1,18 @@
+May 5, Friday
+No wind. Eat, code, sleep, repeat. No life;
+
+
+May 4, Thursday
+Still apathy, but I am pressing forward;
+two parts: the contract, and the transactions that serve it, are inseparable; at least for now.
+For vesting contract, I have the script, but I need to find transactions; or translate them from the example. 
+`vesting/pages/index.tsx` imports components in its top,
+- [ ] index.tsx: how are components used?
+- [ ] loan: 
+
+I am pretty exhausted; apathy and sleepiness on Wednesday;
+Now my goal is to buid without a manual. So I will start with building with a manual and see where it gets me.
+
 May 2, Tuesday
 
 https://github.com/aleeusgr/potential-robot/issues/70
