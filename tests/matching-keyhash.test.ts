@@ -57,7 +57,7 @@ describe('', () => {
 	const script: SpendingValidator = {
 		  type: "PlutusV1",
 		  script: JSON.parse(
-		    Program.new(await fs.readFile('./src/vesting.js', 'utf8')).compile().serialize(),
+		    Program.new(await fs.readFile('./src/matching-keyhash.js', 'utf8')).compile().serialize(),
 		  ).cborHex,
 	};
 
@@ -136,7 +136,7 @@ describe('', () => {
 	// A Redeemer, Datum and UTXOs are all required as part of a
 	// transaction when executing a validator smart contract script.
 	const cb = await lucid.utxosAt(scriptAddress);
-	return cb[0].assets.lovelace == 2000000n
+	return (await lucid.utxosAt(alice.address))[0].assets.lovelace == 75000000000n; 
 	} catch (err) {
 	    console.error("something failed:", err);
 	    return false;
