@@ -13,7 +13,7 @@ import {
   Tx, 
 } from "@hyperionbt/helios";
 
-describe('Verbose test', () => {
+describe('Creates Helios Emulator and adds an nft to a wallet', () => {
 
     const main = async () => {
 
@@ -115,9 +115,9 @@ describe('Verbose test', () => {
       for (const utxo of utxosFinal) {
         console.log("txId", utxo.txId.hex + "#" + utxo.utxoIdx);
         console.log("value", utxo.value.dump());
-	return true
       }
 
+	return utxosFinal[2].value.dump().lovelace == '13676369'
 	} catch (err) {
 	    console.error("something failed:", err);
 	    return false;
@@ -136,6 +136,7 @@ describe('Verbose test', () => {
 	    console.log("Smart Contract Messages: ", logMsgs);
 	}
 	expect(mainStatus).toBe(true);
+	console.log(logMsgs);
 
     })
 
