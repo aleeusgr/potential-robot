@@ -51,7 +51,7 @@ describe('', () => {
 	const lucid = await Lucid.new(emulator);
 
 	// emulator state changes, how do I encapsulate this?
-	lucid.selectWalletFromSeed(bob.seedPhrase);
+	lucid.selectWalletFromSeed(alice.seedPhrase);
 	// const zeroState = await lucid.wallet.getUtxos(lucid.wallet.address())
 
 	const script: SpendingValidator = {
@@ -136,7 +136,7 @@ describe('', () => {
 	// A Redeemer, Datum and UTXOs are all required as part of a
 	// transaction when executing a validator smart contract script.
 	const cb = await lucid.utxosAt(scriptAddress);
-	return (await lucid.utxosAt(alice.address))[0].assets.lovelace == 75000000000n; 
+	return (await lucid.utxosAt(alice.address))[0].assets.lovelace == 74999648129n;
 	} catch (err) {
 	    console.error("something failed:", err);
 	    return false;
