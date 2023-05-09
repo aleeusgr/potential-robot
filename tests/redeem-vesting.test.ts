@@ -131,6 +131,8 @@ describe('', () => {
 	await lockUtxo(2000000);
 	emulator.awaitBlock(4);
 
+	await redeemUtxo(2000000);
+	emulator.awaitBlock(4);
 	// A Redeemer, Datum and UTXOs are all required as part of a
 	// transaction when executing a validator smart contract script.
 	const cb = await lucid.utxosAt(scriptAddress);
