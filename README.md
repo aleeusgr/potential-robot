@@ -1,5 +1,10 @@
 # potential-robot
 
+An option smart contract;
+lockAda (owner Pkh, nft, deadline);
+claimAda (nft): not after deadline? 
+
+
 A vesting smart contract locks up assets for a specific period of time and then allows
 the beneficiary to access them once a deadline has passed. 
 
