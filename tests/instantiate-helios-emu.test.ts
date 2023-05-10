@@ -95,9 +95,10 @@ describe('Creates Helios Emulator and adds an nft to a wallet', () => {
       // network.tick(BigInt(10));
 
       const utxosFinal = await network.getUtxos(alice.address);
-      console.log(utxosFinal[1].value.dump().assets);
+      console.log(utxosFinal[2].value.dump().assets);
+      //  '16aa5486dab6527c4697387736ae449411c03dcd20a3950453e6779c': { '54657374204173736574204e616d65': '1' }
 
-	return utxosFinal[2].value.dump().lovelace != '13676369'
+	return utxosFinal[2].value.dump().assets !=1
 	} catch (err) {
 	    console.error("something failed:", err);
 	    return false;
@@ -116,7 +117,6 @@ describe('Creates Helios Emulator and adds an nft to a wallet', () => {
 	    console.log("Smart Contract Messages: ", logMsgs);
 	}
 	expect(mainStatus).toBe(true);
-	console.log(logMsgs);
 
     })
 
