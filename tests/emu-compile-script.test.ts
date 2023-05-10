@@ -60,6 +60,7 @@ describe('Creates Helios Emulator ... ', () => {
 
 	const lockADA = new Tx();
 
+	// https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#L195-L199
 	const datum = new ListData([new ByteArrayData(alice.pubKeyHash.bytes),
                                   //new ByteArrayData(benPkh.bytes),
                                   // new IntData(BigInt(deadline.getTime()))
@@ -75,6 +76,7 @@ describe('Creates Helios Emulator ... ', () => {
 		// alice.address, 
 		validatorAddress,
 		new Value(BigInt(10000000)),
+		inlineDatum
 
 	));
 
@@ -87,13 +89,15 @@ describe('Creates Helios Emulator ... ', () => {
 
 	// //now redeem:
 	const utxosR = await network.getUtxos(validatorAddress);
-	// const redeemADA = new Tx();
+	const redeemADA = new Tx();
 
-	// const valRedeemer = new ConstrData(1, []);
+	const valRedeemer = new ConstrData(1, []);
 
-	// redeemADA.addInputs(utxosR, valRedeemer, inlineDatum);
+	redeemADA.attachScript(scriptCompiledProgram);
+	console.log(inlineDatum);
+	// https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#L255
+	redeemADA.addInputs(utxosR, inlineDatum, valRedeemer);
 
-	// // redeemADA.attachScript(scriptCompiledProgram);
 
 	// redeemADA.addOutput(new TxOutput(
 	// 	alice.address,
