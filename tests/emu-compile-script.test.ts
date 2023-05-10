@@ -80,7 +80,7 @@ describe('Creates Helios Emulator ... ', () => {
 	));
 
 
-	// alice.address?
+	// change address!! alice.address?
 	await lockADA.finalize(networkParams, alice.address, utxos);
 	const lockADAid = await network.submitTx(lockADA);
 
@@ -90,25 +90,24 @@ describe('Creates Helios Emulator ... ', () => {
 	const utxosR = await network.getUtxos(validatorAddress);
 	const redeemADA = new Tx();
 
+	// see Redeemer in lucid examples?
 	const valRedeemer = new ConstrData(1, []);
 
 	redeemADA.attachScript(scriptCompiledProgram);
-	console.log(inlineDatum);
 	// https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#L255
+	// the order matters?
 	redeemADA.addInputs(utxosR, inlineDatum, valRedeemer);
 
 
 	redeemADA.addOutput(new TxOutput(
 		alice.address,
-		// validatorAddress,
 		new Value(BigInt(10000000))
 	));
 
-	// // alice.address?
-	await redeemADA.finalize(networkParams, alice.address, utxosR);
+	// // alice.address here? ---------------------v
+	await redeemADA.finalize(networkParams, validatorAddress, utxosR);
 	// const redeemADAid = await network.submitTx(redeemADA);
 	// network.tick(BigInt(10));
-	console.log(utxosR);
 
 	const utxosFinal = await network.getUtxos(alice.address);
 	console.log(utxos);
