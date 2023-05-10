@@ -42,41 +42,25 @@ describe('Creates Helios Emulator ... ', () => {
 
       const utxos = await network.getUtxos(alice.address);
 
-      // Pull in the NFT minting script, update params and compile
+      // Pull in a script, and compile;
       const script = await fs.readFile('./src/always-succeeds.hl', 'utf8');
       // https://www.hyperion-bt.org/helios-book/api/reference/program.html?highlight=Program#program
       const scriptProgram = Program.new(script);
-      // scriptProgram.parameters = {["TX_ID"] : utxos[0].txId.hex};
-      // scriptProgram.parameters = {["TX_IDX"] : utxos[0].utxoIdx};
       const scriptCompiledProgram = scriptProgram.compile(optimize);
       // https://www.hyperion-bt.org/helios-book/api/reference/uplcprogram.html
       const scriptValidatorHash = scriptCompiledProgram.validatorHash;
 
-      console.log(scriptValidatorHash);
       const tx = new Tx();
 
       tx.addInputs(utxos);
 
-      tx.attachScript(scriptCompiledProgram);
+      // tx.attachScript(scriptCompiledProgram);
 
-      // Create an empty Redeemer because we must always send a Redeemer with
-      // a plutus script transaction even if we don't actually use it.
-      const Redeemer = new ConstrData(0, []);
-      const token = [[textToBytes("Thread Token"), BigInt(1)]];
-      
-      // what should be here?
-      // https://www.hyperion-bt.org/helios-book/api/reference/tx.html?highlight=mintTokens#minttokens
-      // see also vesting
-      tx.mintTokens(
-          scriptValidatorHash,
-          token,
-          Redeemer
-      )
-
-      // Attach the output with the minted nft to the destination address
+      // hm, what happens here?
       tx.addOutput(new TxOutput(
+	  // https://www.hyperion-bt.org/helios-book/cli/usage.html?highlight=address#calculating-a-script-address
           alice.address,
-          new Value(minAda, new Assets([[scriptValidatorHash, token]]))
+          new Value(minAda)
         ));
 
         // Network Parameters
@@ -90,10 +74,12 @@ describe('Creates Helios Emulator ... ', () => {
       network.tick(BigInt(10));
 
       const utxosFinal = await network.getUtxos(alice.address);
-      console.log(utxosFinal[2].value.dump().assets);
-      //  '16aa5486dab6527c4697387736ae449411c03dcd20a3950453e6779c': { '54657374204173736574204e616d65': '1' }
+      console.log(alice.address);
+      console.log(utxosFinal[0].value.dump());
+      console.log(utxosFinal[1].value.dump());
+      console.log(utxosFinal[2].value.dump());
 
-	return utxosFinal[2].value.dump().assets !=1
+	return utxosFinal[2].value.dump().lovelace == '13754133';
 	} catch (err) {
 	    console.error("something failed:", err);
 	    return false;
