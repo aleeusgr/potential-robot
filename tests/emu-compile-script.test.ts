@@ -77,7 +77,6 @@ describe('Creates Helios Emulator ... ', () => {
 		validatorAddress,
 		new Value(BigInt(10000000)),
 		inlineDatum
-
 	));
 
 
@@ -99,17 +98,17 @@ describe('Creates Helios Emulator ... ', () => {
 	redeemADA.addInputs(utxosR, inlineDatum, valRedeemer);
 
 
-	// redeemADA.addOutput(new TxOutput(
-	// 	alice.address,
-	// 	// validatorAddress,
-	// 	new Value(BigInt(10000000))
-	// ));
+	redeemADA.addOutput(new TxOutput(
+		alice.address,
+		// validatorAddress,
+		new Value(BigInt(10000000))
+	));
 
 	// // alice.address?
-	// await redeemADA.finalize(networkParams, alice.address, utxosR);
+	await redeemADA.finalize(networkParams, alice.address, utxosR);
 	// const redeemADAid = await network.submitTx(redeemADA);
 	// network.tick(BigInt(10));
-	// console.log(utxosR);
+	console.log(utxosR);
 
 	const utxosFinal = await network.getUtxos(alice.address);
 	console.log(utxos);
