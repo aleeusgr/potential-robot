@@ -52,25 +52,25 @@ describe('Creates Helios Emulator ... ', () => {
 	const scriptValidatorHash = scriptCompiledProgram.validatorHash;
 	const validatorAddress = Address.fromValidatorHash(scriptValidatorHash);
 
-	const tx = new Tx();
+	const lockADA = new Tx();
 
-	tx.addInputs(utxos);
+	lockADA.addInputs(utxos);
 
-	// tx.attachScript(scriptCompiledProgram);
+	// lockADA.attachScript(scriptCompiledProgram);
 
-	tx.addOutput(new TxOutput(
+	lockADA.addOutput(new TxOutput(
+		// alice.address
 		validatorAddress,
 		new Value(minAda)
 	));
 
-	// Network Parameters
 	const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
 	const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
-	await tx.finalize(networkParams, alice.address, utxos);
-	const txId = await network.submitTx(tx);
+	// alice.address?
+	await lockADA.finalize(networkParams, alice.address, utxos);
+	const lockADAid = await network.submitTx(lockADA);
 
-	// Tick the network on 10 more slots,
 	network.tick(BigInt(10));
 
 	const utxosFinal = await network.getUtxos(validatorAddress);
