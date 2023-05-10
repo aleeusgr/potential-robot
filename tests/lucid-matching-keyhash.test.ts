@@ -155,7 +155,6 @@ describe('', () => {
 		    console.log("Smart Contract Messages: ", logMsgs);
 	}
 	expect(mainStatus).toBe(true);
-	console.log(logMsgs);
 	})
 
 	})
