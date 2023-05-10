@@ -136,7 +136,6 @@ describe('Creates Helios Emulator and adds an nft to a wallet', () => {
 	    console.log("Smart Contract Messages: ", logMsgs);
 	}
 	expect(mainStatus).toBe(true);
-	console.log(logMsgs);
 
     })
 
