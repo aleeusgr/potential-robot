@@ -43,38 +43,40 @@ describe('Creates Helios Emulator ... ', () => {
       const utxos = await network.getUtxos(alice.address);
 
       // Pull in the NFT minting script, update params and compile
-      const nftScript = await fs.readFile('./src/always-succeeds.hl', 'utf8');
+      const script = await fs.readFile('./src/always-succeeds.hl', 'utf8');
       // https://www.hyperion-bt.org/helios-book/api/reference/program.html?highlight=Program#program
-      const nftProgram = Program.new(nftScript);
-      // nftProgram.parameters = {["TX_ID"] : utxos[0].txId.hex};
-      // nftProgram.parameters = {["TX_IDX"] : utxos[0].utxoIdx};
-      const nftCompiledProgram = nftProgram.compile(optimize);
+      const scriptProgram = Program.new(script);
+      // scriptProgram.parameters = {["TX_ID"] : utxos[0].txId.hex};
+      // scriptProgram.parameters = {["TX_IDX"] : utxos[0].utxoIdx};
+      const scriptCompiledProgram = scriptProgram.compile(optimize);
       // https://www.hyperion-bt.org/helios-book/api/reference/uplcprogram.html
-      const nftMPH = nftCompiledProgram.validatorHash;
+      const scriptValidatorHash = scriptCompiledProgram.validatorHash;
 
-      console.log(nftMPH);
+      console.log(scriptValidatorHash);
       const tx = new Tx();
 
       tx.addInputs(utxos);
 
-      tx.attachScript(nftCompiledProgram);
+      tx.attachScript(scriptCompiledProgram);
 
       // Create an empty Redeemer because we must always send a Redeemer with
       // a plutus script transaction even if we don't actually use it.
-      const nftRedeemer = new ConstrData(0, []);
+      const Redeemer = new ConstrData(0, []);
       const token = [[textToBytes("Thread Token"), BigInt(1)]];
       
-      // Add the mint to the tx
+      // what should be here?
+      // https://www.hyperion-bt.org/helios-book/api/reference/tx.html?highlight=mintTokens#minttokens
+      // see also vesting
       tx.mintTokens(
-          nftMPH,
+          scriptValidatorHash,
           token,
-          nftRedeemer
+          Redeemer
       )
 
       // Attach the output with the minted nft to the destination address
       tx.addOutput(new TxOutput(
           alice.address,
-          new Value(minAda, new Assets([[nftMPH, token]]))
+          new Value(minAda, new Assets([[scriptValidatorHash, token]]))
         ));
 
         // Network Parameters
