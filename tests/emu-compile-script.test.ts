@@ -52,43 +52,40 @@ describe('Creates Helios Emulator ... ', () => {
       // https://www.hyperion-bt.org/helios-book/api/reference/uplcprogram.html
       const nftMPH = nftCompiledProgram.validatorHash;
 
-      console.log(nftMPH.paramTypes);
-      // // Start building the transaction
-      // const tx = new Tx();
+      console.log(nftMPH);
+      const tx = new Tx();
 
-      // // Add the UTXO as inputs
-      // tx.addInputs(utxos);
+      tx.addInputs(utxos);
 
-      // // Add the script as a witness to the transaction
-      // tx.attachScript(nftCompiledProgram);
+      tx.attachScript(nftCompiledProgram);
 
-      // // Create an empty Redeemer because we must always send a Redeemer with
-      // // a plutus script transaction even if we don't actually use it.
-      // const nftRedeemer = new ConstrData(0, []);
-      // const token = [[textToBytes("Thread Token"), BigInt(1)]];
-      // 
-      // // Add the mint to the tx
-      // tx.mintTokens(
-      //     nftMPH,
-      //     token,
-      //     nftRedeemer
-      // )
+      // Create an empty Redeemer because we must always send a Redeemer with
+      // a plutus script transaction even if we don't actually use it.
+      const nftRedeemer = new ConstrData(0, []);
+      const token = [[textToBytes("Thread Token"), BigInt(1)]];
+      
+      // Add the mint to the tx
+      tx.mintTokens(
+          nftMPH,
+          token,
+          nftRedeemer
+      )
 
-      // // Attach the output with the minted nft to the destination address
-      // tx.addOutput(new TxOutput(
-      //     alice.address,
-      //     new Value(minAda, new Assets([[nftMPH, token]]))
-      //   ));
+      // Attach the output with the minted nft to the destination address
+      tx.addOutput(new TxOutput(
+          alice.address,
+          new Value(minAda, new Assets([[nftMPH, token]]))
+        ));
 
-      //   // Network Parameters
-      // const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
-      // const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
+        // Network Parameters
+      const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
+      const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
-      // await tx.finalize(networkParams, alice.address, utxos);
-      // const txId = await network.submitTx(tx);
+      await tx.finalize(networkParams, alice.address, utxos);
+      const txId = await network.submitTx(tx);
 
-      // // Tick the network on 10 more slots,
-      // network.tick(BigInt(10));
+      // Tick the network on 10 more slots,
+      network.tick(BigInt(10));
 
       const utxosFinal = await network.getUtxos(alice.address);
       console.log(utxosFinal[2].value.dump().assets);
