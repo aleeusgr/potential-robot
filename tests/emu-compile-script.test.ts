@@ -3,7 +3,11 @@ import { promises as fs } from 'fs';
 import {
   Assets, 
   Address,
+  ByteArrayData,
   ConstrData, 
+  Datum,
+  ListData,
+  IntData,
   MintingPolicyHash,
   NetworkEmulator,
   NetworkParams,
@@ -56,6 +60,13 @@ describe('Creates Helios Emulator ... ', () => {
 
 	const lockADA = new Tx();
 
+	const datum = new ListData([new ByteArrayData(alice.pubKeyHash.bytes),
+                                  //new ByteArrayData(benPkh.bytes),
+                                  // new IntData(BigInt(deadline.getTime()))
+				]);
+
+	const inlineDatum = Datum.inline(datum);
+
 	lockADA.addInputs(utxos);
 
 	// lockADA.attachScript(scriptCompiledProgram);
@@ -63,7 +74,8 @@ describe('Creates Helios Emulator ... ', () => {
 	lockADA.addOutput(new TxOutput(
 		// alice.address, 
 		validatorAddress,
-		new Value(BigInt(10000000))
+		new Value(BigInt(10000000)),
+
 	));
 
 
@@ -73,13 +85,13 @@ describe('Creates Helios Emulator ... ', () => {
 
 	network.tick(BigInt(10));
 
-	//now redeem:
+	// //now redeem:
 	const utxosR = await network.getUtxos(validatorAddress);
-	const redeemADA = new Tx();
+	// const redeemADA = new Tx();
 
-	const valRedeemer = new ConstrData(1, []);
+	// const valRedeemer = new ConstrData(1, []);
 
-	redeemADA.addInputs(utxosR, valRedeemer);
+	// redeemADA.addInputs(utxosR, valRedeemer, inlineDatum);
 
 	// // redeemADA.attachScript(scriptCompiledProgram);
 
@@ -92,13 +104,13 @@ describe('Creates Helios Emulator ... ', () => {
 	// // alice.address?
 	// await redeemADA.finalize(networkParams, alice.address, utxosR);
 	// const redeemADAid = await network.submitTx(redeemADA);
+	// network.tick(BigInt(10));
+	// console.log(utxosR);
 
-	network.tick(BigInt(10));
 	const utxosFinal = await network.getUtxos(alice.address);
-	console.log(utxosR);
 	console.log(utxos);
 
-	return utxosFinal[0].value.dump().lovelace != '1064570'
+	return utxosFinal[0].value.dump().lovelace == '1064570'
 	} catch (err) {
 	    console.error("something failed:", err);
 	    return false;
