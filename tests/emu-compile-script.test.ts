@@ -73,10 +73,13 @@ describe('Creates Helios Emulator ... ', () => {
 
 	network.tick(BigInt(10));
 
-	const redeemADA = new Tx();
+	//now redeem:
 	const utxosR = await network.getUtxos(validatorAddress);
+	const redeemADA = new Tx();
 
-	redeemADA.addInputs(utxosR);
+	const valRedeemer = new ConstrData(1, []);
+
+	redeemADA.addInputs(utxosR, valRedeemer);
 
 	// // redeemADA.attachScript(scriptCompiledProgram);
 
