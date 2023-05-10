@@ -23,6 +23,8 @@ describe('Creates Helios Emulator ... ', () => {
 	try {
 
 	const network = new NetworkEmulator();
+	const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
+	const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
 	const alice = network.createWallet(BigInt(10000000));
 
@@ -59,13 +61,11 @@ describe('Creates Helios Emulator ... ', () => {
 	// lockADA.attachScript(scriptCompiledProgram);
 
 	lockADA.addOutput(new TxOutput(
-		// alice.address
+		// alice.address, 
 		validatorAddress,
-		new Value(minAda)
+		new Value(BigInt(10000000))
 	));
 
-	const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
-	const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
 	// alice.address?
 	await lockADA.finalize(networkParams, alice.address, utxos);
@@ -73,10 +73,29 @@ describe('Creates Helios Emulator ... ', () => {
 
 	network.tick(BigInt(10));
 
-	const utxosFinal = await network.getUtxos(validatorAddress);
-	console.log(utxosFinal);
+	const redeemADA = new Tx();
+	const utxosR = await network.getUtxos(validatorAddress);
 
-	return utxosFinal[0].value.dump().lovelace == '2000000'
+	redeemADA.addInputs(utxosR);
+
+	// // redeemADA.attachScript(scriptCompiledProgram);
+
+	// redeemADA.addOutput(new TxOutput(
+	// 	alice.address,
+	// 	// validatorAddress,
+	// 	new Value(BigInt(10000000))
+	// ));
+
+	// // alice.address?
+	// await redeemADA.finalize(networkParams, alice.address, utxosR);
+	// const redeemADAid = await network.submitTx(redeemADA);
+
+	network.tick(BigInt(10));
+	const utxosFinal = await network.getUtxos(alice.address);
+	console.log(utxosR);
+	console.log(utxos);
+
+	return utxosFinal[0].value.dump().lovelace != '1064570'
 	} catch (err) {
 	    console.error("something failed:", err);
 	    return false;
