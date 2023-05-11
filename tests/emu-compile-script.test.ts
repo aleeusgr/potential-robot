@@ -96,7 +96,7 @@ describe('Creates Helios Emulator ... ', () => {
 	redeemADA.attachScript(scriptCompiledProgram);
 	// https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#L255
 	// the order matters?
-	redeemADA.addInputs(utxosR, inlineDatum, valRedeemer);
+	redeemADA.addInputs(utxosR, valRedeemer);
 
 
 	redeemADA.addOutput(new TxOutput(
@@ -105,7 +105,7 @@ describe('Creates Helios Emulator ... ', () => {
 	));
 
 	// // alice.address here? ---------------------v
-	await redeemADA.finalize(networkParams, validatorAddress, utxosR);
+	await redeemADA.finalize(networkParams, validatorAddress, utxos);
 	// const redeemADAid = await network.submitTx(redeemADA);
 	// network.tick(BigInt(10));
 
