@@ -62,17 +62,12 @@ describe('Creates Helios Emulator ... ', () => {
 
 	const lockADA = new Tx();
 
-	// https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#L195-L199
-	const datum = new ListData([new ByteArrayData(alice.pubKeyHash.bytes),
-                                  //new ByteArrayData(benPkh.bytes),
-                                  // new IntData(BigInt(deadline.getTime()))
-				]);
+	const datum = new ByteArrayData(alice.pubKeyHash.bytes);
 
+	console.log(datum.toSchemaJson());
 	const inlineDatum = Datum.inline(datum);
 
 	lockADA.addInputs(utxos);
-
-	// lockADA.attachScript(scriptCompiledProgram);
 
 	lockADA.addOutput(new TxOutput(
 		// alice.address, 
@@ -93,7 +88,8 @@ describe('Creates Helios Emulator ... ', () => {
 	const redeemADA = new Tx();
 
 	// see Redeemer in lucid examples?
-	const valRedeemer = new ConstrData(1, []);
+	const valRedeemer = new ByteArrayData(alice.pubKeyHash.bytes);
+	
 
 	redeemADA.attachScript(scriptCompiledProgram);
 	// https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#L255
@@ -103,7 +99,8 @@ describe('Creates Helios Emulator ... ', () => {
 
 	redeemADA.addOutput(new TxOutput(
 		alice.address,
-		new Value(BigInt(10000000))
+		new Value(BigInt(10000000)),
+		inlineDatum
 	));
 
 	// // alice.address here? ---------------------v
