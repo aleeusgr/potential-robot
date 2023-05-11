@@ -50,9 +50,14 @@ describe('Creates Helios Emulator ... ', () => {
 	const utxos = await network.getUtxos(alice.address);
 
 	// Pull in a script, and compile;
-	const script = await fs.readFile('./src/always-succeeds.hl', 'utf8');
+	// const script = await fs.readFile('./src/always-succeeds.hl', 'utf8');
+	const script = await fs.readFile('./src/owner-only.hl', 'utf8');
 	// https://www.hyperion-bt.org/helios-book/api/reference/program.html?highlight=Program#program
 	const scriptProgram = Program.new(script);
+
+	const myDatum = scriptProgram.parameters["MY_DATUM"];
+	const myDatumData = myDatum.data;
+
 	const scriptCompiledProgram = scriptProgram.compile(optimize);
 	// https://www.hyperion-bt.org/helios-book/api/reference/uplcprogram.html
 	const scriptValidatorHash = scriptCompiledProgram.validatorHash;
