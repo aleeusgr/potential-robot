@@ -55,9 +55,6 @@ describe('Creates Helios Emulator ... ', () => {
 	// https://www.hyperion-bt.org/helios-book/api/reference/program.html?highlight=Program#program
 	const scriptProgram = Program.new(script);
 
-	const myDatum = scriptProgram.parameters["MY_DATUM"];
-	const myDatumData = myDatum.data;
-
 	const scriptCompiledProgram = scriptProgram.compile(optimize);
 	// https://www.hyperion-bt.org/helios-book/api/reference/uplcprogram.html
 	const scriptValidatorHash = scriptCompiledProgram.validatorHash;
