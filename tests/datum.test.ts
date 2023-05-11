@@ -47,11 +47,11 @@ describe('Creates Helios Emulator ... ', () => {
 
 	network.tick(BigInt(10));
 
-	const utxos = await network.getUtxos(alice.address);
+	const aliceUtxos = await network.getUtxos(alice.address);
 
 	// Pull in a script, and compile;
 	// const script = await fs.readFile('./src/always-succeeds.hl', 'utf8');
-	const script = await fs.readFile('./src/owner-only.hl', 'utf8'); // https://www.hyperion-bt.org/helios-book/api/generating.html
+	const script = await fs.readFile('./src/matching-keyhash.js', 'utf8'); // https://www.hyperion-bt.org/helios-book/api/generating.html
 	// https://www.hyperion-bt.org/helios-book/api/reference/program.html?highlight=Program#program
 	const scriptProgram = Program.new(script);
 
@@ -62,15 +62,21 @@ describe('Creates Helios Emulator ... ', () => {
 
 	const lockADA = new Tx();
 
-	const datum = new ByteArrayData(alice.pubKeyHash.bytes);
+	// const datum = new ByteArrayData(alice.pubKeyHash.bytes);
+	// console.log(datum.toSchemaJson());
+	const datum = new ListData([new ByteArrayData(alice.pubKeyHash.bytes),
+				    //  new ByteArrayData(benPkh.bytes),
+				    //  new IntData(BigInt(deadline.getTime()))
+					]);
+	// const datum = Data.to(
+	// 	new Constr(0, [new Constr(0, [alice.pubKeyHash.bytes])]),
+	// );
 
-	console.log(datum.toSchemaJson());
 	const inlineDatum = Datum.inline(datum);
 
-	lockADA.addInputs(utxos);
+	lockADA.addInputs(aliceUtxos);
 
 	lockADA.addOutput(new TxOutput(
-		// alice.address, 
 		validatorAddress,
 		new Value(BigInt(10000000)),
 		inlineDatum
@@ -78,7 +84,7 @@ describe('Creates Helios Emulator ... ', () => {
 
 
 	// change address!! alice.address?
-	await lockADA.finalize(networkParams, alice.address, utxos);
+	await lockADA.finalize(networkParams, alice.address, aliceUtxos);
 	const lockADAid = await network.submitTx(lockADA);
 
 	network.tick(BigInt(10));
@@ -104,12 +110,11 @@ describe('Creates Helios Emulator ... ', () => {
 	));
 
 	// // alice.address here? ---------------------v
-	await redeemADA.finalize(networkParams, validatorAddress, utxos);
+	await redeemADA.finalize(networkParams, validatorAddress, aliceUtxos);
 	// const redeemADAid = await network.submitTx(redeemADA);
 	// network.tick(BigInt(10));
 
 	const utxosFinal = await network.getUtxos(alice.address);
-	console.log(utxos);
 
 	return utxosFinal[0].value.dump().lovelace == '1064570'
 	} catch (err) {
