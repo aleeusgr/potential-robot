@@ -51,7 +51,7 @@ describe('Creates Helios Emulator ... ', () => {
 
 	// Pull in a script, and compile;
 	// const script = await fs.readFile('./src/always-succeeds.hl', 'utf8');
-	const script = await fs.readFile('./src/owner-only.hl', 'utf8');
+	const script = await fs.readFile('./src/owner-only.hl', 'utf8'); // https://www.hyperion-bt.org/helios-book/api/generating.html
 	// https://www.hyperion-bt.org/helios-book/api/reference/program.html?highlight=Program#program
 	const scriptProgram = Program.new(script);
 
