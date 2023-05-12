@@ -50,31 +50,23 @@ describe('Creates Helios Emulator ... ', () => {
 	const aliceUtxos = await network.getUtxos(alice.address);
 
 	// Pull in a script, and compile;
-	// const script = await fs.readFile('./src/always-succeeds.hl', 'utf8');
 	const script = await fs.readFile('./src/matching-keyhash.js', 'utf8'); // https://www.hyperion-bt.org/helios-book/api/generating.html
-	// https://www.hyperion-bt.org/helios-book/api/reference/program.html?highlight=Program#program
-	const scriptProgram = Program.new(script);
+	const program = Program.new(script); // https://www.hyperion-bt.org/helios-book/api/reference/program.html?highlight=Program#program
+	const compiledProgram = program.compile(optimize); // https://www.hyperion-bt.org/helios-book/api/reference/uplcprogram.html
 
-	const scriptCompiledProgram = scriptProgram.compile(optimize);
-	// https://www.hyperion-bt.org/helios-book/api/reference/uplcprogram.html
-	const scriptValidatorHash = scriptCompiledProgram.validatorHash;
+	const scriptValidatorHash = compiledProgram.validatorHash;
 	const validatorAddress = Address.fromValidatorHash(scriptValidatorHash);
 
+	// https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#L157
 	const lockADA = new Tx();
 
+	lockADA.addInputs(aliceUtxos);
+	
 	// const datum = new ByteArrayData(alice.pubKeyHash.bytes);
-	// console.log(datum.toSchemaJson());
 	const datum = new ListData([new ByteArrayData(alice.pubKeyHash.bytes),
-				    //  new ByteArrayData(benPkh.bytes),
-				    //  new IntData(BigInt(deadline.getTime()))
 					]);
-	// const datum = Data.to(
-	// 	new Constr(0, [new Constr(0, [alice.pubKeyHash.bytes])]),
-	// );
 
 	const inlineDatum = Datum.inline(datum);
-
-	lockADA.addInputs(aliceUtxos);
 
 	lockADA.addOutput(new TxOutput(
 		validatorAddress,
@@ -100,7 +92,7 @@ describe('Creates Helios Emulator ... ', () => {
 	const valRedeemer = new ListData([new ByteArrayData(alice.pubKeyHash.bytes),]);
 	
 
-	redeemADA.attachScript(scriptCompiledProgram);
+	redeemADA.attachScript(compiledProgram);
 	// https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#L255
 	// the order matters?
 	redeemADA.addInputs(utxosR, valRedeemer);
