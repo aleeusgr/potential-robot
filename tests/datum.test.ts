@@ -84,9 +84,11 @@ describe('Creates Helios Emulator ... ', () => {
 
 
 	// change address!! alice.address?
+	console.log(lockADA.dump());
 	await lockADA.finalize(networkParams, alice.address, aliceUtxos);
 	const lockADAid = await network.submitTx(lockADA);
 
+	console.log(lockADA.get_datum_data);
 	network.tick(BigInt(10));
 
 	// //now redeem:
@@ -94,7 +96,8 @@ describe('Creates Helios Emulator ... ', () => {
 	const redeemADA = new Tx();
 
 	// see Redeemer in lucid examples?
-	const valRedeemer = new ByteArrayData(alice.pubKeyHash.bytes);
+	// const valRedeemer = new ByteArrayData(alice.pubKeyHash.bytes);
+	const valRedeemer = new ListData([new ByteArrayData(alice.pubKeyHash.bytes),]);
 	
 
 	redeemADA.attachScript(scriptCompiledProgram);
@@ -106,11 +109,9 @@ describe('Creates Helios Emulator ... ', () => {
 	redeemADA.addOutput(new TxOutput(
 		alice.address,
 		new Value(BigInt(10000000)),
-		inlineDatum
 	));
 
-	// // alice.address here? ---------------------v
-	await redeemADA.finalize(networkParams, validatorAddress, aliceUtxos);
+	await redeemADA.finalize(networkParams, alice.address, aliceUtxos);
 	// const redeemADAid = await network.submitTx(redeemADA);
 	// network.tick(BigInt(10));
 
