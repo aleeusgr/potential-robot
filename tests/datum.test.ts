@@ -74,8 +74,8 @@ describe('Creates Helios Emulator ... ', () => {
 	));
 
 
-	console.log(lockADA.dump());
 	await lockADA.finalize(networkParams, alice.address, aliceUtxos);
+	console.log(lockADA.dump());
 	const lockADAid = await network.submitTx(lockADA);
 
 	network.tick(BigInt(10));

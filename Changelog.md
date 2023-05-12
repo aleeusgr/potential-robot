@@ -1,3 +1,15 @@
+May 12th, Friday
+
+Stuck. So I am looking at Lucid tx and trying to rebuild it in Helios:
+lock: scriptAddress, value, Datum, ctx
+redeem: cborHex, Redeemer, ctx
+
+ok, one thing to keep in the back of mind is ctx; its the data about the transaction: source, destination, fees. Lucid takes care of it, while in Helios it has to be done by hand.
+
+when it comes to cborHex, I didn't encounter problems yet, as long as the contract, Redeemer and Datum work together, it does not matter in which language cborHex was created. 
+
+I get "no datum data avaliable", and its true that tx.dump() shows no Datums present in the transaction. 
+
 May 9th, Tuesday
 
 Feel better, last couple of days were hard;
