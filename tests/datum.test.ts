@@ -56,15 +56,14 @@ describe('Creates Helios Emulator ... ', () => {
 
 	const scriptValidatorHash = compiledProgram.validatorHash;
 	const validatorAddress = Address.fromValidatorHash(scriptValidatorHash);
+	const ownerPKH = alice.pubKeyHash.bytes;
 
 	// https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#L157
 	const lockADA = new Tx();
 
 	lockADA.addInputs(aliceUtxos);
 	
-	// const datum = new ByteArrayData(alice.pubKeyHash.bytes);
-	const datum = new ListData([new ByteArrayData(alice.pubKeyHash.bytes),
-					]);
+	const datum = new ListData([new ByteArrayData(ownerPKH)]);
 
 	const inlineDatum = Datum.inline(datum);
 
@@ -75,12 +74,10 @@ describe('Creates Helios Emulator ... ', () => {
 	));
 
 
-	// change address!! alice.address?
 	console.log(lockADA.dump());
 	await lockADA.finalize(networkParams, alice.address, aliceUtxos);
 	const lockADAid = await network.submitTx(lockADA);
 
-	console.log(lockADA.get_datum_data);
 	network.tick(BigInt(10));
 
 	// //now redeem:
@@ -89,8 +86,7 @@ describe('Creates Helios Emulator ... ', () => {
 
 	// see Redeemer in lucid examples?
 	// const valRedeemer = new ByteArrayData(alice.pubKeyHash.bytes);
-	const valRedeemer = new ListData([new ByteArrayData(alice.pubKeyHash.bytes),]);
-	
+	const valRedeemer = new ListData([new ByteArrayData(ownerPKH),]);
 
 	redeemADA.attachScript(compiledProgram);
 	// https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#L255
