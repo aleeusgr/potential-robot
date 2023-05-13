@@ -43,8 +43,7 @@ describe('Submits a transaction to a validator address', () => {
       const utxosFinal = await network.getUtxos(alice.address);
 
 	// return  compiledProgram.toCbor()
-	// return utxosFinal[1].value.dump().lovelace == '5000000' && validatorHash.hex == '5763a59e90792233f05069b5d4ee16436e7d971ae25f388ec92a5e77'
-	return validatorAddress
+	return utxosFinal[1].value.dump().lovelace == '5000000' && validatorHash.hex == '0f29c78f5c354afc3afad84973d34ff1ba0328e581cb72f8ac9a6bf5'
 
 	} catch (err) {
 	    console.error("something failed:", err);
