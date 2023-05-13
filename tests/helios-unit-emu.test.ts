@@ -13,7 +13,7 @@ import {
   Tx, 
 } from "@hyperionbt/helios";
 
-describe('Creates Helios Emulator and adds an nft to a wallet', () => {
+describe('Instantiates the emulator', () => {
 
     const main = async () => {
 
