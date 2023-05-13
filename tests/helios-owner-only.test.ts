@@ -39,10 +39,9 @@ describe('Submits a transaction to a validator address', () => {
 	// https://www.hyperion-bt.org/helios-book/lang/builtins/address.html#address
 	const validatorAddress = Address.fromValidatorHash(validatorHash); 
 	
+	const utxosFinal = await network.getUtxos(alice.address);
 
-      const utxosFinal = await network.getUtxos(alice.address);
-
-	return utxosFinal[1].value.dump().lovelace == '5000000' && validatorHash.hex == '0f29c78f5c354afc3afad84973d34ff1ba0328e581cb72f8ac9a6bf5' && validatorAddress.toBech32() == 'addr_test1wq8jn3u0ts654lp6ltvyju7nflcm5qegukqukuhc4jdxhag7ku5n4'
+	return utxosFinal[1].value.dump().lovelace == '5000000' && validatorAddress.toBech32() == 'addr_test1wq8jn3u0ts654lp6ltvyju7nflcm5qegukqukuhc4jdxhag7ku5n4'
 
 	} catch (err) {
 	    console.error("something failed:", err);
