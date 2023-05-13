@@ -1,0 +1,11 @@
+spending owner-only
+
+    struct Datum {
+        owner: PubKeyHash
+    }
+
+
+    func main(datum: Datum, _, ctx: ScriptContext) -> Bool {
+    ctx.tx.is_signed_by(datum.owner)
+}
+
