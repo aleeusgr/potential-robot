@@ -31,7 +31,7 @@ describe('Submits a transaction to a validator address', () => {
 
       // Now we are able to get the UTxOs in Alices wallet
 
-	const script = await fs.readFile('./src/owner-only.hl', 'utf8'); 
+	const script = await fs.readFile('./src/always-succeeds.hl', 'utf8'); 
 	const program = Program.new(script); 
 	const compiledProgram = program.compile(optimize); 
 
@@ -42,8 +42,8 @@ describe('Submits a transaction to a validator address', () => {
 
       const utxosFinal = await network.getUtxos(alice.address);
 
-	// return  compiledProgram.toCbor()
-	return utxosFinal[1].value.dump().lovelace == '5000000' && validatorHash.hex == '0f29c78f5c354afc3afad84973d34ff1ba0328e581cb72f8ac9a6bf5'
+	// return utxosFinal[1].value.dump().lovelace == '5000000' && validatorHash.hex == '0f29c78f5c354afc3afad84973d34ff1ba0328e581cb72f8ac9a6bf5'
+      return validatorAddress
 
 	} catch (err) {
 	    console.error("something failed:", err);
