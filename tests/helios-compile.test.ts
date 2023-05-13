@@ -10,7 +10,7 @@ import {
 
 } from "lucid-cardano"; // NPM
 
-describe('turns a sting into uplc', () => {
+describe('turns a string into uplc', () => {
 
 	const main = async () => {
 		const src = `
