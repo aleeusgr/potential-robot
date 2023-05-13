@@ -1,3 +1,10 @@
+May 13th, Saturday
+
+I have to discard three days of work, start anew. 
+My goal is a loan contract. To build it, I need a testing environemnt to play with.
+I have two examples of code that works sending and redeeming tokens from a validator address: vesting in Helios and matching keyhash in lucid.
+matching keyhash is simpler, I should start there. Maybe next step would be to rebuild owner-only from Helios in lucid?
+
 May 9th, Tuesday
 
 Feel better, last couple of days were hard;
