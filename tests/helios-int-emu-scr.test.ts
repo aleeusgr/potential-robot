@@ -22,6 +22,8 @@ describe('Submits a transaction to a validator address', () => {
 	const minAda = BigInt(2000000);  // minimum lovelace needed to send an NFT
 	try {
 	const network = new NetworkEmulator();
+	const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
+	const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
 	const alice = network.createWallet(BigInt(10000000));
 
@@ -45,16 +47,14 @@ describe('Submits a transaction to a validator address', () => {
 	const tx = new Tx()
 	const utxoIn = await network.getUtxos(alice.address)
 
-	const utxosFinal = await network.getUtxos(alice.address); // returns a list!!!
 	tx.addInput(utxoIn[0]);
 
-	const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
-	const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
 	await tx.finalize(networkParams, alice.address);
 
-
 	return tx.dump().body.outputs[0].value.lovelace == '9836215'
+
+	const utxosFinal = await network.getUtxos(alice.address); // returns a list!!!
 	// return utxosFinal[1].value.dump().lovelace == '5000000' && validatorAddress.toBech32() == 'addr_test1wq8jn3u0ts654lp6ltvyju7nflcm5qegukqukuhc4jdxhag7ku5n4'
 
 	} catch (err) {
