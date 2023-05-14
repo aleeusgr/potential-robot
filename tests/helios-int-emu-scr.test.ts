@@ -56,13 +56,11 @@ describe('Submits a transaction to a validator address', () => {
 	network.tick(BigInt(10));
 	const utxosFinal = await network.getUtxos(alice.address); // returns a list!!!
 
-	// but why it passes? ok, utxosFinal, need to look at it again.
-	console.log(utxosFinal[1].value.dump())
-	console.log(utxosFinal)
-	// ah, ok. need to tick
-	// look at utxos again
-	// '9836215'
-	return utxosFinal[1].value.dump().lovelace == '9836215'  && validatorAddress.toBech32() == 'addr_test1wq8jn3u0ts654lp6ltvyju7nflcm5qegukqukuhc4jdxhag7ku5n4' && txId.hex == 'e91250f6c77da5b50533901a29c75eb9ad6838c7a2044435675966c67cbddc93' && tx.dump().body.outputs[0].value.lovelace == '9836215'
+	// ok, so far tx builder calculates fee and sends the rest of the tx back to alice;
+	// - [ ] add someone else, in my case - validatorAddress, as a recipient. 
+	// txId will change, utxosFinal will change, validatorAddress won't change unless I change L36;
+	// tx.value will change.
+	return validatorAddress.toBech32() == 'addr_test1wq8jn3u0ts654lp6ltvyju7nflcm5qegukqukuhc4jdxhag7ku5n4' 
 
 	} catch (err) {
 	    console.error("something failed:", err);
