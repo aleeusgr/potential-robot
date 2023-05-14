@@ -46,13 +46,7 @@ describe('Submits a transaction to a validator address', () => {
 	const utxoIn = await network.getUtxos(alice.address)
 
 	const utxosFinal = await network.getUtxos(alice.address); // returns a list!!!
-	tx.addInput(utxoIn[0], redeemerData);
-
-	// oh, hsi, totally forgot about the Redeemer. 
-	// However, in owner-only there is no redeemer. It uses Datum and script context in its logic...
-	// the Redeemer in matching-keyhash is the same as the Datum.
-	// so, I can recreate the redeemer for matching-keyhash by copy and paste;
-	// Since Datum part of matching-keyhash and vesting is similar, and vesting has owner:PubKeyHash as an element, I can simply delete unnecessary fields and the data structure will match. 
+	tx.addInput(utxoIn[0]);
 
 	// 'uplcProgram' is an instance of UplcProgram (i.e. result of helios.Program.new(...).compile(...))
 	tx.attachScript(compiledProgram)
