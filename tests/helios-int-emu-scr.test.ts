@@ -48,12 +48,6 @@ describe('Submits a transaction to a validator address', () => {
 	const utxosFinal = await network.getUtxos(alice.address); // returns a list!!!
 	tx.addInput(utxoIn[0]);
 
-	// 'uplcProgram' is an instance of UplcProgram (i.e. result of helios.Program.new(...).compile(...))
-	// tx.attachScript(compiledProgram)
-
-
-
-
 
 
 
