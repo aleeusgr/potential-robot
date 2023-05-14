@@ -53,13 +53,12 @@ describe('Submits a transaction to a validator address', () => {
 	await tx.finalize(networkParams, alice.address);
 
 	const txId = await network.submitTx(tx);
+	network.tick(BigInt(10));
 	const utxosFinal = await network.getUtxos(alice.address); // returns a list!!!
 
-	// ok, this is why I need BeforeAll, BeforeEach, and it? 
-	// Anyway, let me think about redundancy here;
-	// But it starts to get long. 
-	// these values will change if I change L36
-	// Ok, commit these comments before going on
+	// but why it passes? ok, utxosFinal, need to look at it again.
+	console.log(utxosFinal[0].value.dump())
+	// ah, ok. need to tick
 	return utxosFinal[1].value.dump().lovelace == '5000000' && validatorAddress.toBech32() == 'addr_test1wq8jn3u0ts654lp6ltvyju7nflcm5qegukqukuhc4jdxhag7ku5n4' && txId.hex == 'e91250f6c77da5b50533901a29c75eb9ad6838c7a2044435675966c67cbddc93' && tx.dump().body.outputs[0].value.lovelace == '9836215'
 
 	} catch (err) {
