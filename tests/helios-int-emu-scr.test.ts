@@ -52,6 +52,7 @@ describe('Submits a transaction to a validator address', () => {
 	const output = new TxOutput(
 	    validatorAddress,
 	    new Value(1000000n), // 1 tAda == 1 million lovelace
+	    // so here I need a Datum, probably
 	)
 	tx.addOutput(output)
 	
