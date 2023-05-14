@@ -51,7 +51,7 @@ describe('Submits a transaction to a validator address', () => {
 	const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
 	const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
-	await tx.finalize(networkParams, changeAddress, extraUTxOs)
+	await tx.finalize(networkParams, alice.address);
 
 
 	return tx.dump()
