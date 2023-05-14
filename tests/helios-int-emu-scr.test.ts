@@ -49,7 +49,7 @@ describe('Submits a transaction to a validator address', () => {
 	tx.addInput(utxoIn[0]);
 
 	// 'uplcProgram' is an instance of UplcProgram (i.e. result of helios.Program.new(...).compile(...))
-	tx.attachScript(compiledProgram)
+	// tx.attachScript(compiledProgram)
 
 
 
