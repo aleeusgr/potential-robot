@@ -48,6 +48,10 @@ describe('Submits a transaction to a validator address', () => {
 	const utxoIn = await network.getUtxos(alice.address)
 
 	tx.addInput(utxoIn[0]);
+	const output = new TxOutput(
+	    validatorAddress,
+	    new Value(1000000n), // 1 tAda == 1 million lovelace
+	)
 
 
 	await tx.finalize(networkParams, alice.address);
@@ -58,8 +62,9 @@ describe('Submits a transaction to a validator address', () => {
 
 	// ok, so far tx builder calculates fee and sends the rest of the tx back to alice;
 	// - [ ] add someone else, in my case - validatorAddress, as a recipient. 
-	// txId will change, utxosFinal will change, validatorAddress won't change unless I change L36;
-	// tx.value will change.
+	// validatorAddress won't change unless I change L36;
+	// 
+	
 	return validatorAddress.toBech32() == 'addr_test1wq8jn3u0ts654lp6ltvyju7nflcm5qegukqukuhc4jdxhag7ku5n4' 
 
 	} catch (err) {
