@@ -17,7 +17,7 @@ import {
   Tx, 
 } from "@hyperionbt/helios";
 
-describe('Submits a transaction to a validator address', () => {
+describe('a transaction, redeem ADA locked at a validator', () => {
 
     const main = async () => {
 
@@ -77,7 +77,16 @@ describe('Submits a transaction to a validator address', () => {
 	// https://www.hyperion-bt.org/helios-book/api/generating.html?highlight=redee#generating-datums-and-redeemers
 	// If the script uses the redeemer then a struct or enum must be defined above main that is named Redeemer.
 	// so owner-only won't work? or empty list won't work? 
+	//
 	// What is the Redeemer?
+	// Ok, another way is to have it with a Redeemer, like switch to matching-keyhash, and infer data structure by analogy? I tried before, it didn't work; 
+	// note: how to search in git commits?
+	// A question, can a tx use Redeemer, but the script not use a Redeemer?
+	// its seems so:
+	// The script can again choose to use or ignore the redeemer during validation.
+	// https://www.hyperion-bt.org/helios-book/lang/script-structure.html?highlight=redee#redeemer-3
+	// so it should be perfectly normal to send an epmty list in the tx and seek for alternative cause for why tx is getting rejected?
+
 	const redeemer = new ListData([]);
 	redeem.addInput(redeemIn[0], redeemer);
 	
