@@ -42,9 +42,10 @@ describe('Submits a transaction to a validator address', () => {
 
 	const validatorHash = compiledProgram.validatorHash;
 	const validatorAddress = Address.fromValidatorHash(validatorHash); 
-	
 
-	const tx = new Tx()
+
+	// but now that I need to Redeem, I need another tx, another name:
+	const lock = new Tx()
 	const ownerPkh = alice.pubKeyHash ;
 	const datum = new ListData([new ByteArrayData(ownerPkh.bytes),
 				]);
@@ -54,23 +55,20 @@ describe('Submits a transaction to a validator address', () => {
 
 	const utxoIn = await network.getUtxos(alice.address)
 
-	tx.addInput(utxoIn[0]);
+	lock.addInput(utxoIn[0]);
 
 	const output = new TxOutput(
 	    validatorAddress,
 	    new Value(1000000n), // 1 tAda == 1 million lovelace
 	    hashedDatum
 	)
-	tx.addOutput(output)
+	lock.addOutput(output)
 
-	await tx.finalize(networkParams, alice.address);
+	await lock.finalize(networkParams, alice.address);
 
-	const txId = await network.submitTx(tx);
+	const txId = await network.submitTx(lock);
 	network.tick(BigInt(10));
-	const utxosFinal = await network.getUtxos(alice.address); // returns a list!!!
-
-	//Ok, here is a new branch point. Owner only will go on with Inline Datum, but I will check out and try hashed Datum here
-	//Turns out its rather simple to change
+	const utxosFinal = await network.getUtxos(alice.address); 
 
 	return (await network.getUtxos(validatorAddress))[0].origOutput.datum.isHashed()
 

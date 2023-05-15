@@ -1,6 +1,8 @@
 May 15th, Monday
 
 Now I need to Redeem a utxo; For this I need a Datum attached to the utxo; my next test is to attach two types of Datum and show them at the validatorAddress
+A good question is what I should show. Is datum.isInline() | datum.isHashed() enough?
+
 
 May 13th, Saturday
 
