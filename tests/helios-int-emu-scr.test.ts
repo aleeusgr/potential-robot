@@ -57,12 +57,12 @@ describe('Submits a transaction to a validator address', () => {
 
 	lock.addInput(lockIn[0]);
 
-	const output = new TxOutput(
+	const lockTxOutput = new TxOutput(
 	    validatorAddress,
 	    new Value(1000000n), // 1 tAda == 1 million lovelace
 	    hashedDatum
 	)
-	lock.addOutput(output)
+	lock.addOutput(lockTxOutput)
 
 	await lock.finalize(networkParams, alice.address);
 
@@ -82,8 +82,15 @@ describe('Submits a transaction to a validator address', () => {
 	// https://www.hyperion-bt.org/helios-book/api/reference/tx.html?highlight=Tx#attachscript
 	redeem.attachScript(compiledProgram);
 
+	// ok, I see datum in my inputs, thats perfect;
+	// Why my tx is being rejected? 
+	// I need to add an output
 
-
+	const redeemTxOutput = new TxOutput(
+	    alice.address,
+	    new Value(1000000n), // 1 tAda == 1 million lovelace
+	)
+	redeem.addOutput(redeemTxOutput)
 	// await redeem.finalize(networkParams, alice.address);
 
 	// const redeemTxId = await network.submitTx(redeem);
