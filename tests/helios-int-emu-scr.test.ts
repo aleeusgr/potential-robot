@@ -70,14 +70,20 @@ describe('Submits a transaction to a validator address', () => {
 	network.tick(BigInt(10));
 
 	const redeem = new Tx()
+	// https://www.hyperion-bt.org/helios-book/api/building/index.html?highlight=Tx#tx
+	// https://www.hyperion-bt.org/helios-book/lang/builtins/tx.html?highlight=Tx#tx
+	// https://www.hyperion-bt.org/helios-book/api/reference/tx.html?highlight=Tx#tx
 	const redeemIn = await network.getUtxos(validatorAddress)
 
-	// a Redeemer is necessary input:
-	// since it is discarded, any should do, right? at least I can look up:
-	// aha, I don't have any. 
-	// 
 	const redeemer = new ListData([]);
 	redeem.addInput(redeemIn[0], redeemer);
+	
+	// Error: missing script for input 0
+
+	await redeem.finalize(networkParams, alice.address);
+
+	const redeemTxId = await network.submitTx(redeem);
+	network.tick(BigInt(10));
 
 	const utxosFinal = await network.getUtxos(alice.address); 
 
