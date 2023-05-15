@@ -85,6 +85,8 @@ describe('Submits a transaction to a validator address', () => {
 	// but I need Datum
 	// https://www.hyperion-bt.org/helios-book/api/reference/datum.html?highlight=inline#inline
 	//
+	//Ok, here is a new branch point. Owner only will go on with Inline Datum, but I will check out and try hashed Datum here
+
 	return (await network.getUtxos(validatorAddress))[0].origOutput.datum.isInline()
 
 
