@@ -89,6 +89,7 @@ describe('a transaction, redeem ADA locked at a validator', () => {
 
 	const redeemer = new ListData([]);
 	redeem.addInput(redeemIn[0], redeemer);
+	// https://www.hyperion-bt.org/helios-book/api/reference/txwitnesses.html?highlight=txwi#txwitnesses
 	
 	redeem.attachScript(compiledProgram);
 
