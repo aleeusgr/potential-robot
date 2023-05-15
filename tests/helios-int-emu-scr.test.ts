@@ -79,6 +79,8 @@ describe('Submits a transaction to a validator address', () => {
 	redeem.addInput(redeemIn[0], redeemer);
 	
 	// Error: missing script for input 0
+	// https://www.hyperion-bt.org/helios-book/api/reference/tx.html?highlight=Tx#attachscript
+	redeem.attachScript(compiledProgram);
 
 	await redeem.finalize(networkParams, alice.address);
 
