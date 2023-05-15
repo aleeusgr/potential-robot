@@ -82,7 +82,10 @@ describe('Submits a transaction to a validator address', () => {
 	// https://www.hyperion-bt.org/helios-book/api/reference/txoutput.html?highlight=txOut#txoutput
 	// https://www.hyperion-bt.org/helios-book/lang/builtins/txoutput.html?highlight=txOut#txoutput
 	// ok, lovelace
-	return (await network.getUtxos(validatorAddress))[0].origOutput.value.lovelace == 1025780n
+	// but I need Datum
+	// https://www.hyperion-bt.org/helios-book/api/reference/datum.html?highlight=inline#inline
+	//
+	return (await network.getUtxos(validatorAddress))[0].origOutput.datum.isInline()
 
 
 	} catch (err) {
