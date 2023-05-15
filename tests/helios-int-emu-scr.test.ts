@@ -43,8 +43,6 @@ describe('Submits a transaction to a validator address', () => {
 	const validatorHash = compiledProgram.validatorHash;
 	const validatorAddress = Address.fromValidatorHash(validatorHash); 
 
-
-	// but now that I need to Redeem, I need another tx, another name:
 	const lock = new Tx()
 	const ownerPkh = alice.pubKeyHash ;
 	const datum = new ListData([new ByteArrayData(ownerPkh.bytes),
@@ -60,7 +58,7 @@ describe('Submits a transaction to a validator address', () => {
 	const lockTxOutput = new TxOutput(
 	    validatorAddress,
 	    new Value(1000000n), // 1 tAda == 1 million lovelace
-	    hashedDatum
+	    inlineDatum
 	)
 	lock.addOutput(lockTxOutput)
 
