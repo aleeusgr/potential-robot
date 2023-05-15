@@ -90,14 +90,20 @@ describe('Submits a transaction to a validator address', () => {
 	    alice.address,
 	    new Value(1000000n), // 1 tAda == 1 million lovelace
 	)
-	redeem.addOutput(redeemTxOutput)
-	// await redeem.finalize(networkParams, alice.address);
+	redeem.addOutput(redeemTxOutput);
 
+	// something failed: RuntimeError: Trace: line 149 of IR
+	// RuntimeError on line 24 of IR: transaction rejected
+	// Why?
+	//
+	await redeem.finalize(networkParams, alice.address);
 	// const redeemTxId = await network.submitTx(redeem);
+
 	network.tick(BigInt(10));
 
 	const utxosFinal = await network.getUtxos(alice.address); 
 
+	// my final result should be in alice wallet, and it should be same type but different value.
 	return redeem.dump().body
 //	return (await network.getUtxos(validatorAddress))[0].origOutput.datum.isHashed()
 
