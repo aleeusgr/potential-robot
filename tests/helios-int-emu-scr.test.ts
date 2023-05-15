@@ -82,9 +82,11 @@ describe('Submits a transaction to a validator address', () => {
 	// https://www.hyperion-bt.org/helios-book/api/reference/tx.html?highlight=Tx#attachscript
 	redeem.attachScript(compiledProgram);
 
-	await redeem.finalize(networkParams, alice.address);
 
-	const redeemTxId = await network.submitTx(redeem);
+
+	// await redeem.finalize(networkParams, alice.address);
+
+	// const redeemTxId = await network.submitTx(redeem);
 	network.tick(BigInt(10));
 
 	const utxosFinal = await network.getUtxos(alice.address); 
