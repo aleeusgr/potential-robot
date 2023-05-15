@@ -68,25 +68,8 @@ describe('Submits a transaction to a validator address', () => {
 	network.tick(BigInt(10));
 	const utxosFinal = await network.getUtxos(alice.address); // returns a list!!!
 
-	// but what about my validatorAddress?
-	// its of type Address
-	// https://www.hyperion-bt.org/helios-book/api/reference/address.html
-	// ok, its got type of UTxO
 	//
-	// https://www.hyperion-bt.org/helios-book/api/reference/utxo.html
 	//
-	// return (await network.getUtxos(validatorAddress)).txId
-	// returned {undefined}
-	// ok, 
-	// but I need
-	// https://www.hyperion-bt.org/helios-book/api/reference/txoutput.html?highlight=txOut#txoutput
-	// https://www.hyperion-bt.org/helios-book/lang/builtins/txoutput.html?highlight=txOut#txoutput
-	// ok, lovelace
-	// but I need Datum
-	// https://www.hyperion-bt.org/helios-book/api/reference/datum.html?highlight=inline#inline
-	//
-	//Ok, here is a new branch point. Owner only will go on with Inline Datum, but I will check out and try hashed Datum here
-
 	return (await network.getUtxos(validatorAddress))[0].origOutput.datum.isInline()
 
 
