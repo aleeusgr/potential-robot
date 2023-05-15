@@ -1,3 +1,7 @@
+May 15th, Monday
+
+Now I need to Redeem a utxo; For this I need a Datum attached to the utxo; my next test is to attach two types of Datum and show them at the validatorAddress
+
 May 13th, Saturday
 
 I have to discard three days of work, start anew. 

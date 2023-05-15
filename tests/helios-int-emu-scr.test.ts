@@ -3,7 +3,10 @@ import { promises as fs } from 'fs';
 import {
   Assets, 
   Address,
+  ByteArrayData,
   ConstrData, 
+  Datum,
+  ListData,
   MintingPolicyHash,
   NetworkEmulator,
   NetworkParams,
@@ -43,7 +46,19 @@ describe('Submits a transaction to a validator address', () => {
 	
 	// Building tx
 	// function (source, Value);
+	// Construct the datum https://github.com/lley154/helios-examples/blob/main/vesting/pages/index.tsx#L194-L199
+	// I need alice pubkeyhash;
+	// alice is of type WalletEmulator
+	// Datum is inline. What does it mean?
 	
+	const ownerPkh = alice.pubKeyHash ;
+	const datum = new ListData([new ByteArrayData(ownerPkh.bytes),
+				//  new ByteArrayData(benPkh.bytes),
+				//  new IntData(BigInt(deadline.getTime()))
+				]);
+
+	const inlineDatum = Datum.inline(datum);	
+
 	const tx = new Tx()
 	const utxoIn = await network.getUtxos(alice.address)
 
@@ -52,10 +67,9 @@ describe('Submits a transaction to a validator address', () => {
 	const output = new TxOutput(
 	    validatorAddress,
 	    new Value(1000000n), // 1 tAda == 1 million lovelace
-	    // so here I need a Datum, probably
+	    inlineDatum
 	)
 	tx.addOutput(output)
-	
 
 	await tx.finalize(networkParams, alice.address);
 
@@ -63,14 +77,8 @@ describe('Submits a transaction to a validator address', () => {
 	network.tick(BigInt(10));
 	const utxosFinal = await network.getUtxos(alice.address); // returns a list!!!
 
-	// ok, so far tx builder calculates fee and sends the rest of the tx back to alice;
-	// - [ ] add someone else, in my case - validatorAddress, as a recipient. 
-	// validatorAddress won't change unless I change L36;
-	// 
-	//
-	
-	return Object.keys(tx.dump().body)
-	// return validatorAddress.toBech32() == 'addr_test1wq8jn3u0ts654lp6ltvyju7nflcm5qegukqukuhc4jdxhag7ku5n4' 
+	return tx.dump().body.outputs[0].value.lovelace == '1025780' && tx.dump().body.outputs[0].datum.inlineCbor == '9f581c95d3c44f6d118c911748e400f41c524a7cb2c706a0e96558a35a0df7ff'
+
 
 	} catch (err) {
 	    console.error("something failed:", err);
