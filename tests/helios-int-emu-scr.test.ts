@@ -53,9 +53,9 @@ describe('Submits a transaction to a validator address', () => {
 	const inlineDatum = Datum.inline(datum);	
 	const hashedDatum = Datum.hashed(datum);	
 
-	const utxoIn = await network.getUtxos(alice.address)
+	const lockIn = await network.getUtxos(alice.address)
 
-	lock.addInput(utxoIn[0]);
+	lock.addInput(lockIn[0]);
 
 	const output = new TxOutput(
 	    validatorAddress,
@@ -66,8 +66,13 @@ describe('Submits a transaction to a validator address', () => {
 
 	await lock.finalize(networkParams, alice.address);
 
-	const txId = await network.submitTx(lock);
+	const lockTxId = await network.submitTx(lock);
 	network.tick(BigInt(10));
+
+	const redeem = new Tx()
+	const redeemIn = await network.getUtxos(validatorAddress)
+	redeem.addInput(redeemIn[0]);
+
 	const utxosFinal = await network.getUtxos(alice.address); 
 
 	return (await network.getUtxos(validatorAddress))[0].origOutput.datum.isHashed()
