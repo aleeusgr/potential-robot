@@ -34,32 +34,23 @@ describe('Submits a transaction to a validator address', () => {
 
 	network.tick(BigInt(10));
 
-      // Now we are able to get the UTxOs in Alices wallet
-
+	// creating validatorAddress
 	const script = await fs.readFile('./src/owner-only.hl', 'utf8'); 
 	const program = Program.new(script); 
+	//space here, maybe I need to modify program using .parameters?
 	const compiledProgram = program.compile(optimize); 
 
 	const validatorHash = compiledProgram.validatorHash;
-	// https://www.hyperion-bt.org/helios-book/lang/builtins/address.html#address
 	const validatorAddress = Address.fromValidatorHash(validatorHash); 
 	
-	// Building tx
-	// function (source, Value);
-	// Construct the datum https://github.com/lley154/helios-examples/blob/main/vesting/pages/index.tsx#L194-L199
-	// I need alice pubkeyhash;
-	// alice is of type WalletEmulator
-	// Datum is inline. What does it mean?
-	
+
+	const tx = new Tx()
 	const ownerPkh = alice.pubKeyHash ;
 	const datum = new ListData([new ByteArrayData(ownerPkh.bytes),
-				//  new ByteArrayData(benPkh.bytes),
-				//  new IntData(BigInt(deadline.getTime()))
 				]);
 
 	const inlineDatum = Datum.inline(datum);	
 
-	const tx = new Tx()
 	const utxoIn = await network.getUtxos(alice.address)
 
 	tx.addInput(utxoIn[0]);
@@ -77,7 +68,17 @@ describe('Submits a transaction to a validator address', () => {
 	network.tick(BigInt(10));
 	const utxosFinal = await network.getUtxos(alice.address); // returns a list!!!
 
-	return tx.dump().body.outputs[0].value.lovelace == '1025780' && tx.dump().body.outputs[0].datum.inlineCbor == '9f581c95d3c44f6d118c911748e400f41c524a7cb2c706a0e96558a35a0df7ff'
+	// but what about my validatorAddress?
+	// its of type Address
+	// https://www.hyperion-bt.org/helios-book/lang/builtins/address.html?highlight=Addre#address
+	// .serialize() returns "not a function"
+	// I believe I am in the wrong doc!
+	// https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#L168
+	// .fromBech32()!!!
+	// https://www.hyperion-bt.org/helios-book/api/reference/wallethelper.html?highlight=changeAdd#changeaddress
+	// https://www.hyperion-bt.org/helios-book/api/reference/address.html
+	// yeah..., finally
+	return validatorAddress.toHex() == '700f29c78f5c354afc3afad84973d34ff1ba0328e581cb72f8ac9a6bf5'
 
 
 	} catch (err) {
