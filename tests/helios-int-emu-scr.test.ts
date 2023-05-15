@@ -70,14 +70,8 @@ describe('Submits a transaction to a validator address', () => {
 
 	// but what about my validatorAddress?
 	// its of type Address
-	// https://www.hyperion-bt.org/helios-book/lang/builtins/address.html?highlight=Addre#address
-	// .serialize() returns "not a function"
-	// I believe I am in the wrong doc!
-	// https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#L168
-	// .fromBech32()!!!
-	// https://www.hyperion-bt.org/helios-book/api/reference/wallethelper.html?highlight=changeAdd#changeaddress
 	// https://www.hyperion-bt.org/helios-book/api/reference/address.html
-	// yeah..., finally
+	//
 	return validatorAddress.toHex() == '700f29c78f5c354afc3afad84973d34ff1ba0328e581cb72f8ac9a6bf5'
 
 
