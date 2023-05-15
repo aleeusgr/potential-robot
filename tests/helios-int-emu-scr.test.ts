@@ -71,12 +71,18 @@ describe('Submits a transaction to a validator address', () => {
 
 	const redeem = new Tx()
 	const redeemIn = await network.getUtxos(validatorAddress)
-	redeem.addInput(redeemIn[0]);
+
+	// a Redeemer is necessary input:
+	// since it is discarded, any should do, right? at least I can look up:
+	// aha, I don't have any. 
+	// 
+	const redeemer = new ListData([]);
+	redeem.addInput(redeemIn[0], redeemer);
 
 	const utxosFinal = await network.getUtxos(alice.address); 
 
-	return (await network.getUtxos(validatorAddress))[0].origOutput.datum.isHashed()
-
+	return redeem.dump().body
+//	return (await network.getUtxos(validatorAddress))[0].origOutput.datum.isHashed()
 
 	} catch (err) {
 	    console.error("something failed:", err);
