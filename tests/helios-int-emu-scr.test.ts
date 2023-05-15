@@ -71,8 +71,18 @@ describe('Submits a transaction to a validator address', () => {
 	// but what about my validatorAddress?
 	// its of type Address
 	// https://www.hyperion-bt.org/helios-book/api/reference/address.html
+	// ok, its got type of UTxO
 	//
-	return validatorAddress.toHex() == '700f29c78f5c354afc3afad84973d34ff1ba0328e581cb72f8ac9a6bf5'
+	// https://www.hyperion-bt.org/helios-book/api/reference/utxo.html
+	//
+	// return (await network.getUtxos(validatorAddress)).txId
+	// returned {undefined}
+	// ok, 
+	// but I need
+	// https://www.hyperion-bt.org/helios-book/api/reference/txoutput.html?highlight=txOut#txoutput
+	// https://www.hyperion-bt.org/helios-book/lang/builtins/txoutput.html?highlight=txOut#txoutput
+	// ok, lovelace
+	return (await network.getUtxos(validatorAddress))[0].origOutput.value.lovelace == 1025780n
 
 
 	} catch (err) {
