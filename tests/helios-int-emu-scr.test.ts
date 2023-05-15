@@ -68,21 +68,20 @@ describe('Submits a transaction to a validator address', () => {
 	network.tick(BigInt(10));
 
 	const redeem = new Tx()
-	// https://www.hyperion-bt.org/helios-book/api/building/index.html?highlight=Tx#tx
-	// https://www.hyperion-bt.org/helios-book/lang/builtins/tx.html?highlight=Tx#tx
-	// https://www.hyperion-bt.org/helios-book/api/reference/tx.html?highlight=Tx#tx
 	const redeemIn = await network.getUtxos(validatorAddress)
 
+	// look at a Redeem Tx in Helios examples and Docs; 
+	// https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#L328
+	// https://www.hyperion-bt.org/helios-book/lang/script-structure.html?highlight=redee#redeemer-3
+	// https://www.hyperion-bt.org/helios-book/advanced-concepts/vesting-contract.html?highlight=redeem#redeemer
+	// https://www.hyperion-bt.org/helios-book/api/generating.html?highlight=redee#generating-datums-and-redeemers
+	// If the script uses the redeemer then a struct or enum must be defined above main that is named Redeemer.
+	// so owner-only won't work? or empty list won't work? 
+	// What is the Redeemer?
 	const redeemer = new ListData([]);
 	redeem.addInput(redeemIn[0], redeemer);
 	
-	// Error: missing script for input 0
-	// https://www.hyperion-bt.org/helios-book/api/reference/tx.html?highlight=Tx#attachscript
 	redeem.attachScript(compiledProgram);
-
-	// ok, I see datum in my inputs, thats perfect;
-	// Why my tx is being rejected? 
-	// I need to add an output
 
 	const redeemTxOutput = new TxOutput(
 	    alice.address,
@@ -93,7 +92,6 @@ describe('Submits a transaction to a validator address', () => {
 	// something failed: RuntimeError: Trace: line 149 of IR
 	// RuntimeError on line 24 of IR: transaction rejected
 	// Why?
-	//
 	await redeem.finalize(networkParams, alice.address);
 	// const redeemTxId = await network.submitTx(redeem);
 
