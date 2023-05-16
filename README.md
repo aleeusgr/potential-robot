@@ -10,6 +10,7 @@ Formatting test files using that kind of outline provides good organization and 
 
 outline in test DSL:
 
+- [ ] 
 ```javascript
 describe("vesting contract"), () => {
   describe("contract initiation", () => {
@@ -34,6 +35,24 @@ describe("vesting contract"), () => {
 })
 ```
 
+- [ ]
+```
+describe("vesting contract", () => {
+  let vestingProgram, initiatorWallet, recipientWallet;
+  beforeEach(() => { 
+    vestingProgram = new helios.Program( ... ); 
+     ...
+  })
+  it ("tests things while reusing provided `vestingProgram`", async () => {
+    ...
+  })
+})
+```
+- [ ] 
+```
+it("works with datumHash and datum at spend time")
+it("works with inlineDatum and no special datum at spend time")
+```
 
 
 
