@@ -36,7 +36,7 @@ describe("vesting contract"), () => {
 ```
 
 - [ ]
-```
+```javascript
 describe("vesting contract", () => {
   let vestingProgram, initiatorWallet, recipientWallet;
   beforeEach(() => { 
@@ -49,7 +49,7 @@ describe("vesting contract", () => {
 })
 ```
 - [ ] 
-```
+```javascript
 it("works with datumHash and datum at spend time")
 it("works with inlineDatum and no special datum at spend time")
 ```
