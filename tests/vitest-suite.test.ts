@@ -1,43 +1,23 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+// basic.spec.ts
+// organizing tests
 
-const businessHours = [9, 17]
+import { describe, expect, test } from 'vitest'
 
-function purchase() {
-  const currentHour = new Date().getHours()
-  const [open, close] = businessHours
-
-  if (currentHour > open && currentHour < close)
-    return { message: 'Success' }
-
-  return { message: 'Error' }
+const person = {
+  isActive: true,
+  age: 32,
 }
 
-describe('purchasing flow', () => {
-  beforeEach(() => {
-    // tell vitest we use mocked time
-    vi.useFakeTimers()
+describe('person', () => {
+  test('person is defined', () => {
+    expect(person).toBeDefined()
   })
 
-  afterEach(() => {
-    // restoring date after each test run
-    vi.useRealTimers()
+  test('is active', () => {
+    expect(person.isActive).toBeTruthy()
   })
 
-  it('allows purchases within business hours', () => {
-    // set hour within business hours
-    const date = new Date(2000, 1, 1, 13)
-    vi.setSystemTime(date)
-
-    // access Date.now() will result in the date set above
-    expect(purchase()).toEqual({ message: 'Success' })
-  })
-
-  it('disallows purchases outside of business hours', () => {
-    // set hour outside business hours
-    const date = new Date(2000, 1, 1, 19)
-    vi.setSystemTime(date)
-
-    // access Date.now() will result in the date set above
-    expect(purchase()).toEqual({ message: 'Error' })
+  test('age limit', () => {
+    expect(person.age).toBeLessThanOrEqual(32)
   })
 })
