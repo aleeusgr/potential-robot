@@ -35,8 +35,9 @@ const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString())
 const alice = network.createWallet(BigInt(10000000));
 network.tick(BigInt(10));
 
-describe('state of the ledger', () => {
-  it('works after line 33', () => {
+describe('state of the emulator', () => {
+  it('shows that a wallet has been created', () => {
+	  // ahh, ok. Properties;
     expect(alice.address).toBeDefined()
   })
 
@@ -49,7 +50,18 @@ const compiledProgram = program.compile(optimize);
 const validatorHash = compiledProgram.validatorHash;
 const validatorAddress = Address.fromValidatorHash(validatorHash); 
 
-console.log(validatorAddress)
+describe('what?', () => {
+	// test suite;
+	// test;
+
+  it('shows that a validator has been created', () => {
+	  // what checks should I can have?
+	  // assert type
+	  // internal checks
+    expect(person.isActive).toBeTruthy()
+  })
+
+})
 const lock = new Tx()
 const ownerPkh = alice.pubKeyHash ;
 const datum = new ListData([new ByteArrayData(ownerPkh.bytes),
@@ -74,8 +86,11 @@ await lock.finalize(networkParams, alice.address);
 const lockTxId = await network.submitTx(lock);
 network.tick(BigInt(10));
 
-describe('state of the ledger', () => {
-  it('works after line 33', () => {
+describe('state of the emulator after the transaction', () => {
+  it('a utxo at validator address contains correct Datum:', () => {
+    // const uxto = network.getUtxos();
+	  // tx.dump.body()
+	  //
     expect(alice.address).toBeDefined()
   })
 
