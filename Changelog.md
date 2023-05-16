@@ -1,3 +1,8 @@
+May 16th, Tuesday
+
+I have new goal(s); do I? Review README;
+
+
 May 13th, Saturday
 
 I have to discard three days of work, start anew. 
