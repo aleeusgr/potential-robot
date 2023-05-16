@@ -2,6 +2,8 @@
 // organizing tests
 // https://vitest.dev/api/#test
 // `it` is alias for `test`
+// test suite;
+// test;
 
 import { describe, expect, it, vi } from 'vitest'
 import { promises as fs } from 'fs';
@@ -32,7 +34,7 @@ const minAda = BigInt(2000000);  // minimum lovelace needed to send an NFT
 const network = new NetworkEmulator();
 const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
 const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
-const alice = network.createWallet(BigInt(10000000));
+const alice = network.createWallet(BigInt(10000000)); // should this be a property?
 network.tick(BigInt(10));
 
 describe('state of the emulator', () => {
@@ -50,8 +52,6 @@ const validatorHash = compiledProgram.validatorHash;
 const validatorAddress = Address.fromValidatorHash(validatorHash); 
 
 describe('validator properties?', () => {
-	// test suite;
-	// test;
 
   it('shows that a validator has been created', () => {
 	  // what checks should I can have?
