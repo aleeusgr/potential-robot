@@ -4,19 +4,42 @@ An option smart contract;
 lockAda (owner Pkh, nft, deadline);
 claimAda (nft): not after deadline? 
 
+I'll suggest starting a lightweight outline of testable expectations.
 
-A vesting smart contract locks up assets for a specific period of time and then allows
-the beneficiary to access them once a deadline has passed. 
+Formatting test files using that kind of outline provides good organization and structure for the testing code.
 
-- [x] https://github.com/input-output-hk/plutus-apps/tree/main/plutus-example#plutus-example
-- [x] https://docs.cardano.org/static/6c366861cbc7f599ed30a07969dd1cf1/e32d8/Plutus_arch.png
-- [ ] file:///home/alex/Downloads/Cardano%20Smart%20Contracts%20with%20Helios.pdf
-    - [ ] p 59
-    - [ ] https://github.com/lley154/helios-examples/blob/main/vesting/pages/index.tsx
+outline in test DSL:
+
+```javascript
+describe("vesting contract"), () => {
+  describe("contract initiation", () => {
+    it("holds assets for vesting", async() => {
+    })
+    it("lets the initiator take their own funds back, until the contract is claimed", async () => {})
+  })
+  describe("contract claim", async() => {
+     it("allows the recipient to mint a claim token they can hold in their wallet" async() => {
+})
+     it("doesn't let the initiator withdraw funds once claimed", async() => {
+})
+  })
+
+  describe("gradual maturation", () => {
+    ...
+  })
+
+  describe("reclaiming funds after long period of inactivity" () => {
+    ...
+  })
+})
+```
+
+
+
 
 `npm install`
 `npm test`
 
-sources:
+references:
 https://github.com/koralabs/handles-personalization/tree/master/simple_example_wth_tests
 https://github.com/lley154/helios-examples/tree/main/vitest
