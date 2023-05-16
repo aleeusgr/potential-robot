@@ -1,23 +1,60 @@
 // basic.spec.ts
 // organizing tests
+// https://vitest.dev/api/#test
+// it is alias for test
 
-import { describe, expect, test } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+import { promises as fs } from 'fs';
+import {
+  Assets, 
+  Address,
+  ConstrData, 
+  MintingPolicyHash,
+  NetworkEmulator,
+  NetworkParams,
+  Program, 
+  Value, 
+  textToBytes,
+  TxOutput,
+  Tx, 
+} from "@hyperionbt/helios";
 
 const person = {
   isActive: true,
   age: 32,
 }
 
-describe('person', () => {
-  test('person is defined', () => {
-    expect(person).toBeDefined()
+let optimize = false;
+const minAda = BigInt(2000000);  // minimum lovelace needed to send an NFT
+const network = new NetworkEmulator();
+const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
+const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
+const alice = network.createWallet(BigInt(10000000));
+network.tick(BigInt(10));
+
+const script = await fs.readFile('./src/owner-only.hl', 'utf8'); 
+const program = Program.new(script); 
+//space here, maybe I need to modify program using .parameters?
+const compiledProgram = program.compile(optimize); 
+
+const validatorHash = compiledProgram.validatorHash;
+const validatorAddress = Address.fromValidatorHash(validatorHash); 
+console.log(validatorAddress)
+
+describe('state of the ledger', () => {
+  it('works after line 33', () => {
+    expect(alice.address).toBeDefined()
   })
 
-  test('is active', () => {
+  it('checks validatorAddress', () => {
     expect(person.isActive).toBeTruthy()
   })
 
-  test('age limit', () => {
+  it('is active', () => {
+    expect(person.isActive).toBeTruthy()
+  })
+
+  it('age limit', () => {
     expect(person.age).toBeLessThanOrEqual(32)
   })
 })
