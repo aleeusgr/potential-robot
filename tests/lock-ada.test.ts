@@ -8,7 +8,10 @@ import { promises as fs } from 'fs';
 import {
   Assets, 
   Address,
+  ByteArrayData,
   ConstrData, 
+  Datum,
+  ListData,
   MintingPolicyHash,
   NetworkEmulator,
   NetworkParams,
@@ -32,6 +35,12 @@ const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString())
 const alice = network.createWallet(BigInt(10000000));
 network.tick(BigInt(10));
 
+describe('state of the ledger', () => {
+  it('works after line 33', () => {
+    expect(alice.address).toBeDefined()
+  })
+
+})
 const script = await fs.readFile('./src/owner-only.hl', 'utf8'); 
 const program = Program.new(script); 
 //space here, maybe I need to modify program using .parameters?
@@ -39,7 +48,31 @@ const compiledProgram = program.compile(optimize);
 
 const validatorHash = compiledProgram.validatorHash;
 const validatorAddress = Address.fromValidatorHash(validatorHash); 
+
 console.log(validatorAddress)
+const lock = new Tx()
+const ownerPkh = alice.pubKeyHash ;
+const datum = new ListData([new ByteArrayData(ownerPkh.bytes),
+			]);
+
+const inlineDatum = Datum.inline(datum);        
+const hashedDatum = Datum.hashed(datum);        
+
+const lockIn = await network.getUtxos(alice.address)
+
+lock.addInput(lockIn[0]);
+
+const lockTxOutput = new TxOutput(
+    validatorAddress,
+    new Value(1000000n), // 1 tAda == 1 million lovelace
+    inlineDatum
+)
+lock.addOutput(lockTxOutput)
+
+await lock.finalize(networkParams, alice.address);
+
+const lockTxId = await network.submitTx(lock);
+network.tick(BigInt(10));
 
 describe('state of the ledger', () => {
   it('works after line 33', () => {
