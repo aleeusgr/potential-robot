@@ -1,7 +1,7 @@
 // basic.spec.ts
 // organizing tests
 // https://vitest.dev/api/#test
-// it is alias for test
+// `it` is alias for `test`
 
 import { describe, expect, it, vi } from 'vitest'
 import { promises as fs } from 'fs';
@@ -40,7 +40,6 @@ describe('state of the emulator', () => {
 	  // ahh, ok. Properties;
     expect(alice.address).toBeDefined()
   })
-
 })
 const script = await fs.readFile('./src/owner-only.hl', 'utf8'); 
 const program = Program.new(script); 
@@ -50,7 +49,7 @@ const compiledProgram = program.compile(optimize);
 const validatorHash = compiledProgram.validatorHash;
 const validatorAddress = Address.fromValidatorHash(validatorHash); 
 
-describe('what?', () => {
+describe('validator properties?', () => {
 	// test suite;
 	// test;
 
@@ -60,7 +59,6 @@ describe('what?', () => {
 	  // internal checks
     expect(person.isActive).toBeTruthy()
   })
-
 })
 const lock = new Tx()
 const ownerPkh = alice.pubKeyHash ;
@@ -93,7 +91,6 @@ describe('state of the emulator after the transaction', () => {
 	  //
     expect(alice.address).toBeDefined()
   })
-
   it('checks validatorAddress', () => {
     expect(person.isActive).toBeTruthy()
   })
@@ -101,7 +98,6 @@ describe('state of the emulator after the transaction', () => {
   it('is active', () => {
     expect(person.isActive).toBeTruthy()
   })
-
   it('age limit', () => {
     expect(person.age).toBeLessThanOrEqual(32)
   })
