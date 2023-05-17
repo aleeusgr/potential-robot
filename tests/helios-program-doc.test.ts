@@ -5,11 +5,11 @@ import {
   Program, 
 } from "@hyperionbt/helios";
 
-describe("provide a uplc, an instance of a plutus script",async () => {
+describe("provide a uplc, an instance of a plutus script", async () => {
 
 	let optimize = false;
 
-	const script = await fs.readFile('./src/owner-only.hl', 'utf8'); 
+	const script = await fs.readFile('./src/matching-keyhash.js', 'utf8'); 
 	const program = Program.new(script); 
 	const compiledProgram = program.compile(optimize); 
 	const validatorHash = compiledProgram.validatorHash;
@@ -18,7 +18,7 @@ describe("provide a uplc, an instance of a plutus script",async () => {
 
 	it ("checks methods", async () => {
 	// https://www.hyperion-bt.org/helios-book/api/reference/program.html	
-	  expect(program.name).toBe('owner_only')
+	  expect(program.name).toBe('matching_pubKeyHash')
 	})
 	it ("checks Properties", async () => {
 	//https://www.hyperion-bt.org/helios-book/api/reference/validatorhash.html
