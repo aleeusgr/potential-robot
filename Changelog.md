@@ -1,7 +1,18 @@
+May 17th, Wednesday
+
+Before I understand, I need to understand what I need to understand
+- [ ] a lightweight outline of testable expectations.
+- [ ] organization and structure for the testing code.
+- [ ] look at testing example in a [production app](https://github.com/Zhengqbbb/cz-git)
+
+My code should be easy to understand.
+I use my code as a Lego, having a set of building blocks that work together. 
+
+let me write a test for compiling the validator.
+
 May 16th, Tuesday
 
 I have new goal(s); do I? Review README;
-
 
 May 13th, Saturday
 
