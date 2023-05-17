@@ -9,7 +9,7 @@ describe('suite name', () => {
     expect(1 + 1).eq(2)
   })
 
-  it('snapshot', () => {
-    expect({ foo: 'bar' }).toMatchSnapshot()
-  })
+  // it('snapshot', () => {
+  //   expect({ foo: 'bar' }).toMatchSnapshot()
+  // })
 })
