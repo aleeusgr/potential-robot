@@ -1,16 +1,12 @@
 # potential-robot
 
-An option smart contract;
-lockAda (owner Pkh, nft, deadline);
-claimAda (nft): not after deadline? 
-
+## Suggestion
 I'll suggest starting a lightweight outline of testable expectations.
 
 Formatting test files using that kind of outline provides good organization and structure for the testing code.
 
-outline in test DSL:
+### outline in test DSL:
 
-- [ ] 
 ```javascript
 describe("vesting contract"), () => {
   describe("contract initiation", () => {
@@ -35,7 +31,7 @@ describe("vesting contract"), () => {
 })
 ```
 
-- [ ]
+### A specific test
 ```javascript
 describe("vesting contract", () => {
   let vestingProgram, initiatorWallet, recipientWallet;
@@ -48,7 +44,8 @@ describe("vesting contract", () => {
   })
 })
 ```
-- [ ] 
+
+### some special property of the Emulator to be checked:
 ```javascript
 it("works with datumHash and datum at spend time")
 it("works with inlineDatum and no special datum at spend time")
