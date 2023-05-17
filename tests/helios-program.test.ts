@@ -1,17 +1,32 @@
-// first I need to choose a template
-// function to provide a uplc, an instance of a plutus script;
-import { describe, expect, it, beforeEach, vi } from 'vitest'
+import { describe, expect, it, expectTypeOf, vi } from 'vitest'
+import { promises as fs } from 'fs';
+import {
+  Address,
+  Program, 
+} from "@hyperionbt/helios";
 
-describe("vesting contract", () => {
+describe("provide a uplc, an instance of a plutus script",async () => {
 
-	let vestingProgram, initiatorWallet, recipientWallet;
-	// I should add a test that shows how this works;
-	beforeEach(() => { 
-	// vestingProgram = new helios.Program( ... ); 
-	// ...
-	console.log();
+
+	let optimize = false;
+
+	const script = await fs.readFile('./src/owner-only.hl', 'utf8'); 
+	const program = Program.new(script); 
+	const compiledProgram = program.compile(optimize); 
+	const validatorHash = compiledProgram.validatorHash;
+	// https://www.hyperion-bt.org/helios-book/lang/builtins/address.html#address
+	const validatorAddress = Address.fromValidatorHash(validatorHash); 
+	console.log(validatorHash.hex.length)
+
+	it ("documents validatorAddress", async () => {
+// https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#LL370C43-L370C43
+	  expectTypeOf(validatorAddress.toBech32).toMatchTypeOf("string")
 	})
-	it ("tests things while reusing provided `vestingProgram`", async () => {
-	  return true
+	it ("checks Program", async () => {
+	  expect(false).toBeTruthy()
 	})
-})
+	it ("checks validatorHash ", async () => {
+	//https://www.hyperion-bt.org/helios-book/api/reference/validatorhash.html
+	  expect(validatorHash.hex.length).toBe(56);
+	})
+	})
