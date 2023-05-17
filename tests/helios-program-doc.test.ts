@@ -7,7 +7,6 @@ import {
 
 describe("provide a uplc, an instance of a plutus script",async () => {
 
-
 	let optimize = false;
 
 	const script = await fs.readFile('./src/owner-only.hl', 'utf8'); 
