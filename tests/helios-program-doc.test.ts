@@ -11,7 +11,7 @@ describe("a uplc instance is created from source code", async () => {
 	beforeEach(async (context) => { 
 		let optimize = false;
 
-		const script = await fs.readFile('./src/matching-keyhash.js', 'utf8'); 
+		const script = await fs.readFile('./src/vesting.js', 'utf8'); 
 		const program = Program.new(script); 
 		const compiledProgram = program.compile(optimize); 
 		const validatorHash = compiledProgram.validatorHash;
@@ -26,7 +26,7 @@ describe("a uplc instance is created from source code", async () => {
 
 	it ("checks methods", async ({programName}) => {
 	// https://www.hyperion-bt.org/helios-book/api/reference/program.html	
-	  expect(programName).toBe('matching_pubKeyHash')
+	  expect(programName).toBe('vesting')
 	})
 	it ("checks Properties", async ({validatorHash}) => {
 	//https://www.hyperion-bt.org/helios-book/api/reference/validatorhash.html
