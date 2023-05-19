@@ -59,7 +59,7 @@ describe("a vesting contract", async () => {
 		expect(alice.address.toHex().length).toBe(58)
 		expect(aliceUtxos[1].value.dump().lovelace).toBe('5000000')
 	})
-	it ("tests lockAda tx", async ({network, alice, bob}) => {
+	it ("tests lockAda tx", async ({network, alice, bob, validatorAddress}) => {
 // https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#LL157C1-L280C4
 		const benAddr = bob.address;
 		const adaQty = 10 ;
@@ -134,13 +134,22 @@ describe("a vesting contract", async () => {
 
 
 		// Add the destination address and the amount of Ada to lock including a datum
-		// tx.addOutput(new TxOutput(valAddr, lockedVal, inlineDatum));
+		tx.addOutput(new TxOutput(validatorAddress, lockedVal, inlineDatum));
 
 		// Add the collateral
 		// tx.addCollateral(colatUtxo);
 
-		expect().toBe();
-	
+		const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
+		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
+
+		await tx.finalize(networkParams, alice.address);
+		const txId = await network.submitTx(tx);
+
+		network.tick(BigInt(10));
+
+		expect((await alice.utxos)[0].value.dump().lovelace).toBe('14747752');
+		
+		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toEqual(mintProgram.mintingPolicyHash.hex);
 
 	})
 })
