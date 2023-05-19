@@ -2,6 +2,7 @@ May 19th, Friday
 
 Added tests/helios-vesting.test.ts
 However reviewing the code I think: how much redundancy is there already?
+Actually, not much. Doc test is ok, just vesting is poorly named; It tests only a small part of the contract functionality; ok, it makes sense to try and factor out a lockAda function that will take enough arguments to submit a successful tx;
 
 May 17th, Wednesday
 
