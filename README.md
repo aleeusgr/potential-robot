@@ -1,10 +1,6 @@
 # potential-robot
 
-An option smart contract;
-lockAda (owner Pkh, nft, deadline);
-claimAda (nft): not after deadline? 
-
-I'll suggest starting a lightweight outline of testable expectations.
+lightweight outline of testable expectations.
 
 Formatting test files using that kind of outline provides good organization and structure for the testing code.
 

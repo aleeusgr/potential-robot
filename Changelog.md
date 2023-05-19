@@ -1,3 +1,7 @@
+May 19th, Friday
+
+Added tests/helios-vesting.test.ts
+
 May 17th, Wednesday
 
 Before I understand, I need to understand what I need to understand
