@@ -1,6 +1,7 @@
 May 19th, Friday
 
 Added tests/helios-vesting.test.ts
+However reviewing the code I think: how much redundancy is there already?
 
 May 17th, Wednesday
 
