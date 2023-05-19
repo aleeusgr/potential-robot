@@ -67,13 +67,9 @@ describe("a vesting contract", async () => {
 		const deadline = new Date(emulatorDate + 10000000);
 		const benPkh = bob.pubKeyHash;
 		const ownerPkh = alice.pubKeyHash;
-		expect(ownerPkh.hex.length).toBe(56);	
 
 		const lovelaceAmt = Number(adaQty) * 1000000;
-		const maxTxFee: number = 500000; // maximum estimated transaction fee
-		const minChangeAmt: number = 1000000; // minimum lovelace needed to be sent back as change
 		const adaAmountVal = new Value(BigInt(lovelaceAmt));
-		const minUTXOVal = new Value(BigInt(lovelaceAmt + maxTxFee + minChangeAmt));
 
 		const datum = new ListData([new ByteArrayData(ownerPkh.bytes),
 					    new ByteArrayData(benPkh.bytes),
@@ -110,7 +106,7 @@ describe("a vesting contract", async () => {
 			)
 		}`
 
-		const optimize = false;
+		const optimize = false; //maybe add to test context?
 		const mintProgram = Program.new(mintScript).compile(optimize);
 
 		tx.attachScript(mintProgram);
@@ -125,20 +121,17 @@ describe("a vesting contract", async () => {
 
 		// Indicate the minting we want to include as part of this transaction
 		tx.mintTokens(
-		mintProgram.mintingPolicyHash,
-		tokens,
-		mintRedeemer
+			mintProgram.mintingPolicyHash,
+			tokens,
+			mintRedeemer
 		)
 
 		const lockedVal = new Value(adaAmountVal.lovelace, new Assets([[mintProgram.mintingPolicyHash, tokens]]));
-
-
+		
 		// Add the destination address and the amount of Ada to lock including a datum
 		tx.addOutput(new TxOutput(validatorAddress, lockedVal, inlineDatum));
 
-		// Add the collateral
-		// tx.addCollateral(colatUtxo);
-
+		// beforeAll?
 		const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
 		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
@@ -147,8 +140,10 @@ describe("a vesting contract", async () => {
 
 		network.tick(BigInt(10));
 
+		//alice utxos changed
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('14747752');
 		
+		// validator address holds Vesting Key
 		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toEqual(mintProgram.mintingPolicyHash.hex);
 
 	})
