@@ -63,8 +63,10 @@ describe("a vesting contract", async () => {
 // https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#LL157C1-L280C4
 		const benAddr = bob.address;
 		const adaQty = 10 ;
+		const duration = 10000000;
+
 		const emulatorDate = 1677108984000; 
-		const deadline = new Date(emulatorDate + 10000000);
+		const deadline = new Date(emulatorDate + duration );
 		const benPkh = bob.pubKeyHash;
 		const ownerPkh = alice.pubKeyHash;
 
