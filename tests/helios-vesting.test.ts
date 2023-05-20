@@ -16,6 +16,7 @@ import {
   TxOutput,
   Value,
 } from "@hyperionbt/helios";
+import {lockAda} from './src/lockAda.ts';
 
 describe("a vesting contract", async () => {
 
@@ -66,7 +67,7 @@ describe("a vesting contract", async () => {
 		const duration = 10000000;
 
 		const emulatorDate = 1677108984000; 
-		const deadline = new Date(emulatorDate + duration );
+		const deadline = new Date(emulatorDate + duration);
 		const benPkh = bob.pubKeyHash;
 		const ownerPkh = alice.pubKeyHash;
 
@@ -148,5 +149,12 @@ describe("a vesting contract", async () => {
 		// validator address holds Vesting Key
 		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toEqual(mintProgram.mintingPolicyHash.hex);
 
+	})
+
+	it ("tests lockAda tx import", async ({network, alice, bob, validatorAddress}) => {
+// https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#LL157C1-L280C4
+		const adaQty = 10 ;
+		const duration = 10000000;
+		await lockAda(alice, bob, adaQty, duration)
 	})
 })
