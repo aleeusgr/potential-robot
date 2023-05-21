@@ -21,10 +21,12 @@ export const lockAda = async (
 		network: NetworkEmulator,
 		alice : WalletEmulator,
 		bob :  WalletEmulator,
-		validatorAddress: Address,
+		validatorHash: ValidatorHash,
 		adaQty : number,
 		duration : number
 		) => {
+	
+	const validatorAddress = Address.fromValidatorHash(validatorHash); 
 	const benAddr = bob.address;
 	const emulatorDate = 1677108984000;  // from src/preprod.json
 	const deadline = new Date(emulatorDate + duration);
