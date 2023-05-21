@@ -145,7 +145,7 @@ describe("a vesting contract lockAda transaction", async () => {
 
 		//alice utxos changed
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('14747752');
-		
+		expect(mintProgram.mintingPolicyHash.hex).toBe('49b106e698de78171de2faf35932635e1085c12508ca87718a2d4487');	
 		// validator address holds Vesting Key
 		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toEqual(mintProgram.mintingPolicyHash.hex);
 
