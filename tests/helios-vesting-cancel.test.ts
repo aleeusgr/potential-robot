@@ -59,7 +59,10 @@ describe("a vesting contract: Cancel transaction", async () => {
 		expect(validatorHash.hex).toBe('0502e977b1b2d1be41edabd19401d65d43f1d936f82297b72c71663c')
 	})
 
-	it ("adds new code", async ({network, alice, validatorHash}) => {
-		expect().toBe();
+	it ("adds new code", async ({network, alice, bob, validatorHash}) => {
+		const adaQty = 10;
+		const duration = 10000000;
+		await lockAda(network!, alice!, bob!, validatorHash, adaQty, duration)
+		expect((await alice.utxos)[0].value.dump().lovelace).toBe('14747752');
 	})
 })
