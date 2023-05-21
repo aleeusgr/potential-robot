@@ -64,5 +64,10 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const duration = 10000000;
 		await lockAda(network!, alice!, bob!, validatorHash, adaQty, duration)
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('14747752');
+		const keyMPH = '49b106e698de78171de2faf35932635e1085c12508ca87718a2d4487'
+		// building Cancel tx
+		expect(keyMPH).toBe('49b106e698de78171de2faf35932635e1085c12508ca87718a2d4487');
+
+
 	})
 })
