@@ -18,7 +18,7 @@ import {
 } from "@hyperionbt/helios";
 import {lockAda} from './src/lockAda.ts';
 
-describe("a vesting contract", async () => {
+describe("a vesting contract lockAda transaction", async () => {
 
 	// https://vitest.dev/guide/test-context.html
 	beforeEach(async (context) => { 
@@ -152,9 +152,11 @@ describe("a vesting contract", async () => {
 	})
 
 	it ("tests lockAda tx import", async ({network, alice, bob, validatorAddress}) => {
-// https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#LL157C1-L280C4
 		const adaQty = 10 ;
 		const duration = 10000000;
-		await lockAda(alice, bob, adaQty, duration)
+		await lockAda(network!, alice!, bob!, validatorAddress, adaQty, duration)
+
+		expect((await alice.utxos)[0].value.dump().lovelace).toBe('14747752');
+		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toBe('49b106e698de78171de2faf35932635e1085c12508ca87718a2d4487');
 	})
 })

@@ -16,15 +16,17 @@ import {
   Value,
 } from "@hyperionbt/helios";
 
-export const lockAda = async (params : any) => {
-		
-	const alice = params[0] as object;
-	const bob = params[1] as object;
-	const adaQty = params[2] as number;
-	const duration = params[3] as number;
-
+// https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#LL157C1-L280C4
+export const lockAda = async (
+		network: NetworkEmulator,
+		alice : WalletEmulator,
+		bob :  WalletEmulator,
+		validatorAddress: Address,
+		adaQty : number,
+		duration : number
+		) => {
 	const benAddr = bob.address;
-	const emulatorDate = 1677108984000; 
+	const emulatorDate = 1677108984000;  // from src/preprod.json
 	const deadline = new Date(emulatorDate + duration);
 	const benPkh = bob.pubKeyHash;
 	const ownerPkh = alice.pubKeyHash;
@@ -98,4 +100,5 @@ export const lockAda = async (params : any) => {
 
 	await tx.finalize(networkParams, alice.address);
 	const txId = await network.submitTx(tx);
+	network.tick(BigInt(10));
 }
