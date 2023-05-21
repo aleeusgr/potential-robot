@@ -26,10 +26,12 @@ describe("a vesting contract: Cancel transaction", async () => {
 
 		// compile script
 		const script = await fs.readFile('./src/vesting.js', 'utf8'); 
-		const compiledProgram = Program.new(script).compile(optimize); 
+		const program = Program.new(script);
+		const compiledProgram = program.compile(optimize); 
 		const validatorHash = compiledProgram.validatorHash;
 		const validatorAddress = Address.fromValidatorHash(validatorHash); 
 	 
+		context.program = program;
 		context.validatorHash = validatorHash;
 		context.validatorAddress = Address.fromValidatorHash(validatorHash); 
 
@@ -59,15 +61,47 @@ describe("a vesting contract: Cancel transaction", async () => {
 		expect(validatorHash.hex).toBe('0502e977b1b2d1be41edabd19401d65d43f1d936f82297b72c71663c')
 	})
 
-	it ("adds new code", async ({network, alice, bob, validatorHash}) => {
+	it ("locks funds and tries to unlock as the owner", async ({network, alice, bob, program}) => {
+		const optimize = false; // need to add it to the context
+		// Compile the Helios script
+		// It seems like I need to compile script every time, do I?
+		// If I want to have smaller context, does it really matter in the big picture?
+		// Yeah, clean code; code rot, I should think about this
+		const compiledScript = program.compile(optimize);
+		const validatorHash = compiledScript.validatorHash;
+		const validatorAddress = Address.fromValidatorHash(validatorHash);
+		
 		const adaQty = 10;
-		const duration = 10000000;
+		const duration = 1000000;
+		// --------------------------program--------v
 		await lockAda(network!, alice!, bob!, validatorHash, adaQty, duration)
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('14747752');
-		const keyMPH = '49b106e698de78171de2faf35932635e1085c12508ca87718a2d4487'
+
 		// building Cancel tx
-		expect(keyMPH).toBe('49b106e698de78171de2faf35932635e1085c12508ca87718a2d4487');
+		const keyMPH = '49b106e698de78171de2faf35932635e1085c12508ca87718a2d4487'
 
+		const minAda : number = 2000000; // minimum lovelace needed to send an NFT
+		const maxTxFee: number = 500000; // maximum estimated transaction fee
+		const minChangeAmt: number = 1000000; // minimum lovelace needed to be sent back as change
+		const minUTXOVal = new Value(BigInt(minAda + maxTxFee + minChangeAmt));
 
-	})
+		// Start building the transaction
+		const tx = new Tx();	
+
+		const ownerAddress = alice.address;
+		const ownerUtxos = await network.getUtxos(ownerAddress);
+
+		expect(ownerUtxos[0].value.dump().lovelace).toBe('14747752');
+
+		const valRedeemer = new ConstrData(0, []);
+
+		// compare to https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#L283
+		const valUtxo = (await network.getUtxos(validatorAddress))[0]
+		expect(Object.keys(valUtxo.value.dump().assets)[0]).toEqual(keyMPH)
+
+		tx.addInput(valUtxo, valRedeemer);
+
+		// Send the value of the of the valUTXO back to the owner
+		tx.addOutput(new TxOutput(ownerAddress, valUtxo.value));
+		})
 })
