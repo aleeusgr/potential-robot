@@ -124,6 +124,9 @@ describe("a vesting contract: Cancel transaction", async () => {
 		// Add the validator script to the transaction
 		tx.attachScript(compiledScript);
 
+		const colatUtxo = ownerUtxos[0];
+		tx.addCollateral(colatUtxo);
+
 		const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
 		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
