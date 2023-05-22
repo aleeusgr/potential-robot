@@ -73,7 +73,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		
 		const adaQty = 10;
 		const duration = 1000000;
-		// --------------------------program--------v
+		// --------------------maybe-program-?------v
 		await lockAda(network!, alice!, bob!, validatorHash, adaQty, duration)
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('14747752');
 
@@ -130,7 +130,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
 		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
-		expect(tx.dump()).toBe();
-		await tx.finalize(networkParams, ownerAddress);
+		expect(tx.dump().body.inputs).toBe();
+		// await tx.finalize(networkParams, ownerAddress);
 		})
 })
