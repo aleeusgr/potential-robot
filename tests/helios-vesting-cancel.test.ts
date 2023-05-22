@@ -118,5 +118,14 @@ describe("a vesting contract: Cancel transaction", async () => {
 		tx.validFrom(earlierTime);
 		tx.validTo(laterTime);
 
+		// Add the recipiants pkh
+		tx.addSigner(ownerAddress.pubKeyHash);
+
+		// Add the validator script to the transaction
+		tx.attachScript(compiledScript);
+
+		const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
+		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
+
 		})
 })
