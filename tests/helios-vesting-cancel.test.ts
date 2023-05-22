@@ -105,5 +105,18 @@ describe("a vesting contract: Cancel transaction", async () => {
 
 		// Send the value of the of the valUTXO back to the owner
 		tx.addOutput(new TxOutput(ownerAddress, valUtxo.value));
+
+		// Specify when this transaction is valid from.   This is needed so
+		// time is included in the transaction which will be use by the validator
+		// script.  Add two hours for time to live and offset the current time
+		// by 5 mins.
+		const emulatorDate = 1677108984000;  // from src/preprod.json
+		const currentTime = new Date(emulatorDate);
+		const earlierTime = new Date(currentTime - 5 * 60 * 1000);
+		const laterTime = new Date(currentTime + 2 * 60 * 60 * 1000);
+
+		tx.validFrom(earlierTime);
+		tx.validTo(laterTime);
+
 		})
 })
