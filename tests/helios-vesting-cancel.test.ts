@@ -88,6 +88,8 @@ describe("a vesting contract: Cancel transaction", async () => {
 		// Start building the transaction
 		const tx = new Tx();	
 
+		// who's address is here?
+		// the agent that created a utxo by locking ADA can cancel.
 		const ownerAddress = alice.address;
 		const ownerUtxos = await network.getUtxos(ownerAddress);
 
