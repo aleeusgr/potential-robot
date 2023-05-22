@@ -40,7 +40,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const network = new NetworkEmulator();
 
 		const alice = network.createWallet(BigInt(20000000));
-		network.createUtxo(alice, BigInt(5000000));
+		network.createUtxo(alice, BigInt(50000000));
 		const bob = network.createWallet(BigInt(10000000));
 		network.tick(BigInt(10));
 
@@ -75,7 +75,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const duration = 1000000;
 		// --------------------maybe-program-?------v
 		await lockAda(network!, alice!, bob!, validatorHash, adaQty, duration)
-		expect((await alice.utxos)[0].value.dump().lovelace).toBe('14747752');
+		expect((await alice.utxos)[0].value.dump().lovelace).toBe('59747752');
 
 		// building Cancel tx
 		const keyMPH = '49b106e698de78171de2faf35932635e1085c12508ca87718a2d4487'
@@ -93,7 +93,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const ownerAddress = alice.address;
 		const ownerUtxos = await network.getUtxos(ownerAddress);
 
-		expect(ownerUtxos[0].value.dump().lovelace).toBe('14747752');
+		expect(ownerUtxos[0].value.dump().lovelace).toBe('59747752');
 
 		const valRedeemer = new ConstrData(0, []);
 
@@ -130,7 +130,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
 		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
-		expect(tx.dump().body.inputs).toBe();
-		// await tx.finalize(networkParams, ownerAddress);
+		// expect(tx.dump().body.inputs).toBe();
+		await tx.finalize(networkParams, ownerAddress);
 		})
 })
