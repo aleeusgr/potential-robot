@@ -56,7 +56,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		// todo
 		expect(alice.address.toHex().length).toBe(58)
 		// todo
-		expect(aliceUtxos[1].value.dump().lovelace).toBe('5000000')
+		expect(aliceUtxos[1].value.dump().lovelace).toBe('50000000')
 		// todo
 		expect(validatorHash.hex).toBe('0502e977b1b2d1be41edabd19401d65d43f1d936f82297b72c71663c')
 	})
@@ -125,6 +125,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		tx.attachScript(compiledScript);
 
 		const colatUtxo = ownerUtxos[0];
+		expect(colatUtxo.value.dump().lovelace).toBe('59747752');
 		tx.addCollateral(colatUtxo);
 
 		const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
