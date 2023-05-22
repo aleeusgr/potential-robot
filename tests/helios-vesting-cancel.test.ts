@@ -127,5 +127,6 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
 		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
+		await tx.finalize(networkParams, ownerAddress);
 		})
 })
