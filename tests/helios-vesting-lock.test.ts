@@ -35,7 +35,7 @@ describe("a vesting contract lockAda transaction", async () => {
 	 
 		context.validatorHash = validatorHash;
 		context.validatorAddress = Address.fromValidatorHash(validatorHash); 
-		context.programName = program.name;
+		context.program = program;
 
 		// instantiate the Emulator
 		const minAda = BigInt(2000000);  // minimum lovelace needed to send an NFT
@@ -51,9 +51,9 @@ describe("a vesting contract lockAda transaction", async () => {
 		context.network = network;
 	})
 
-	it ("checks that a correct script is loaded", async ({programName}) => {
+	it ("checks that a correct script is loaded", async ({program}) => {
 		// https://www.hyperion-bt.org/helios-book/api/reference/program.html	
-		expect(programName).toBe('vesting')
+		expect(program.name).toBe('vesting')
 	})
 	it ("tests NetworkEmulator state", async ({network, alice}) => {
 		// https://www.hyperion-bt.org/helios-book/api/reference/address.html?highlight=Address#address
