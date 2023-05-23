@@ -62,7 +62,7 @@ describe("a vesting contract lockAda transaction", async () => {
 		expect(alice.address.toHex().length).toBe(58)
 		expect(aliceUtxos[1].value.dump().lovelace).toBe('5000000')
 	})
-	it ("tests lockAda tx", async ({network, alice, bob, validatorAddress, emulatorDate}) => {
+	it ("tests lockAda tx", async ({network, alice, bob, optimize, validatorAddress, emulatorDate}) => {
 // https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#LL157C1-L280C4
 		const benAddr = bob.address;
 		const adaQty = 10 ;
@@ -110,7 +110,7 @@ describe("a vesting contract lockAda transaction", async () => {
 			)
 		}`
 
-		const optimize = false; //maybe add to test context?
+		// const optimize = false; //maybe add to test context?
 		const mintProgram = Program.new(mintScript).compile(optimize);
 
 		tx.attachScript(mintProgram);
