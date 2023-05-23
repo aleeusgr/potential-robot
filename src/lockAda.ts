@@ -21,12 +21,16 @@ export const lockAda = async (
 		network: NetworkEmulator,
 		alice : WalletEmulator,
 		bob :  WalletEmulator,
-		validatorAddress: Address,
+		program: Program,
 		adaQty : number,
-		duration : number
+		duration : number,
+		emulatorDate : number,
+		optimize : Bool, 
 		) => {
 	const benAddr = bob.address;
-	const emulatorDate = 1677108984000;  // from src/preprod.json
+	const compiledProgram = program.compile(optimize); 
+	const validatorHash = compiledProgram.validatorHash;
+	const validatorAddress = Address.fromValidatorHash(validatorHash); 
 	const deadline = new Date(emulatorDate + duration);
 	const benPkh = bob.pubKeyHash;
 	const ownerPkh = alice.pubKeyHash;
@@ -69,7 +73,6 @@ export const lockAda = async (
 		)
 	}`
 
-	const optimize = false; //maybe add to test context?
 	const mintProgram = Program.new(mintScript).compile(optimize);
 
 	tx.attachScript(mintProgram);
