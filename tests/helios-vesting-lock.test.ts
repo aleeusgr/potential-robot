@@ -155,10 +155,14 @@ describe("a vesting contract lockAda transaction", async () => {
 
 	})
 
-	it ("tests lockAda tx import", async ({network, alice, bob, validatorAddress}) => {
+	it ("tests lockAda tx import", async ({network, alice, bob, optimize, program, emulatorDate}) => {
 		const adaQty = 10 ;
 		const duration = 10000000;
-		await lockAda(network!, alice!, bob!, validatorAddress, adaQty, duration)
+		const compiledProgram = program.compile(optimize); 
+		const validatorHash = compiledProgram.validatorHash;
+		const validatorAddress = Address.fromValidatorHash(validatorHash); 
+
+		await lockAda(network!, alice!, bob!, validatorAddress, adaQty, duration, emulatorDate)
 
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('14747752');
 		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toBe('49b106e698de78171de2faf35932635e1085c12508ca87718a2d4487');
