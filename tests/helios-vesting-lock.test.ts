@@ -22,12 +22,14 @@ describe("a vesting contract lockAda transaction", async () => {
 
 	// https://vitest.dev/guide/test-context.html
 	beforeEach(async (context) => { 
-		let optimize = false;
+		context.optimize = false;
+		context.emulatorDate = 1677108984000; 
 
 		// compile script
 		const script = await fs.readFile('./src/vesting.js', 'utf8'); 
 		const program = Program.new(script); 
-		const compiledProgram = program.compile(optimize); 
+		// this should be encapsulated
+		const compiledProgram = program.compile(false); 
 		const validatorHash = compiledProgram.validatorHash;
 		const validatorAddress = Address.fromValidatorHash(validatorHash); 
 	 
@@ -60,13 +62,12 @@ describe("a vesting contract lockAda transaction", async () => {
 		expect(alice.address.toHex().length).toBe(58)
 		expect(aliceUtxos[1].value.dump().lovelace).toBe('5000000')
 	})
-	it ("tests lockAda tx", async ({network, alice, bob, validatorAddress}) => {
+	it ("tests lockAda tx", async ({network, alice, bob, validatorAddress, emulatorDate}) => {
 // https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#LL157C1-L280C4
 		const benAddr = bob.address;
 		const adaQty = 10 ;
 		const duration = 10000000;
 
-		const emulatorDate = 1677108984000; 
 		const deadline = new Date(emulatorDate + duration);
 		const benPkh = bob.pubKeyHash;
 		const ownerPkh = alice.pubKeyHash;
