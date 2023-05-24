@@ -52,7 +52,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 
 	it ("docs the tx ingridients", async ({network, alice, validatorHash}) => {
 		// https://www.hyperion-bt.org/helios-book/api/reference/address.html?highlight=Address#address
-		const aliceUtxos = await network.getUtxos(alice.address);
+		const aliceUtxos = await alice.utxos;
 		// todo
 		expect(alice.address.toHex().length).toBe(58)
 		// todo
@@ -91,7 +91,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		// who's address is here?
 		// the agent that created a utxo by locking ADA can cancel.
 		const ownerAddress = alice.address;
-		const ownerUtxos = await network.getUtxos(ownerAddress);
+		const ownerUtxos = await alice.utxos;
 
 		expect(ownerUtxos[0].value.dump().lovelace).toBe('59747752');
 
@@ -131,7 +131,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
 		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
-		// expect(tx.dump().body.inputs).toBe();
-		await tx.finalize(networkParams, ownerAddress);
+		expect(tx.dump()).toBe();
+		// await tx.finalize(networkParams, ownerAddress);
 		})
 })
