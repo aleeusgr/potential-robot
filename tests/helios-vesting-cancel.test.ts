@@ -134,5 +134,9 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
 		await tx.finalize(networkParams, ownerAddress, [spareUtxo]);
+		const txId = await network.submitTx(tx);
+		network.tick(BigInt(10));
+
+		expect(alice.utxos).toBe()
 		})
 })
