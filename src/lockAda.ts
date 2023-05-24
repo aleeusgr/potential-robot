@@ -45,7 +45,7 @@ export const lockAda = async (
 
 	const tx = new Tx();
 
-	tx.addInputs(inputUtxos);
+	tx.addInputs([inputUtxos[0]]);
 
 	const mintScript =`minting nft
 
