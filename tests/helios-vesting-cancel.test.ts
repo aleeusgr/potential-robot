@@ -114,7 +114,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const emulatorDate = 1677108984000;  // from src/preprod.json
 		const currentTime = new Date(emulatorDate);
 		const earlierTime = new Date(currentTime - 5 * 60 * 1000);
-		const laterTime = new Date(currentTime + 2 * 60 * 60 * 1000);
+		const laterTime = new Date(currentTime + 2000 * 60 * 60 * 1000);
 
 		tx.validFrom(earlierTime);
 		tx.validTo(laterTime);
@@ -134,6 +134,9 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
 		await tx.finalize(networkParams, ownerAddress, [spareUtxo]);
+
+		expect(tx.dump()).toBe()
+
 		const txId = await network.submitTx(tx);
 		network.tick(BigInt(10));
 
