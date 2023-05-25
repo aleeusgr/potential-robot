@@ -114,7 +114,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const emulatorDate = 1677108984000;  // from src/preprod.json
 		const currentTime = new Date(emulatorDate);
 		const earlierTime = new Date(currentTime - 5 * 60 * 1000);
-		const laterTime = new Date(currentTime + 2000 * 60 * 60 * 1000);
+		const laterTime = new Date(currentTime + 20 * 60 * 60 * 1000);
 
 		tx.validFrom(earlierTime);
 		tx.validTo(laterTime);
@@ -135,11 +135,12 @@ describe("a vesting contract: Cancel transaction", async () => {
 
 		await tx.finalize(networkParams, ownerAddress, [spareUtxo]);
 
-		expect(tx.dump()).toBe()
+		const initSlot = BigInt(21425784);
+		expect(networkParams.slotToTime(initSlot)).toBe(1677108984000n)
+		expect(tx.dump().body.lastValidSlot).toBe('21425784')
 
 		const txId = await network.submitTx(tx);
 		network.tick(BigInt(10));
-
 		expect(alice.utxos).toBe()
 		})
 })
