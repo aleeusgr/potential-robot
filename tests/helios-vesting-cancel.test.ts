@@ -80,6 +80,9 @@ describe("a vesting contract: Cancel transaction", async () => {
 		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9753780');
 
 		// building Cancel tx
+		const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
+		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
+
 		const keyMPH = '49b106e698de78171de2faf35932635e1085c12508ca87718a2d4487'
 
 		const minAda : number = 2000000; // minimum lovelace needed to send an NFT
@@ -114,6 +117,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		// by 5 mins.
 		const emulatorDate = 1677108984000;  // from src/preprod.json
 		const initSlot = BigInt(21425784);   // fyi
+		expect(await networkParams.slotToTime(initSlot)).toBe(BigInt(emulatorDate));
 
 		const earlierTime = new Date(emulatorDate - 5 * 60 * 1000);
 		const laterTime = new Date(emulatorDate + 20 * 60 * 60 * 1000);
@@ -132,8 +136,6 @@ describe("a vesting contract: Cancel transaction", async () => {
 		expect(colatUtxo.value.dump().lovelace).toBe('50000000');
 		tx.addCollateral(colatUtxo);
 
-		const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
-		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
 		await tx.finalize(networkParams, ownerAddress, [spareUtxo]);
 
