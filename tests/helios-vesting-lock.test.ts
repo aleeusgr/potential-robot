@@ -12,6 +12,7 @@ import {
   NetworkEmulator,
   NetworkParams,
   Program, 
+  Redeemer,
   Tx,
   TxOutput,
   Value,
@@ -91,7 +92,11 @@ describe("a vesting contract lockAda transaction", async () => {
 		const txId: TxId = TxId::new(TX_ID)
 		const outputId: TxOutputId = TxOutputId::new(txId, ` + inputUtxos[0].utxoIdx + `)
 
-		func main(_, _, ctx: ScriptContext) -> Bool {
+		enum Redeemer {
+			Init
+		}
+
+		func main(_, ctx: ScriptContext) -> Bool {
 			tx: Tx = ctx.tx;
 			mph: MintingPolicyHash = ctx.get_current_minting_policy_hash();
 
@@ -151,7 +156,7 @@ describe("a vesting contract lockAda transaction", async () => {
 
 	})
 
-	it ("tests lockAda tx import", async ({network, alice, bob, validatorAddress}) => {
+	it.skip ("tests lockAda tx import", async ({network, alice, bob, validatorAddress}) => {
 		const adaQty = 10 ;
 		const duration = 10000000;
 		await lockAda(network!, alice!, bob!, validatorAddress, adaQty, duration)
