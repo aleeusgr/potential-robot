@@ -56,7 +56,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		// todo
 		expect(aliceUtxos[1].value.dump().lovelace).toBe('5000000')
 		// todo
-		expect(validatorHash.hex).toBe('0502e977b1b2d1be41edabd19401d65d43f1d936f82297b72c71663c')
+		expect(validatorHash.hex).toBe('e7015c6a1424d748f8241fe3a43b3a382b35dc9ca67320e3ee863dc8')
 	})
 
 	it ("adds new code", async ({network, alice, validatorHash}) => {

@@ -12,6 +12,7 @@ import {
   NetworkEmulator,
   NetworkParams,
   Program, 
+  Redeemer,
   Tx,
   TxOutput,
   Value,
@@ -91,7 +92,11 @@ describe("a vesting contract lockAda transaction", async () => {
 		const txId: TxId = TxId::new(TX_ID)
 		const outputId: TxOutputId = TxOutputId::new(txId, ` + inputUtxos[0].utxoIdx + `)
 
-		func main(ctx: ScriptContext) -> Bool {
+		enum Redeemer {
+			Init
+		}
+
+		func main(_, ctx: ScriptContext) -> Bool {
 			tx: Tx = ctx.tx;
 			mph: MintingPolicyHash = ctx.get_current_minting_policy_hash();
 
@@ -144,8 +149,9 @@ describe("a vesting contract lockAda transaction", async () => {
 		network.tick(BigInt(10));
 
 		//alice utxos changed
-		expect((await alice.utxos)[0].value.dump().lovelace).toBe('14747752');
-		expect(mintProgram.mintingPolicyHash.hex).toBe('49b106e698de78171de2faf35932635e1085c12508ca87718a2d4487');	
+		expect((await alice.utxos)[0].value.dump().lovelace).toBe('14749259');
+		expect(mintProgram.mintingPolicyHash.hex).toBe('702cd6229f16532ca9735f65037092d099b0ff78a741c82db0847bbf');	
+		
 		// validator address holds Vesting Key
 		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toEqual(mintProgram.mintingPolicyHash.hex);
 
@@ -158,7 +164,7 @@ describe("a vesting contract lockAda transaction", async () => {
 
 		const validatorAddress = Address.fromValidatorHash(validatorHash); 
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('5000000');
-		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9753780');
-		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toBe('49b106e698de78171de2faf35932635e1085c12508ca87718a2d4487');
+		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9755287');
+		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toBe('702cd6229f16532ca9735f65037092d099b0ff78a741c82db0847bbf');
 	})
 })

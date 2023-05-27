@@ -49,11 +49,15 @@ export const lockAda = async (
 
 	const mintScript =`minting nft
 
+	enum Redeemer {
+		Init
+	}
+
 	const TX_ID: ByteArray = #` + inputUtxos[0].txId.hex + `
 	const txId: TxId = TxId::new(TX_ID)
 	const outputId: TxOutputId = TxOutputId::new(txId, ` + inputUtxos[0].utxoIdx + `)
 
-	func main(ctx: ScriptContext) -> Bool {
+	func main(_, ctx: ScriptContext) -> Bool {
 		tx: Tx = ctx.tx;
 		mph: MintingPolicyHash = ctx.get_current_minting_policy_hash();
 
