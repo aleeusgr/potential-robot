@@ -62,7 +62,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 
 	})
 
-	it.skip ("locks funds and tries to unlock as the owner", async ({network, alice, bob, program}) => {
+	it ("locks funds and tries to unlock as the owner", async ({network, alice, bob, program}) => {
 		const optimize = false; // need to add it to the context
 		// Compile the Helios script
 		// It seems like I need to compile script every time, do I?
@@ -144,7 +144,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		expect(tx.dump().body.lastValidSlot).toBe('21497784')
 		expect(parseInt(tx.dump().body.firstValidSlot) < initSlot)
 		expect(parseInt(tx.dump().body.lastValidSlot) > (initSlot+BigInt(200)))
-		expect(tx.dump().body).toBe();
+		// expect(tx.dump().body).toBe();
 
 		const txId = await network.submitTx(tx);
 		network.tick(BigInt(10));
