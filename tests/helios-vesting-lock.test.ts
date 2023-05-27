@@ -149,19 +149,19 @@ describe("a vesting contract lockAda transaction", async () => {
 		network.tick(BigInt(10));
 
 		//alice utxos changed
-		expect((await alice.utxos)[0].value.dump().lovelace).toBe('14747752');
+		expect((await alice.utxos)[0].value.dump().lovelace).toBe('14749259');
 		
 		// validator address holds Vesting Key
 		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toEqual(mintProgram.mintingPolicyHash.hex);
 
 	})
 
-	it.skip ("tests lockAda tx import", async ({network, alice, bob, validatorAddress}) => {
+	it ("tests lockAda tx import", async ({network, alice, bob, validatorAddress}) => {
 		const adaQty = 10 ;
 		const duration = 10000000;
 		await lockAda(network!, alice!, bob!, validatorAddress, adaQty, duration)
 
-		expect((await alice.utxos)[0].value.dump().lovelace).toBe('14747752');
-		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toBe('49b106e698de78171de2faf35932635e1085c12508ca87718a2d4487');
+		expect((await alice.utxos)[0].value.dump().lovelace).toBe('14749259');
+		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toBe('702cd6229f16532ca9735f65037092d099b0ff78a741c82db0847bbf');
 	})
 })
