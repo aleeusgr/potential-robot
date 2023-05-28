@@ -1,3 +1,9 @@
+May 28th, Monday
+
+Building cancelAda stalled; I get an error about slot out of range. 
+I should try with simpler networkParameters, just initial configuration.
+I need to build a test for networkParameters
+
 May 21st, Sunday
 
 Huh, coding adventure. Thanks to lley154 I have lockAda;
