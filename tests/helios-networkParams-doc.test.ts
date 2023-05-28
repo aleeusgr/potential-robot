@@ -16,18 +16,17 @@ describe("run a transaction on newly initialized params", async () => {
 
 		const alice = network.createWallet(BigInt(20000000));
 		network.createUtxo(alice, BigInt(5000000));
-		const bob = network.createWallet(BigInt(10000000));
 		network.tick(BigInt(10));
 
 		context.alice = alice;
-		context.bob = bob;
 		context.network = network;
 
 	})
 
-	it ("checks methods", async ({alice}) => {
+	it ("checks methods", async ({alice, network}) => {
 	// https://www.hyperion-bt.org/helios-book/api/reference/address.html
 	  expect(alice.address.toBech32()).toBe('addr_test1vz2a83z0d5gceyghfrjqpaqu2f98evk8q6swje2c5ddqmaca2vhfl')
+	  expect(network.initNetworkParams()).toBe();
 	})
 	it.skip("checks Properties", async ({validatorHash}) => {
 	//https://www.hyperion-bt.org/helios-book/api/reference/validatorhash.html
