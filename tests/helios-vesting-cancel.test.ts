@@ -32,6 +32,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const validatorAddress = Address.fromValidatorHash(validatorHash); 
 	 
 		context.program = program;
+		// 
 		context.validatorHash = validatorHash;
 		context.validatorAddress = Address.fromValidatorHash(validatorHash); 
 
@@ -51,13 +52,14 @@ describe("a vesting contract: Cancel transaction", async () => {
 	})
 
 	it ("docs the tx ingridients", async ({network, alice, validatorHash}) => {
-		// https://www.hyperion-bt.org/helios-book/api/reference/address.html?highlight=Address#address
+		// network.getUtxos(alice.address)
+		// EmulatorWallet
 		const aliceUtxos = await alice.utxos;
-		// todo
+		// https://www.hyperion-bt.org/helios-book/api/reference/address.html?highlight=Address#address
 		expect(alice.address.toHex().length).toBe(58)
-		// todo
+		// UTxO
 		expect(aliceUtxos[1].value.dump().lovelace).toBe('50000000')
-		// todo
+		// https://www.hyperion-bt.org/helios-book/lang/builtins/validatorhash.html?highlight=valida#validatorhash
 		expect(validatorHash.hex).toBe('e7015c6a1424d748f8241fe3a43b3a382b35dc9ca67320e3ee863dc8')
 
 	})
@@ -90,7 +92,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const minChangeAmt: number = 1000000; // minimum lovelace needed to be sent back as change
 		const minUTXOVal = new Value(BigInt(minAda + maxTxFee + minChangeAmt));
 
-		// Start building the transaction
+		// with all above, a tx can be built: 
 		const tx = new Tx();	
 
 		// who's address is here?
