@@ -48,7 +48,6 @@ describe("a vesting contract: Cancel transaction", async () => {
 		context.alice = alice;
 		context.bob = bob;
 		context.network = network;
-
 	})
 
 	it ("docs the tx ingridients", async ({network, alice, validatorHash}) => {
@@ -139,6 +138,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		tx.addCollateral(colatUtxo);
 
 
+		const newnp = network.initNetworkParams(networkParams);
 		await tx.finalize(networkParams, ownerAddress, [spareUtxo]);
 
 		expect(networkParams.slotToTime(initSlot)).toBe(1677108984000n)
