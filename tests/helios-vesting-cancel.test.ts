@@ -137,8 +137,8 @@ describe("a vesting contract: Cancel transaction", async () => {
 		expect(colatUtxo.value.dump().lovelace).toBe('50000000');
 		tx.addCollateral(colatUtxo);
 
-
 		const newnp = network.initNetworkParams(networkParams);
+
 		await tx.finalize(networkParams, ownerAddress, [spareUtxo]);
 
 		expect(networkParams.slotToTime(initSlot)).toBe(1677108984000n)
