@@ -3,6 +3,7 @@ import { promises as fs } from 'fs';
 import {
   Address,
   NetworkEmulator,
+  NetworkParams,
   Program, 
 } from "@hyperionbt/helios";
 
@@ -25,8 +26,11 @@ describe("run a transaction on newly initialized params", async () => {
 
 	it ("checks methods", async ({alice, network}) => {
 	// https://www.hyperion-bt.org/helios-book/api/reference/address.html
-	  expect(alice.address.toBech32()).toBe('addr_test1vz2a83z0d5gceyghfrjqpaqu2f98evk8q6swje2c5ddqmaca2vhfl')
-	  expect(network.initNetworkParams()).toBe();
+		expect(alice.address.toBech32()).toBe('addr_test1vz2a83z0d5gceyghfrjqpaqu2f98evk8q6swje2c5ddqmaca2vhfl')
+		const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
+		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
+		const newNP = network.initNetworkParams(networkParams)
+		expect(newNP.slotToTime(BigInt(0))).toBe(1655683200000n);
 	})
 	it.skip("checks Properties", async ({validatorHash}) => {
 	//https://www.hyperion-bt.org/helios-book/api/reference/validatorhash.html
