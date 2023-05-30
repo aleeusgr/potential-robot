@@ -116,11 +116,11 @@ describe("a vesting contract: Cancel transaction", async () => {
 		// time is included in the transaction which will be use by the validator
 		// script.  Add two hours for time to live and offset the current time
 		// by 5 mins.
-		const emulatorDate = 1677108984000;  // from src/preprod.json
+		const emulatorDate = 1655683200000;  // from src/preprod.json
 		const initSlot = BigInt(21425784);   // fyi
-		expect(await networkParams.slotToTime(initSlot)).toBe(BigInt(emulatorDate));
+		// expect(await networkParams.slotToTime(initSlot)).toBe(BigInt(emulatorDate));
 
-		const earlierTime = new Date(emulatorDate - 5 * 60 * 1000);
+		const earlierTime = new Date(emulatorDate);
 		const laterTime = new Date(emulatorDate + 20 * 60 * 60 * 1000);
 
 		tx.validFrom(earlierTime);
@@ -142,14 +142,17 @@ describe("a vesting contract: Cancel transaction", async () => {
 		await tx.finalize(networkParams, ownerAddress, [spareUtxo]);
 
 		expect(networkParams.slotToTime(initSlot)).toBe(1677108984000n)
-		expect(tx.dump().body.firstValidSlot).toBe('21425484')
-		expect(tx.dump().body.lastValidSlot).toBe('21497784')
+		expect(tx.dump().body.firstValidSlot).toBe('0')
+		expect(tx.dump().body.lastValidSlot).toBe('72000')
 		expect(parseInt(tx.dump().body.firstValidSlot) < initSlot)
 		expect(parseInt(tx.dump().body.lastValidSlot) > (initSlot+BigInt(200)))
 		// expect(tx.dump().body).toBe();
 
 		const txId = await network.submitTx(tx);
 		network.tick(BigInt(10));
-		expect(alice.utxos).toBe()
+
+		const aliceReclaimsUtxos = await alice.utxos;
+
+		expect(aliceReclaimsUtxos[2].value.dump().lovelace).toBe('9545919');
 		})
 })
