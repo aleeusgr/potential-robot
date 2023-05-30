@@ -1,4 +1,10 @@
-May 28th, Monday
+May 30th, Tuesday
+
+unstuck! re-read the discussion on Discord and found a way to solve the error.
+Yeah, mild case of met-a-girl. 
+what's next is in the commit message; I really like this conventional commits tool, it helps me think.
+
+May 28th, Saturday
 
 Building cancelAda stalled; I get an error about slot out of range. 
 I should try with simpler networkParameters, just initial configuration.
