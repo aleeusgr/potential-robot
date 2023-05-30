@@ -1,3 +1,27 @@
+May 28th, Monday
+
+Building cancelAda stalled; I get an error about slot out of range. 
+I should try with simpler networkParameters, just initial configuration.
+I need to build a test for networkParameters
+
+May 21st, Sunday
+
+Huh, coding adventure. Thanks to lley154 I have lockAda;
+
+0: Emulator, Wallets, validator
+1: Alice locks 10 Ada for Bob to claim after some time;
+	1: Alice Cancels
+	2: Bob Claims
+		1: Alice fails to cancel
+	3: Charlie fails to claim.
+	4: Bob sends Vesting ID to Charlie
+2: Change logic:
+Alice locks 10 Ada to exchange for a token. Anyone can claim until a Date, but they have to show that the transaction they are submitting has a token attached to it;
+
+
+Here, I need bob to make difference between Cancel and Claim;
+
+
 May 19th, Friday
 
 Added tests/helios-vesting.test.ts
