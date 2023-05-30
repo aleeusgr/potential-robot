@@ -151,8 +151,11 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const txId = await network.submitTx(tx);
 		network.tick(BigInt(10));
 
-		const aliceReclaimsUtxos = await alice.utxos;
+		const oracle = await alice.utxos;
 
-		expect(aliceReclaimsUtxos[2].value.dump().lovelace).toBe('9545919');
+		// think about which is which.
+		expect(oracle[2].value.dump().lovelace).toBe('9545919'); 
+		expect(oracle[1].value.dump().lovelace).toBe('10000000');//  
+		expect(oracle[0].value.dump().lovelace).toBe('50000000');// collateral?
 		})
 })
