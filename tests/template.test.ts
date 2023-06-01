@@ -18,7 +18,7 @@ import {
 } from "@hyperionbt/helios";
 import {lockAda} from './src/lockAda.ts';
 
-describe("a vesting contract: Cancel transaction", async () => {
+describe("a template", async () => {
 
 	// https://vitest.dev/guide/test-context.html
 	beforeEach(async (context) => { 
