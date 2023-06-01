@@ -156,7 +156,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('50000000');
 		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9755287');
 		
-		await cancelVesting();
+		await cancelVesting(network!, alice!, program );
 
 		const oracle = await alice.utxos;
 
