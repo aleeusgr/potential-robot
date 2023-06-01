@@ -17,6 +17,7 @@ import {
   Value,
 } from "@hyperionbt/helios";
 import {lockAda} from './src/lockAda.ts';
+import {cancelVesting} from './src/cancelVesting.ts';
 
 describe("a vesting contract: Cancel transaction", async () => {
 
@@ -134,6 +135,28 @@ describe("a vesting contract: Cancel transaction", async () => {
 
 		const txId = await network.submitTx(tx);
 		network.tick(BigInt(10));
+
+		const oracle = await alice.utxos;
+
+		// think about which is which.
+		expect(oracle[2].value.dump().lovelace).toBe('9546007'); 
+		expect(oracle[1].value.dump().lovelace).toBe('10000000');//  
+		expect(oracle[0].value.dump().lovelace).toBe('50000000');// collateral?
+		})
+	it ("tests cancelVesting.ts", async ({network, alice, bob, program}) => {
+		const optimize = false; // need to add it to the context
+		const compiledScript = program.compile(optimize);
+		const validatorHash = compiledScript.validatorHash;
+		const validatorAddress = Address.fromValidatorHash(validatorHash);
+		
+		const adaQty = 10;
+		const duration = 1000000;
+		// --------------------maybe-program-?------v
+		await lockAda(network!, alice!, bob!, validatorHash, adaQty, duration);
+		expect((await alice.utxos)[0].value.dump().lovelace).toBe('50000000');
+		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9755287');
+		
+		await cancelVesting();
 
 		const oracle = await alice.utxos;
 
