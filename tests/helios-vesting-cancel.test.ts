@@ -86,16 +86,9 @@ describe("a vesting contract: Cancel transaction", async () => {
 
 		const keyMPH = '702cd6229f16532ca9735f65037092d099b0ff78a741c82db0847bbf'
 
-		const minAda : number = 2000000; // minimum lovelace needed to send an NFT
-		const maxTxFee: number = 500000; // maximum estimated transaction fee
-		const minChangeAmt: number = 1000000; // minimum lovelace needed to be sent back as change
-		const minUTXOVal = new Value(BigInt(minAda + maxTxFee + minChangeAmt));
-
 		// with all above, a tx can be built: 
 		const tx = new Tx();	
 
-		// who's address is here?
-		// the agent that created a utxo by locking ADA can cancel.
 		const ownerAddress = alice.address;
 		const ownerUtxos = await alice.utxos;
 
@@ -114,14 +107,11 @@ describe("a vesting contract: Cancel transaction", async () => {
 
 		// Specify when this transaction is valid from.   This is needed so
 		// time is included in the transaction which will be use by the validator
-		// script.  Add two hours for time to live and offset the current time
-		// by 5 mins.
-		const emulatorDate = 1655683200000;  // from src/preprod.json
-		const initSlot = BigInt(21425784);   // fyi
-		// expect(await networkParams.slotToTime(initSlot)).toBe(BigInt(emulatorDate));
+		// script. in NetworkEmulator, init slot is 0;
+		const emulatorDate = Number(await networkParams.slotToTime(0n)); 
 
 		const earlierTime = new Date(emulatorDate);
-		const laterTime = new Date(emulatorDate + 20 * 60 * 60 * 1000);
+		const laterTime = new Date(emulatorDate + 3 * 60 * 60 * 1000);
 
 		tx.validFrom(earlierTime);
 		tx.validTo(laterTime);
@@ -137,16 +127,10 @@ describe("a vesting contract: Cancel transaction", async () => {
 		expect(colatUtxo.value.dump().lovelace).toBe('50000000');
 		tx.addCollateral(colatUtxo);
 
-		const newnp = network.initNetworkParams(networkParams);
-
 		await tx.finalize(networkParams, ownerAddress, [spareUtxo]);
 
-		expect(networkParams.slotToTime(initSlot)).toBe(1677108984000n)
 		expect(tx.dump().body.firstValidSlot).toBe('0')
-		expect(tx.dump().body.lastValidSlot).toBe('72000')
-		expect(parseInt(tx.dump().body.firstValidSlot) < initSlot)
-		expect(parseInt(tx.dump().body.lastValidSlot) > (initSlot+BigInt(200)))
-		// expect(tx.dump().body).toBe();
+		expect(tx.dump().body.lastValidSlot).toBe('10800')
 
 		const txId = await network.submitTx(tx);
 		network.tick(BigInt(10));
@@ -154,7 +138,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const oracle = await alice.utxos;
 
 		// think about which is which.
-		expect(oracle[2].value.dump().lovelace).toBe('9545919'); 
+		expect(oracle[2].value.dump().lovelace).toBe('9546007'); 
 		expect(oracle[1].value.dump().lovelace).toBe('10000000');//  
 		expect(oracle[0].value.dump().lovelace).toBe('50000000');// collateral?
 		})
