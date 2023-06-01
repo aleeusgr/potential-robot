@@ -28,7 +28,9 @@ export const lockAda = async (
 	
 	const validatorAddress = Address.fromValidatorHash(validatorHash); 
 	const benAddr = bob.address;
-	const emulatorDate = 1677108984000;  // from src/preprod.json
+	const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
+	const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
+	const emulatorDate = Number(await networkParams.slotToTime(0n)); 
 	const deadline = new Date(emulatorDate + duration);
 	const benPkh = bob.pubKeyHash;
 	const ownerPkh = alice.pubKeyHash;
@@ -100,9 +102,6 @@ export const lockAda = async (
 	// Add the destination address and the amount of Ada to lock including a datum
 	tx.addOutput(new TxOutput(validatorAddress, lockedVal, inlineDatum));
 
-	// beforeAll?
-	const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
-	const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
 	await tx.finalize(networkParams, alice.address);
 	const txId = await network.submitTx(tx);
