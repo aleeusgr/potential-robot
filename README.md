@@ -4,7 +4,9 @@ Thank's to Randall Harmon, Helios community, Gimbalabs and James D., Romain Soul
 
 A testing template for [Helios vesting example](https://github.com/lley154/helios-examples/tree/main/vesting)
 
-## What to do with it?
+- [ ] when is goot time to write changelog?
+
+## Run
 1. `npm install`
 2. `npm test`
 3. contribute:
