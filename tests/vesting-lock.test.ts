@@ -17,7 +17,7 @@ import {
   TxOutput,
   Value,
 } from "@hyperionbt/helios";
-import {lockAda} from './src/lockAda.ts';
+import {lockAda} from './src/vesting-lock.ts';
 
 describe("a vesting contract lockAda transaction", async () => {
 
