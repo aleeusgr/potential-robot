@@ -9,9 +9,5 @@ A testing template for [Helios vesting example](https://github.com/lley154/helio
 ## Run
 1. `npm install`
 2. `npm test`
-3. contribute:
-- [ ] add claimVesting
-- [ ] clean up
-- [ ] add a fuzzy test
-- [ ] https://discord.com/channels/@me/1090754901526712360/1113831971718709388
+3. https://github.com/aleeusgr/potential-robot/issues/114
 
