@@ -2,8 +2,10 @@
 
 Thank's to Randall Harmon, Helios community, Gimbalabs and James D., Romain Soulat IOG. 
 
-This is an example of how a dApp component can be built using test-deriven approach.
-Start by gathering product requirements and user stories, formulate testable expectations and make tests pass.
+This is a toolbox for test-driven development on Cardano, using Helios.
+Start cloning the repo and experimenting with the ledger emulator.
+Gather product requirements and user stories, create Issues, formulate testable expectations and make tests pass.
+Contribute
 
 ## Documentation:
 [Vitest](https://vitest.dev/)
