@@ -9,7 +9,9 @@ Contribute
 
 ## Documentation:
 [Vitest](https://vitest.dev/)
+
 [Helios](https://github.com/Hyperion-BT/helios)
+
 [Helios vesting example](https://github.com/lley154/helios-examples/tree/main/vesting)
 
 ## Usage
