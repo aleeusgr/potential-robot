@@ -2,12 +2,19 @@
 
 Thank's to Randall Harmon, Helios community, Gimbalabs and James D., Romain Soulat IOG. 
 
-A testing template for [Helios vesting example](https://github.com/lley154/helios-examples/tree/main/vesting)
+This is an example of how a dApp component can be built using test-deriven approach.
+Start by gathering product requirements and user stories, formulate testable expectations and make tests pass.
 
-- [ ] when is goot time to write changelog?
+## Documentation:
+[Vitest](https://vitest.dev/)
+[Helios](https://github.com/Hyperion-BT/helios)
+[Helios vesting example](https://github.com/lley154/helios-examples/tree/main/vesting)
 
-## Run
+## Usage
 1. `npm install`
 2. `npm test`
-3. https://github.com/aleeusgr/potential-robot/issues/114
+3. onchain code is in `./src/vesting.hl`
+4. `./tests/unit` document Helios API
+5. tests in `./tests/*.test.ts` use pre-defined environment to run a transaction as a test and as an importable module. 
+6. importable transaction modules are in `src`
 
