@@ -32,6 +32,7 @@ describe("a vesting contract lockAda transaction", async () => {
 		const validatorHash = compiledProgram.validatorHash;
 		const validatorAddress = Address.fromValidatorHash(validatorHash); 
 	 
+		context.program = program;
 		context.validatorHash = validatorHash;
 		context.validatorAddress = Address.fromValidatorHash(validatorHash); 
 		context.programName = program.name;
@@ -157,10 +158,10 @@ describe("a vesting contract lockAda transaction", async () => {
 
 	})
 
-	it ("tests lockAda tx import", async ({network, alice, bob, validatorHash}) => {
+	it ("tests lockAda tx import", async ({network, alice, bob,validatorHash, program}) => {
 		const adaQty = 10 ;
 		const duration = 10000000;
-		await lockAda(network!, alice!, bob!, validatorHash, adaQty, duration)
+		await lockAda(network!, alice!, bob!, program, adaQty, duration)
 
 		const validatorAddress = Address.fromValidatorHash(validatorHash); 
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('5000000');

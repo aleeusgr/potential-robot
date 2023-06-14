@@ -21,12 +21,16 @@ export const lockAda = async (
 		network: NetworkEmulator,
 		alice : WalletEmulator,
 		bob :  WalletEmulator,
-		validatorHash: ValidatorHash,
+		program: Program,
 		adaQty : number,
 		duration : number
 		) => {
 	
+	const optimize = false; // isnt there a way to set it globally?
+	const compiledScript = program.compile(optimize);
+	const validatorHash = compiledScript.validatorHash;
 	const validatorAddress = Address.fromValidatorHash(validatorHash); 
+
 	const benAddr = bob.address;
 	const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
 	const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
@@ -77,7 +81,6 @@ export const lockAda = async (
 		)
 	}`
 
-	const optimize = false; //maybe add to test context?
 	const mintProgram = Program.new(mintScript).compile(optimize);
 
 	tx.attachScript(mintProgram);
