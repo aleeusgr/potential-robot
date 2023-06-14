@@ -70,7 +70,6 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const validatorHash = compiledScript.validatorHash;
 		const validatorAddress = Address.fromValidatorHash(validatorHash);
 
-		
 		const adaQty = 10;
 		const duration = 1000000;
 		await lockAda(network!, alice!, bob!, program, adaQty, duration);
