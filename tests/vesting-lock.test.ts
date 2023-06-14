@@ -51,18 +51,27 @@ describe("a vesting contract lockAda transaction", async () => {
 		context.network = network;
 	})
 
-	it ("checks that a correct script is loaded", async ({programName}) => {
-		// https://www.hyperion-bt.org/helios-book/api/reference/program.html	
-		expect(programName).toBe('vesting')
-	})
-	it ("tests NetworkEmulator state", async ({network, alice}) => {
+	it ("tests initial NetworkEmulator state", async ({network, alice}) => {
 		// https://www.hyperion-bt.org/helios-book/api/reference/address.html?highlight=Address#address
 		const aliceUtxos = await network.getUtxos(alice.address);
-
-		expect(alice.address.toHex().length).toBe(58)
+		expect(alice.address.toHex().length).toBe(58) //property?
 		expect(aliceUtxos[1].value.dump().lovelace).toBe('5000000')
+		expect(aliceUtxos[0].value.dump().lovelace).toBe('20000000')
 	})
-	it ("tests lockAda tx", async ({network, alice, bob, validatorAddress}) => {
+	it ("tests lockAda tx", async ({network, alice, bob,validatorHash, program}) => {
+		const adaQty = 10 ;
+		const duration = 10000000;
+		await lockAda(network!, alice!, bob!, program, adaQty, duration)
+
+		// one utxo is unchanged, second has (10 ADA + txFee) less 
+		expect((await alice.utxos)[0].value.dump().lovelace).toBe('5000000');
+		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9755287');
+
+		const validatorAddress = Address.fromValidatorHash(validatorHash); 
+		// there exists a utxo that has a specified token locked at a validatorAddress.
+		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toBe('702cd6229f16532ca9735f65037092d099b0ff78a741c82db0847bbf');
+	})
+	it ("reproduces lockAda tx", async ({network, alice, bob, validatorAddress}) => {
 // https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#LL157C1-L280C4
 		const benAddr = bob.address;
 		const adaQty = 10 ;
@@ -158,14 +167,4 @@ describe("a vesting contract lockAda transaction", async () => {
 
 	})
 
-	it ("tests lockAda tx import", async ({network, alice, bob,validatorHash, program}) => {
-		const adaQty = 10 ;
-		const duration = 10000000;
-		await lockAda(network!, alice!, bob!, program, adaQty, duration)
-
-		const validatorAddress = Address.fromValidatorHash(validatorHash); 
-		expect((await alice.utxos)[0].value.dump().lovelace).toBe('5000000');
-		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9755287');
-		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toBe('702cd6229f16532ca9735f65037092d099b0ff78a741c82db0847bbf');
-	})
 })
