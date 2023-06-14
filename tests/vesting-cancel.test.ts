@@ -51,8 +51,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		context.network = network;
 	})
 
-	it ("docs the tx ingridients", async ({network, alice, validatorHash}) => {
-		// network.getUtxos(alice.address)
+	it ("documents the initial network state", async ({network, alice, validatorHash}) => {
 		// EmulatorWallet
 		const aliceUtxos = await alice.utxos;
 		// https://www.hyperion-bt.org/helios-book/api/reference/address.html?highlight=Address#address
@@ -64,7 +63,32 @@ describe("a vesting contract: Cancel transaction", async () => {
 
 	})
 
-	it ("locks funds and tries to unlock as the owner", async ({network, alice, bob, program}) => {
+	it ("tests cancelVesting.ts", async ({network, alice, bob, program}) => {
+		const optimize = false; // need to add it to the context
+		const compiledScript = program.compile(optimize);
+		const validatorHash = compiledScript.validatorHash;
+		const validatorAddress = Address.fromValidatorHash(validatorHash);
+
+		expect((await alice.utxos)[0].value.dump().lovelace).toBe('20000000');
+		expect((await alice.utxos)[1].value.dump().lovelace).toBe('50000000');
+		
+		const adaQty = 10;
+		const duration = 1000000;
+		await lockAda(network!, alice!, bob!, program, adaQty, duration);
+		expect((await alice.utxos)[0].value.dump().lovelace).toBe('50000000');
+		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9755287');
+		
+		await cancelVesting(network!, alice!, program );
+
+		const oracle = await alice.utxos;
+
+		// think about which is which.
+		expect(oracle[2].value.dump().lovelace).toBe('9546007'); 
+		expect(oracle[1].value.dump().lovelace).toBe('10000000');//  
+		expect(oracle[0].value.dump().lovelace).toBe('50000000');// collateral?
+		})
+
+	it ("documents cancelVesting", async ({network, alice, bob, program}) => {
 		// Obtain UPLC:
 		// need to add it to the context
 		// Compile the Helios script
@@ -128,30 +152,6 @@ describe("a vesting contract: Cancel transaction", async () => {
 
 		const txId = await network.submitTx(tx);
 		network.tick(BigInt(10));
-
-		const oracle = await alice.utxos;
-
-		// think about which is which.
-		expect(oracle[2].value.dump().lovelace).toBe('9546007'); 
-		expect(oracle[1].value.dump().lovelace).toBe('10000000');//  
-		expect(oracle[0].value.dump().lovelace).toBe('50000000');// collateral?
-		})
-	it ("tests cancelVesting.ts", async ({network, alice, bob, program}) => {
-		const optimize = false; // need to add it to the context
-		const compiledScript = program.compile(optimize);
-		const validatorHash = compiledScript.validatorHash;
-		const validatorAddress = Address.fromValidatorHash(validatorHash);
-
-		expect((await alice.utxos)[0].value.dump().lovelace).toBe('20000000');
-		expect((await alice.utxos)[1].value.dump().lovelace).toBe('50000000');
-		
-		const adaQty = 10;
-		const duration = 1000000;
-		await lockAda(network!, alice!, bob!, program, adaQty, duration);
-		expect((await alice.utxos)[0].value.dump().lovelace).toBe('50000000');
-		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9755287');
-		
-		await cancelVesting(network!, alice!, program );
 
 		const oracle = await alice.utxos;
 
