@@ -26,7 +26,7 @@ describe("a vesting contract lockAda transaction", async () => {
 		let optimize = false;
 
 		// compile script
-		const script = await fs.readFile('./src/vesting.js', 'utf8'); 
+		const script = await fs.readFile('./src/vesting.hl', 'utf8'); 
 		const program = Program.new(script); 
 		const compiledProgram = program.compile(optimize); 
 		const validatorHash = compiledProgram.validatorHash;
@@ -51,25 +51,39 @@ describe("a vesting contract lockAda transaction", async () => {
 		context.network = network;
 	})
 
-	it ("checks that a correct script is loaded", async ({programName}) => {
-		// https://www.hyperion-bt.org/helios-book/api/reference/program.html	
-		expect(programName).toBe('vesting')
-	})
-	it ("tests NetworkEmulator state", async ({network, alice}) => {
+	it ("tests initial NetworkEmulator state", async ({network, alice}) => {
 		// https://www.hyperion-bt.org/helios-book/api/reference/address.html?highlight=Address#address
 		const aliceUtxos = await network.getUtxos(alice.address);
-
-		expect(alice.address.toHex().length).toBe(58)
+		expect(alice.address.toHex().length).toBe(58) //property?
 		expect(aliceUtxos[1].value.dump().lovelace).toBe('5000000')
+		expect(aliceUtxos[0].value.dump().lovelace).toBe('20000000')
 	})
-	it ("tests lockAda tx", async ({network, alice, bob, validatorAddress}) => {
+	it ("tests lockAda tx", async ({network, alice, bob,validatorHash, program}) => {
+		const adaQty = 10 ;
+		const duration = 10000000;
+		await lockAda(network!, alice!, bob!, program, adaQty, duration)
+		
+		// one utxo is unchanged, second has (10 ADA + txFee) less 
+		expect((await alice.utxos)[0].value.dump().lovelace).toBe('5000000');
+		expect((await network.getUtxos(await alice.address))[0].value.dump().lovelace).toBe('5000000');
+		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9755287');
+
+		const validatorAddress = Address.fromValidatorHash(validatorHash); 
+		// there exists a utxo that has a specified token locked at a validatorAddress.
+		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toBe('702cd6229f16532ca9735f65037092d099b0ff78a741c82db0847bbf');
+	})
+	it ("reproduces lockAda tx", async ({network, alice, bob, validatorAddress}) => {
 // https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#LL157C1-L280C4
 		const benAddr = bob.address;
 		const adaQty = 10 ;
 		const duration = 10000000;
 
-		const emulatorDate = 1677108984000; 
+		const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
+		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
+
+		const emulatorDate = Number(networkParams.slotToTime(BigInt(0))); 
 		const deadline = new Date(emulatorDate + duration);
+
 		const benPkh = bob.pubKeyHash;
 		const ownerPkh = alice.pubKeyHash;
 
@@ -83,9 +97,6 @@ describe("a vesting contract lockAda transaction", async () => {
 
 		const inputUtxos = await alice.utxos;
 
-		const tx = new Tx();
-
-		tx.addInputs(inputUtxos);
 
 		const mintScript =`minting nft
 
@@ -118,8 +129,6 @@ describe("a vesting contract lockAda transaction", async () => {
 		const optimize = false; //maybe add to test context?
 		const mintProgram = Program.new(mintScript).compile(optimize);
 
-		tx.attachScript(mintProgram);
-
 		// Construct the NFT that we will want to send as an output
 		const nftTokenName = ByteArrayData.fromString("Vesting Key").toHex();
 		const tokens: [number[], bigint][] = [[hexToBytes(nftTokenName), BigInt(1)]];
@@ -128,44 +137,37 @@ describe("a vesting contract lockAda transaction", async () => {
 		// a plutus script transaction even if we don't actually use it.
 		const mintRedeemer = new ConstrData(0, []);
 
-		// Indicate the minting we want to include as part of this transaction
-		tx.mintTokens(
-			mintProgram.mintingPolicyHash,
-			tokens,
-			mintRedeemer
-		)
-
 		const lockedVal = new Value(adaAmountVal.lovelace, new Assets([[mintProgram.mintingPolicyHash, tokens]]));
-		
-		// Add the destination address and the amount of Ada to lock including a datum
-		tx.addOutput(new TxOutput(validatorAddress, lockedVal, inlineDatum));
 
-		// beforeAll?
-		const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
-		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
+		const tx = new Tx()
+			.attachScript(mintProgram)
+			.addInputs(inputUtxos)
+			// Indicate the minting we want to include as part of this transaction
+			.mintTokens(
+				mintProgram.mintingPolicyHash,
+				tokens,
+				mintRedeemer
+			)
+
+			// Add the destination address and the amount of Ada to lock including a datum
+			.addOutput(new TxOutput(validatorAddress, lockedVal, inlineDatum));
+
 
 		await tx.finalize(networkParams, alice.address);
 		const txId = await network.submitTx(tx);
 
 		network.tick(BigInt(10));
 
-		//alice utxos changed
+		// this should be consistent with previous test.
+		// alice has only one utxo:
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('14749259');
-		expect(mintProgram.mintingPolicyHash.hex).toBe('702cd6229f16532ca9735f65037092d099b0ff78a741c82db0847bbf');	
-		
+		// and the fee is different, compare L67
+		expect(14749259).not.to.equal(9755287+5000000);
+		expect((await alice.utxos)[1]).toBeUndefined();
 		// validator address holds Vesting Key
+		expect(mintProgram.mintingPolicyHash.hex).toBe('702cd6229f16532ca9735f65037092d099b0ff78a741c82db0847bbf');	
 		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toEqual(mintProgram.mintingPolicyHash.hex);
 
 	})
 
-	it ("tests lockAda tx import", async ({network, alice, bob,validatorHash, program}) => {
-		const adaQty = 10 ;
-		const duration = 10000000;
-		await lockAda(network!, alice!, bob!, program, adaQty, duration)
-
-		const validatorAddress = Address.fromValidatorHash(validatorHash); 
-		expect((await alice.utxos)[0].value.dump().lovelace).toBe('5000000');
-		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9755287');
-		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toBe('702cd6229f16532ca9735f65037092d099b0ff78a741c82db0847bbf');
-	})
 })

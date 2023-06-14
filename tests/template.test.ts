@@ -25,7 +25,7 @@ describe("a template", async () => {
 		let optimize = false;
 
 		// compile script
-		const script = await fs.readFile('./src/vesting.js', 'utf8'); 
+		const script = await fs.readFile('./src/vesting.hl', 'utf8'); 
 		const compiledProgram = Program.new(script).compile(optimize); 
 		const validatorHash = compiledProgram.validatorHash;
 		const validatorAddress = Address.fromValidatorHash(validatorHash); 
