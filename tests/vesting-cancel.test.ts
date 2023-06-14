@@ -141,6 +141,9 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const compiledScript = program.compile(optimize);
 		const validatorHash = compiledScript.validatorHash;
 		const validatorAddress = Address.fromValidatorHash(validatorHash);
+
+		expect((await alice.utxos)[0].value.dump().lovelace).toBe('20000000');
+		expect((await alice.utxos)[1].value.dump().lovelace).toBe('50000000');
 		
 		const adaQty = 10;
 		const duration = 1000000;
