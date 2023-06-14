@@ -79,8 +79,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		// Lock ADA:
 		const adaQty = 10;
 		const duration = 1000000;
-		// --------------------maybe-program-?------v
-		await lockAda(network!, alice!, bob!, validatorHash, adaQty, duration)
+		await lockAda(network!, alice!, bob!, program, adaQty, duration)
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('50000000');
 		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9755287');
 
@@ -145,8 +144,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		
 		const adaQty = 10;
 		const duration = 1000000;
-		// --------------------maybe-program-?------v
-		await lockAda(network!, alice!, bob!, validatorHash, adaQty, duration);
+		await lockAda(network!, alice!, bob!, program, adaQty, duration);
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('50000000');
 		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9755287');
 		
