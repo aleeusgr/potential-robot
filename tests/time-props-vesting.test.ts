@@ -49,6 +49,11 @@ describe("what happens when we add wait interval between lock and cancel?", asyn
 		context.alice = alice;
 		context.bob = bob;
 		context.network = network;
+
+		const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
+		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
+
+		context.networkParams = networkParams;
 	})
 
 	it ("documents properties", async ({network, alice, validatorHash}) => {
@@ -76,7 +81,8 @@ describe("what happens when we add wait interval between lock and cancel?", asyn
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('50000000');
 		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9755287');
 
-		network.tick(BigInt(10));
+		// https://www.hyperion-bt.org/helios-book/api/reference/fuzzytest.html?highlight=fuzz#fuzzytest
+		network.tick(BigInt(10780));
 		
 		await cancelVesting(network!, alice!, program );
 
@@ -87,19 +93,20 @@ describe("what happens when we add wait interval between lock and cancel?", asyn
 		expect(oracle[1].value.dump().lovelace).toBe('10000000');//  
 		expect(oracle[0].value.dump().lovelace).toBe('50000000');// collateral?
 		})
-	it.fails ("Error: tx invalid (not finalized or slot out of range) ", async ({network, alice, bob, program}) => {
+	it.fails ("Error: tx invalid (not finalized or slot out of range) ", async ({network, alice, bob, program, networkParams}) => {
 		const optimize = false; // need to add it to the context
 		const compiledScript = program.compile(optimize);
 		const validatorHash = compiledScript.validatorHash;
 		const validatorAddress = Address.fromValidatorHash(validatorHash);
 
 		const adaQty = 10;
-		const duration = 1000000; // type: time
+		const duration = 1000000;
 		await lockAda(network!, alice!, bob!, program, adaQty, duration);
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('50000000');
 		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9755287');
 
-		network.tick(BigInt(100000)); //type: number_of_slots
+		// https://www.hyperion-bt.org/helios-book/api/reference/fuzzytest.html?highlight=fuzz#fuzzytest
+		network.tick(BigInt(10781));
 		
 		await cancelVesting(network!, alice!, program );
 
