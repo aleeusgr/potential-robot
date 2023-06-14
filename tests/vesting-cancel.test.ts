@@ -26,7 +26,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		let optimize = false;
 
 		// compile script
-		const script = await fs.readFile('./src/vesting.js', 'utf8'); 
+		const script = await fs.readFile('./src/vesting.hl', 'utf8'); 
 		const program = Program.new(script);
 		const compiledProgram = program.compile(optimize); 
 		const validatorHash = compiledProgram.validatorHash;
