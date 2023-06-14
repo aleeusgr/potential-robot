@@ -52,15 +52,15 @@ describe("a vesting contract: Cancel transaction", async () => {
 	})
 
 	it ("documents properties", async ({network, alice, validatorHash}) => {
-		// network.getUtxos(alice.address)
-		// EmulatorWallet
-		const aliceUtxos = await alice.utxos;
 		// https://www.hyperion-bt.org/helios-book/api/reference/address.html?highlight=Address#address
 		expect(alice.address.toHex().length).toBe(58)
-		// UTxO
-		expect(aliceUtxos[1].value.dump().lovelace).toBe('50000000')
+		// UTxOs
+		expect((await alice.utxos)[0].value.dump().lovelace).toBe('20000000');
+		expect((await alice.utxos)[1].value.dump().lovelace).toBe('50000000');
+
 		// https://www.hyperion-bt.org/helios-book/lang/builtins/validatorhash.html?highlight=valida#validatorhash
 		expect(validatorHash.hex).toBe('e7015c6a1424d748f8241fe3a43b3a382b35dc9ca67320e3ee863dc8')
+
 
 	})
 
@@ -70,8 +70,6 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const validatorHash = compiledScript.validatorHash;
 		const validatorAddress = Address.fromValidatorHash(validatorHash);
 
-		expect((await alice.utxos)[0].value.dump().lovelace).toBe('20000000');
-		expect((await alice.utxos)[1].value.dump().lovelace).toBe('50000000');
 		
 		const adaQty = 10;
 		const duration = 1000000;
