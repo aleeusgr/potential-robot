@@ -65,15 +65,18 @@ describe("a vesting contract: Cancel transaction", async () => {
 	})
 
 	it ("locks funds and tries to unlock as the owner", async ({network, alice, bob, program}) => {
-		const optimize = false; // need to add it to the context
+		// Obtain UPLC:
+		// need to add it to the context
 		// Compile the Helios script
 		// It seems like I need to compile script every time, do I?
 		// If I want to have smaller context, does it really matter in the big picture?
 		// Yeah, clean code; code rot, I should think about this
+		const optimize = false; 
 		const compiledScript = program.compile(optimize);
 		const validatorHash = compiledScript.validatorHash;
 		const validatorAddress = Address.fromValidatorHash(validatorHash);
-		
+		//
+		// Lock ADA:
 		const adaQty = 10;
 		const duration = 1000000;
 		// --------------------maybe-program-?------v
@@ -81,14 +84,11 @@ describe("a vesting contract: Cancel transaction", async () => {
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('50000000');
 		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9755287');
 
-		// building Cancel tx
+
 		const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
 		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
 		const keyMPH = '702cd6229f16532ca9735f65037092d099b0ff78a741c82db0847bbf'
-
-		// with all above, a tx can be built: 
-		const tx = new Tx();	
 
 		const ownerAddress = alice.address;
 		const ownerUtxos = await alice.utxos;
@@ -101,11 +101,6 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const valUtxo = (await network.getUtxos(validatorAddress))[0]
 		expect(Object.keys(valUtxo.value.dump().assets)[0]).toEqual(keyMPH)
 
-		tx.addInput(valUtxo, valRedeemer);
-
-		// Send the value of the of the valUTXO back to the owner
-		tx.addOutput(new TxOutput(ownerAddress, valUtxo.value));
-
 		// Specify when this transaction is valid from.   This is needed so
 		// time is included in the transaction which will be use by the validator
 		// script. in NetworkEmulator, init slot is 0;
@@ -114,19 +109,18 @@ describe("a vesting contract: Cancel transaction", async () => {
 		const earlierTime = new Date(emulatorDate);
 		const laterTime = new Date(emulatorDate + 3 * 60 * 60 * 1000);
 
-		tx.validFrom(earlierTime);
-		tx.validTo(laterTime);
-
-		// Add the recipiants pkh
-		tx.addSigner(ownerAddress.pubKeyHash);
-
-		// Add the validator script to the transaction
-		tx.attachScript(compiledScript);
-
 		const colatUtxo = ownerUtxos[0];
 		const spareUtxo = ownerUtxos[1];
 		expect(colatUtxo.value.dump().lovelace).toBe('50000000');
-		tx.addCollateral(colatUtxo);
+
+		const tx = new Tx()
+			.addInput(valUtxo, valRedeemer)
+			.addOutput(new TxOutput(ownerAddress, valUtxo.value))
+			.validFrom(earlierTime)
+			.validTo(laterTime)
+			.addSigner(ownerAddress.pubKeyHash)
+			.attachScript(compiledScript)
+			.addCollateral(colatUtxo);
 
 		await tx.finalize(networkParams, ownerAddress, [spareUtxo]);
 
