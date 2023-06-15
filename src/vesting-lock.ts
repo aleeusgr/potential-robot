@@ -49,9 +49,6 @@ export const lockAda = async (
 
 	const inputUtxos = await alice.utxos;
 
-	const tx = new Tx();
-
-	tx.addInputs([inputUtxos[0]]);
 
 	const mintScript =`minting nft
 
@@ -83,8 +80,6 @@ export const lockAda = async (
 
 	const mintProgram = Program.new(mintScript).compile(optimize);
 
-	tx.attachScript(mintProgram);
-
 	// Construct the NFT that we will want to send as an output
 	const nftTokenName = ByteArrayData.fromString("Vesting Key").toHex();
 	const tokens: [number[], bigint][] = [[hexToBytes(nftTokenName), BigInt(1)]];
@@ -93,17 +88,19 @@ export const lockAda = async (
 	// a plutus script transaction even if we don't actually use it.
 	const mintRedeemer = new ConstrData(0, []);
 
-	// Indicate the minting we want to include as part of this transaction
-	tx.mintTokens(
-		mintProgram.mintingPolicyHash,
-		tokens,
-		mintRedeemer
-	)
-
 	const lockedVal = new Value(adaAmountVal.lovelace, new Assets([[mintProgram.mintingPolicyHash, tokens]]));
-	
-	// Add the destination address and the amount of Ada to lock including a datum
-	tx.addOutput(new TxOutput(validatorAddress, lockedVal, inlineDatum));
+
+	const tx = new Tx()
+		.addInputs([inputUtxos[0]])
+		.attachScript(mintProgram)
+		// Indicate the minting we want to include as part of this transaction
+		.mintTokens(
+			mintProgram.mintingPolicyHash,
+			tokens,
+			mintRedeemer
+		)
+		// Add the destination address and the amount of Ada to lock including a datum
+		.addOutput(new TxOutput(validatorAddress, lockedVal, inlineDatum));
 
 
 	await tx.finalize(networkParams, alice.address);

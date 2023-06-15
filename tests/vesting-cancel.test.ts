@@ -26,7 +26,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		let optimize = false;
 
 		// compile script
-		const script = await fs.readFile('./src/vesting.js', 'utf8'); 
+		const script = await fs.readFile('./src/vesting.hl', 'utf8'); 
 		const program = Program.new(script);
 		const compiledProgram = program.compile(optimize); 
 		const validatorHash = compiledProgram.validatorHash;
@@ -51,7 +51,9 @@ describe("a vesting contract: Cancel transaction", async () => {
 		context.network = network;
 	})
 
-	it ("documents properties", async ({network, alice, validatorHash}) => {
+	it ("documents the initial network state", async ({network, alice, validatorHash}) => {
+		// EmulatorWallet
+		const aliceUtxos = await alice.utxos;
 		// https://www.hyperion-bt.org/helios-book/api/reference/address.html?highlight=Address#address
 		expect(alice.address.toHex().length).toBe(58)
 		// UTxOs
@@ -86,7 +88,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 		expect(oracle[0].value.dump().lovelace).toBe('50000000');// collateral?
 		})
 
-	it ("describes the transaction", async ({network, alice, bob, program}) => {
+	it ("documents cancelVesting", async ({network, alice, bob, program}) => {
 		// Obtain UPLC:
 		// need to add it to the context
 		// Compile the Helios script
