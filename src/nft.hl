@@ -16,7 +16,7 @@ func main(_, ctx: ScriptContext) -> Bool {
 
     tt_assetclass: AssetClass = AssetClass::new(
         mph, 
-        "name".encode_utf8()
+        TN.encode_utf8()
     );
 
     value_minted: Value = tx.minted;
