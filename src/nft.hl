@@ -8,6 +8,7 @@ const TX_ID: ByteArray = #7c873bf399ed9255e38f9d897e835f017377320794a3ecd4f1d045
 const txId: TxId = TxId::new(TX_ID)
 const TX_IDX: Int = 0
 const outputId: TxOutputId = TxOutputId::new(txId, TX_IDX)
+const TN: String = ""
 
 func main(_, ctx: ScriptContext) -> Bool {
     tx: Tx = ctx.tx;
