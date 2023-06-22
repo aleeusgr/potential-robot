@@ -30,8 +30,8 @@ describe("create a network with two wallets of which one has an nft", async () =
 
 		network.tick(10n)
 
-		const amt = 5n;
-		const name = 'name';
+		const amt = 1n;
+		const name = 'abc';
 		const utxos = await alice.utxos;
 		const script = await fs.readFile('./src/nft.hl', 'utf8'); 
 		const nftProgram = Program.new(script);
