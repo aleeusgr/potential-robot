@@ -6,7 +6,7 @@ describe('suite name', (context) => {
 	describe('suite name', (context) => {
 
 		beforeEach((context) => {
-		context.foo = 'bar';
+			context.foo = 'bar';
 		})
 		it('foo', ({foo}) => {
 			expect(foo).toBe('bar')

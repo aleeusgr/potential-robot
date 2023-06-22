@@ -48,7 +48,7 @@ describe("a template", async () => {
 
 	})
 
-	it ("docs the tx ingridients", async ({network, alice, validatorHash}) => {
+	it ("documents the initial state of the Emulator", async ({network, alice, validatorHash}) => {
 		// https://www.hyperion-bt.org/helios-book/api/reference/address.html?highlight=Address#address
 		const aliceUtxos = await network.getUtxos(alice.address);
 		// todo

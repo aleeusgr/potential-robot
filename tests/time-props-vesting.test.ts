@@ -19,7 +19,7 @@ import {
 import {lockAda} from './src/vesting-lock.ts';
 import {cancelVesting} from './src/vesting-cancel.ts';
 
-describe("a vesting contract: Cancel transaction", async () => {
+describe("what happens when we add wait interval between lock and cancel?", async () => {
 
 	// https://vitest.dev/guide/test-context.html
 	beforeEach(async (context) => { 
@@ -49,11 +49,14 @@ describe("a vesting contract: Cancel transaction", async () => {
 		context.alice = alice;
 		context.bob = bob;
 		context.network = network;
+
+		const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
+		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
+
+		context.networkParams = networkParams;
 	})
 
-	it ("documents the initial network state", async ({network, alice, validatorHash}) => {
-		// EmulatorWallet
-		const aliceUtxos = await alice.utxos;
+	it ("documents properties", async ({network, alice, validatorHash}) => {
 		// https://www.hyperion-bt.org/helios-book/api/reference/address.html?highlight=Address#address
 		expect(alice.address.toHex().length).toBe(58)
 		// UTxOs
@@ -66,7 +69,7 @@ describe("a vesting contract: Cancel transaction", async () => {
 
 	})
 
-	it ("tests cancelVesting.ts", async ({network, alice, bob, program}) => {
+	it ("succeeds cancellation", async ({network, alice, bob, program}) => {
 		const optimize = false; // need to add it to the context
 		const compiledScript = program.compile(optimize);
 		const validatorHash = compiledScript.validatorHash;
@@ -77,6 +80,33 @@ describe("a vesting contract: Cancel transaction", async () => {
 		await lockAda(network!, alice!, bob!, program, adaQty, duration);
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('50000000');
 		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9755287');
+
+		// https://www.hyperion-bt.org/helios-book/api/reference/fuzzytest.html?highlight=fuzz#fuzzytest
+		network.tick(BigInt(10780));
+		
+		await cancelVesting(network!, alice!, program );
+
+		const oracle = await alice.utxos;
+
+		// think about which is which.
+		expect(oracle[2].value.dump().lovelace).toBe('9546007'); 
+		expect(oracle[1].value.dump().lovelace).toBe('10000000');//  
+		expect(oracle[0].value.dump().lovelace).toBe('50000000');// collateral?
+		})
+	it.fails ("Error: tx invalid (not finalized or slot out of range) ", async ({network, alice, bob, program, networkParams}) => {
+		const optimize = false; // need to add it to the context
+		const compiledScript = program.compile(optimize);
+		const validatorHash = compiledScript.validatorHash;
+		const validatorAddress = Address.fromValidatorHash(validatorHash);
+
+		const adaQty = 10;
+		const duration = 1000000;
+		await lockAda(network!, alice!, bob!, program, adaQty, duration);
+		expect((await alice.utxos)[0].value.dump().lovelace).toBe('50000000');
+		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9755287');
+
+		// https://www.hyperion-bt.org/helios-book/api/reference/fuzzytest.html?highlight=fuzz#fuzzytest
+		network.tick(BigInt(10781));
 		
 		await cancelVesting(network!, alice!, program );
 
@@ -88,75 +118,6 @@ describe("a vesting contract: Cancel transaction", async () => {
 		expect(oracle[0].value.dump().lovelace).toBe('50000000');// collateral?
 		})
 
-	it ("documents cancelVesting", async ({network, alice, bob, program}) => {
-		// Obtain UPLC:
-		// need to add it to the context
-		// Compile the Helios script
-		// It seems like I need to compile script every time, do I?
-		// If I want to have smaller context, does it really matter in the big picture?
-		// Yeah, clean code; code rot, I should think about this
-		const optimize = false; 
-		const compiledScript = program.compile(optimize);
-		const validatorHash = compiledScript.validatorHash;
-		const validatorAddress = Address.fromValidatorHash(validatorHash);
-		//
-		// Lock ADA:
-		const adaQty = 10;
-		const duration = 1000000;
-		await lockAda(network!, alice!, bob!, program, adaQty, duration)
-		expect((await alice.utxos)[0].value.dump().lovelace).toBe('50000000');
-		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9755287');
-
-		const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
-		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
-
-		const keyMPH = '702cd6229f16532ca9735f65037092d099b0ff78a741c82db0847bbf'
-
-		const ownerAddress = alice.address;
-		const ownerUtxos = await alice.utxos;
-
-		expect(ownerUtxos[0].value.dump().lovelace).toBe('50000000');
-
-		const valRedeemer = new ConstrData(0, []);
-
-		// compare to https://github.com/lley154/helios-examples/blob/704cf0a92cfe252b63ffb9fd36c92ffafc1d91f6/vesting/pages/index.tsx#L283
-		const valUtxo = (await network.getUtxos(validatorAddress))[0]
-		expect(Object.keys(valUtxo.value.dump().assets)[0]).toEqual(keyMPH)
-
-		// Specify when this transaction is valid from.   This is needed so
-		// time is included in the transaction which will be use by the validator
-		// script. in NetworkEmulator, init slot is 0;
-		const emulatorDate = Number(await networkParams.slotToTime(0n)); 
-
-		const earlierTime = new Date(emulatorDate);
-		const laterTime = new Date(emulatorDate + 3 * 60 * 60 * 1000);
-
-		const colatUtxo = ownerUtxos[0];
-		const spareUtxo = ownerUtxos[1];
-		expect(colatUtxo.value.dump().lovelace).toBe('50000000');
-
-		const tx = new Tx()
-			.addInput(valUtxo, valRedeemer)
-			.addOutput(new TxOutput(ownerAddress, valUtxo.value))
-			.validFrom(earlierTime)
-			.validTo(laterTime)
-			.addSigner(ownerAddress.pubKeyHash)
-			.attachScript(compiledScript)
-			.addCollateral(colatUtxo);
-
-		await tx.finalize(networkParams, ownerAddress, [spareUtxo]);
-
-		expect(tx.dump().body.firstValidSlot).toBe('0')
-		expect(tx.dump().body.lastValidSlot).toBe('10800')
-
-		const txId = await network.submitTx(tx);
-		network.tick(BigInt(10));
-
-		const oracle = await alice.utxos;
-
-		// think about which is which.
-		expect(oracle[2].value.dump().lovelace).toBe('9546007'); 
-		expect(oracle[1].value.dump().lovelace).toBe('10000000');//  
-		expect(oracle[0].value.dump().lovelace).toBe('50000000');// collateral?
+	it ("describes the transaction", async ({network, alice, bob, program}) => {
 		})
 })
