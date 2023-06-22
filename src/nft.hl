@@ -9,6 +9,7 @@ const txId: TxId = TxId::new(TX_ID)
 const TX_IDX: Int = 0
 const outputId: TxOutputId = TxOutputId::new(txId, TX_IDX)
 const TN: String = ""
+const AMT: Int = 1
 
 func main(_, ctx: ScriptContext) -> Bool {
     tx: Tx = ctx.tx;
@@ -20,7 +21,7 @@ func main(_, ctx: ScriptContext) -> Bool {
     );
 
     value_minted: Value = tx.minted;
-    (value_minted == Value::new(tt_assetclass, 1)).trace("TT1: ") &&
+    (value_minted == Value::new(tt_assetclass, AMT)).trace("TT1: ") &&
     tx.inputs.any((input: TxInput) -> Bool {
                         (input.output_id == outputId).trace("TT2: ")
                         }
