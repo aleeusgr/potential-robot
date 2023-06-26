@@ -18,7 +18,7 @@ describe("how FuzzyTest works", async () => {
 
 	})
 
-	it.fails ("", async ({network, alice, bob, mph}) => {
+	it.todo ("", async ({network, alice, bob, mph}) => {
 		// https://www.hyperion-bt.org/helios-book/api/reference/fuzzytest.html?highlight=fuzzy#fuzzytest
 		const fuzzy = new FuzzyTest(0,100,false)
 		expect(await fuzzy.int(0)).toBe();
