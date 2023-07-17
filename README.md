@@ -6,7 +6,8 @@ Big Thanks to Done Collectively, Stellar, Helios, Gimbalabs and James D., Romain
 2. `npm test`
 
 ## How does it work?
-The goal of this repos is to make development on Cardano more accessible.
+The goal of this repo is to make development on Cardano more accessible.
+
 Start by cloning the repo and experimenting with the network emulator.
 First question to ask self is "Do I understand how eUTXO model works?" 
 If not, please refer to Documentation section.
