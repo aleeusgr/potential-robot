@@ -2,7 +2,7 @@
 This tool is a hammer: as all things simple it is rather versatile.
 It's main goal is to give a startup founder a toy to play around with and build a prototype until they can scale it enough to hire a consultancy to set up a certified stack. It could be thought of as [demeter.run](demeter.run) that does not require internet connection.
 
-Big Thanks to Done Collectively, Stellar, Helios, Gimbalabs and James D., Romain Soulat IOG. 
+Big Thanks to Randall[Stellar], Done Collectively,  Helios, James Dunseith Gimbalabs, Ben Hart MLabs, Romain Soulat IOG and Matthias Sieber EMURGO.
 
 ## Usage
 1. `npm install`
