@@ -1,4 +1,7 @@
 # potential-robot
+This tool is a hammer: as all things simple it is rather versatile.
+It's main goal is to give a startup founder a toy to play around with and build a prototype until they can scale it enough to hire a consultancy to set up a certified stack.
+
 Big Thanks to Done Collectively, Stellar, Helios, Gimbalabs and James D., Romain Soulat IOG. 
 
 ## Usage
