@@ -5,8 +5,8 @@ is used to architect a COSP project using Helios.
 
 is an alternative to plutus-starter /add link/ to follow along documentation on the doc page /add link/ which is plain simple to run.
 
-TODO: 
 * Why and why not?
+* What are the alternatives?
 
 
 ## Usage
