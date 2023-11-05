@@ -1,6 +1,9 @@
 # potential-robot
 This tool is a hammer: as all things simple it is rather versatile.
-It's main goal is to give a startup founder a toy to play around with and build a prototype until they can scale it enough to hire a consultancy to set up a certified stack. It could be thought of as [demeter.run](demeter.run) that does not require internet connection.
+It's main goal is to help the developer build a mental model of how Cardano works using tests and requirements.
+
+Using automated testing is a requirement in the Common Criteria EAL4(fix level) and Cardano Certification Standard L1.
+
 
 Big Thanks to Randall[Stellar], Done Collectively,  Helios, James Dunseith Gimbalabs, Ben Hart MLabs, Romain Soulat IOG and Matthias Sieber EMURGO.
 
