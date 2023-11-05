@@ -3,12 +3,8 @@ nin is used to architect a COSP project using only TypeScript.
 
 It was conceived as an alternative to plutus-starter /add link/ to follow along documentation on the doc page /add link/ which is plain simple to run.
 
-What are: 
-- tradeoffs
-- differences
+TODO: Why and why not?
 
-
-Using automated testing is a requirement in the Common Criteria EAL4(review level) and Cardano Certification Standard L1 (review level).
 
 ## Usage
 1. `npm install`
