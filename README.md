@@ -5,12 +5,14 @@ is used to architect a COSP project using Helios.
 
 is an alternative to plutus-starter /add link/ to follow along documentation on the doc page /add link/ which is plain simple to run.
 
-TODO: Why and why not?
+TODO: 
+* Why and why not?
 
 
 ## Usage
 1. `npm install`
 2. `npm test`
+
 
 ## Refs:
 [Vitest](https://vitest.dev/)
