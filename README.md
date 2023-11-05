@@ -1,11 +1,14 @@
-# potential-robot
-This tool is a hammer: as all things simple it is rather versatile.
-It's main goal is to help the developer build a mental model of how Cardano works using tests and requirements.
+# nin 
+nin is used to architect a COSP project using only TypeScript. 
 
-Using automated testing is a requirement in the Common Criteria EAL4(fix level) and Cardano Certification Standard L1.
+It was conceived as an alternative to plutus-starter /add link/ to follow along documentation on the doc page /add link/ which is plain simple to run.
+
+What are: 
+- tradeoffs
+- differences
 
 
-Big Thanks to Randall[Stellar], Done Collectively,  Helios, James Dunseith Gimbalabs, Ben Hart MLabs, Romain Soulat IOG and Matthias Sieber EMURGO.
+Using automated testing is a requirement in the Common Criteria EAL4(review level) and Cardano Certification Standard L1 (review level).
 
 ## Usage
 1. `npm install`
@@ -33,3 +36,6 @@ Join Helios Discord. Contribute to Gimbalabs. 🚀
 [Cardano Smart contract with Helios](https://github.com/lley154/helios-examples/blob/main/docs/Cardano%20Smart%20Contracts%20with%20Helios.pdf)
 
 [Plutus: Writing reliable smart contracts](https://leanpub.com/plutus-smart-contracts) 
+
+Big Thanks to Helios team, James Dunseith Gimbalabs, Ben Hart MLabs, Romain Soulat IOG and Matthias Sieber EMURGO.
+
