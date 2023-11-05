@@ -1,5 +1,7 @@
-# nin 
-nin is used to architect a COSP project using only TypeScript. 
+# Adderall 
+is inspired by Nine Inch Nails
+
+is used to architect a COSP project using only TypeScript. 
 
 It was conceived as an alternative to plutus-starter /add link/ to follow along documentation on the doc page /add link/ which is plain simple to run.
 
