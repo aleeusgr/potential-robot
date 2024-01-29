@@ -3,9 +3,9 @@
 is used to architect a decentralzied application using eUTXO model and Helios, a domain specific language for writing smart contracts on Cardano blockchain.
 
 ## Why?
-Cardano is famous for its tough onboarding: most developers with under 3 years of experience find it extremely difficult to develop a product. First challenge is the eUTXO model, which is transaction-based - a more secure but less intuitive that [the alternatives]([url](https://jcliff.medium.com/intro-to-blockchain-utxo-vs-account-based-89b9a01cd4f5)). The second challenge is the necessity to deal with Haskell.nix - a notoriously complex build system. 
+Tough onboarding is a well-known problem for Cardano: most developers with under 3 years of experience find it extremely difficult to develop a solution, and even upon completion of Plutus Pioneer Program most developer struggle. First challenge is the eUTXO model, which is transaction-based - a more secure but less intuitive that [the alternatives]([url](https://jcliff.medium.com/intro-to-blockchain-utxo-vs-account-based-89b9a01cd4f5)). The second challenge is the necessity to deal with Haskell.nix - a notoriously complex build system. 
 The is an alternative to [plutus-starter](https://github.com/input-output-hk/plutus-starter) to use alongside tutorials. 
-The project is target a wide audience (namely - JS developers) and its goal is to make democratize Cardano development.
+The project is target a wide audience (namely - JS developers) and its goal is to make democratize Cardano development. It is much less complex and does not suffer from the long build times that are inveitable when using plutus-starter.
 
 ## Quick Start
 1. `npm install`
