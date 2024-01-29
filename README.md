@@ -25,6 +25,14 @@ For example for the vesting contract the functional requirements are like so:
 
 FOr the first excercise the user may seek to implement NFT escrow - a contract that validates withdrawal depending not on time of the transation but if the transaction has a specific NFT. Take a look at the [code example](https://github.com/aleeusgr/sniffle).
 
+## Contributing
+
+- Test the project.
+- Update Helios version in package.json
+- Join Gimbalabs.com
+- Join Helios Discord (link below)
+- Ask questions.
+- Submit a PR.
 
 ## Refs:
 [Vitest](https://vitest.dev/)
