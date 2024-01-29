@@ -1,18 +1,18 @@
 # Adderall 
-is inspired by Nine Inch Nails
 
-is used to architect a COSP project using Helios.
+is used to architect a decentralzied application using eUTXO model and Helios, a domain specific language for writing smart contracts on Cardano blockchain.
 
-is an alternative to plutus-starter /add link/ to follow along documentation on the doc page /add link/ which is plain simple to run.
+## Why?
+Cardano is famous for its tough onboarding: most developers with under 3 years of experience find it extremely difficult to develop a product. First challenge is the eUTXO model, which is transaction-based - a more secure but less intuitive that [the alternatives]([url](https://jcliff.medium.com/intro-to-blockchain-utxo-vs-account-based-89b9a01cd4f5)). The second challenge is the necessity to deal with Haskell.nix - a notoriously complex build system. 
+The is an alternative to [plutus-starter](https://github.com/input-output-hk/plutus-starter) to use alongside tutorials. 
+The project is target a wide audience (namely - JS developers) and its goal is to make democratize Cardano development.
 
-* Why and why not?
-* What are the alternatives?
-
-
-## Usage
+## Quick Start
 1. `npm install`
 2. `npm test`
 
+## Usage
+Simple dApp consists of a smart contract with the set of transactions that could be applied to it. Current example is vesting, which is discussed in the documentation below. Following the book in the links and tutorials on Test-Driven Development a programmer should be able to express buisness logic as functional requirements for the product and write tests to verify the requirements are satisfied.
 
 ## Refs:
 [Vitest](https://vitest.dev/)
@@ -26,4 +26,4 @@ is an alternative to plutus-starter /add link/ to follow along documentation on 
 [Plutus: Writing reliable smart contracts](https://leanpub.com/plutus-smart-contracts) 
 
 Big Thanks to Helios team, James Dunseith Gimbalabs, Ben Hart MLabs, Romain Soulat IOG and Matthias Sieber EMURGO.
-
+The project is inspired by Nine Inch Nails, SBF trial and the show Inside Job.
