@@ -11,6 +11,9 @@ The project is target a wide audience (namely - JS developers) and its goal is t
 1. `npm install`
 2. `npm test`
 
+![image](https://github.com/aleeusgr/potential-robot/assets/36756030/fc378aff-6a9a-45c7-82ad-6b2050eda582)
+
+
 ## Usage
 Simple dApp consists of a smart contract with the set of transactions that could be applied to it. Current example is vesting, which is discussed in the documentation below. Following the book in the links and tutorials on Test-Driven Development a programmer should be able to express buisness logic as functional requirements for the product and write tests to verify the requirements are satisfied.
 
