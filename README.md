@@ -16,6 +16,15 @@ The project is target a wide audience (namely - JS developers) and its goal is t
 
 ## Usage
 Simple dApp consists of a smart contract with the set of transactions that could be applied to it. Current example is vesting, which is discussed in the documentation below. Following the book in the links and tutorials on Test-Driven Development a programmer should be able to express buisness logic as functional requirements for the product and write tests to verify the requirements are satisfied.
+For example for the vesting contract the functional requirements are like so:
+- sponsor can deposit value
+- claimant can claim the value after the deadline designated by the sponsor.
+- claimant fails to claim the value before the deadline.
+- sponsor can cancel the contract before the deadline
+- sponsor fails to claim the value after the deadline.
+
+FOr the first excercise the user may seek to implement NFT escrow - a contract that validates withdrawal depending not on time of the transation but if the transaction has a specific NFT. Take a look at the [code example](https://github.com/aleeusgr/sniffle).
+
 
 ## Refs:
 [Vitest](https://vitest.dev/)
