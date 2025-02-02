@@ -70,4 +70,4 @@ describe("a template", async () => {
 		// alice can unlock the Value
 		// bob unlocking funds throws error
 	})
-
+})
