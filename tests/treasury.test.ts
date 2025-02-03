@@ -16,7 +16,8 @@ import {
   TxOutput,
   Value,
 } from "@hyperionbt/helios";
-import {lockAda} from './src/lockAda.ts';
+
+import {lockAda} from './src/vesting-lock.ts';
 
 describe("rewards, bounty and treasury", async () => {
 	// Background knowledge on testing Plutus:
