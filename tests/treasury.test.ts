@@ -17,7 +17,7 @@ import {
   Value,
 } from "@hyperionbt/helios";
 
-import {lockAda} from './src/vesting-lock.ts';
+import {lockAda} from './src/treasury-init.ts';
 
 describe("rewards, bounty and treasury", async () => {
 	// Background knowledge on testing Plutus:
@@ -65,7 +65,7 @@ describe("rewards, bounty and treasury", async () => {
 		expect(aliceUtxos[1].value.dump().lovelace).toBe('5000000')
 		
 		// validators are other name for Plutus Scripts, smart contracts, etc:
-		expect(validatorHash.hex).toBe('9f43610b85b6c39eca3cdaa7824d289871e4eb2cdea62ac8eba3c7e1')
+		expect(validatorHash.hex).toBe('f8a07da8d7bed9aa81bc8cb93c462ddec036a84e1fc65dd83076cc2e')
 	})
 
 	it ("locks tADA at the validator", async ({network, alice, validatorHash}) => {
