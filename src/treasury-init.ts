@@ -20,9 +20,11 @@ import {
 export const lockAda = async (
 		network: NetworkEmulator,
 		alice : WalletEmulator,
+		// TODO: remove bob
 		bob :  WalletEmulator,
 		program: Program,
 		adaQty : number,
+		// TODO: remove duration
 		duration : number
 		) => {
 	
@@ -42,6 +44,9 @@ export const lockAda = async (
 	const lovelaceAmt = Number(adaQty) * 1000000;
 	const adaAmountVal = new Value(BigInt(lovelaceAmt));
 
+	// TODO: fix Datum.
+	// its really strange why it works, this datum is incorrect
+	// compare with treasury.hl lines 7:9
 	const datum = new ListData([new ByteArrayData(ownerPkh.bytes),
 				    new ByteArrayData(benPkh.bytes),
 				    new IntData(BigInt(deadline.getTime()))]);
@@ -49,7 +54,7 @@ export const lockAda = async (
 
 	const inputUtxos = await alice.utxos;
 
-
+	// TODO: remove
 	const mintScript =`minting nft
 
 	enum Redeemer {
@@ -89,11 +94,11 @@ export const lockAda = async (
 	const mintRedeemer = new ConstrData(0, []);
 
 	const lockedVal = new Value(adaAmountVal.lovelace, new Assets([[mintProgram.mintingPolicyHash, tokens]]));
-
 	const tx = new Tx()
 		.addInputs([inputUtxos[0]])
 		.attachScript(mintProgram)
 		// Indicate the minting we want to include as part of this transaction
+		// TODO: remove
 		.mintTokens(
 			mintProgram.mintingPolicyHash,
 			tokens,
@@ -103,6 +108,8 @@ export const lockAda = async (
 		.addOutput(new TxOutput(validatorAddress, lockedVal, inlineDatum));
 
 
+	// TODO: it looks like it would fit in the test workflow, why did we add it here?
+	// clarify: the function should return finalized transaction
 	await tx.finalize(networkParams, alice.address);
 	const txId = await network.submitTx(tx);
 	network.tick(BigInt(10));

@@ -25,22 +25,21 @@ describe("rewards, bounty and treasury", async () => {
 	beforeEach(async (context) => {
 		let optimize = false;
 
-		// compile script
-		const script = await fs.readFile('./src/vesting.hl', 'utf8'); 
+		// prepare validator
+		const script = await fs.readFile('./src/treasury.hl', 'utf8'); 
 		const program = Program.new(script);
 		const compiledProgram = program.compile(optimize); 
 		const validatorHash = compiledProgram.validatorHash;
 		const validatorAddress = Address.fromValidatorHash(validatorHash); 
-	 
+	
 		context.program = program;
-		// 
 		context.validatorHash = validatorHash;
 		context.validatorAddress = Address.fromValidatorHash(validatorHash); 
 
-		// instantiate the Emulator
 		const minAda = BigInt(2000000);  // minimum lovelace needed to send an NFT
-		const network = new NetworkEmulator();
 
+		// instantiate the emulator
+		const network = new NetworkEmulator();
 		const alice = network.createWallet(BigInt(20000000));
 		network.createUtxo(alice, BigInt(50000000));
 		const bob = network.createWallet(BigInt(10000000));
@@ -65,9 +64,10 @@ describe("rewards, bounty and treasury", async () => {
 		expect(aliceUtxos[1].value.dump().lovelace).toBe('50000000')
 		
 		// validators are other name for Plutus Scripts, smart contracts, etc:
-		expect(validatorHash.hex).toBe('9f43610b85b6c39eca3cdaa7824d289871e4eb2cdea62ac8eba3c7e1')
+		expect(validatorHash.hex).toBe('f8a07da8d7bed9aa81bc8cb93c462ddec036a84e1fc65dd83076cc2e')
 	})
 
+	// TODO: remove bob
 	it ("locks tADA at the validator", async ({network, alice, bob, program}) => {
 		const optimize = false; // need to add it to the context
 		const compiledScript = program.compile(optimize);
@@ -75,13 +75,15 @@ describe("rewards, bounty and treasury", async () => {
 		const validatorAddress = Address.fromValidatorHash(validatorHash);
 
 		const adaQty = 10;
-		const duration = 1000000;
-		await lockAda(network!, alice!, bob!, program, adaQty, duration);
+		const duration = 1000000; //TODO: remove duration from tests, fix treasury-init.
+		await lockAda(network!, alice!, bob!, program, adaQty, duration); 
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('50000000');
 		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9756672');
+		//TODO: assert value in validator utxo: find tokens locked at the validator
 })
 
-	it ("adds new code", async ({network, alice, validatorHash}) => {
+	//TODO: add testing paths 
+	it.skip ("adds new code", async ({network, alice, validatorHash}) => {
 		expect().toBe();
 	})
 })

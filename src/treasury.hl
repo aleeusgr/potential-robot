@@ -1,7 +1,6 @@
 spending treasury
 
-// TODO: change file to Escrow, implement the Escrow validator
-// Find the Escrow validator here:
+// Compare with the Escrow validator here:
 // https://github.com/IntersectMBO/plutus-apps/blob/main/plutus-use-cases/src/Plutus/Contracts/Escrow.hs
 
 struct Datum {
