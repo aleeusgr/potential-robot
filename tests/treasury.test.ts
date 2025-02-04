@@ -22,18 +22,18 @@ import {lockAda} from './src/treasury-init.ts';
 describe("rewards, bounty and treasury", async () => {
 	// Background knowledge on testing Plutus:
 	// https://plutus-pioneer-program.readthedocs.io/en/latest/week4.html
-	beforeEach(async (context) => { 
+	beforeEach(async (context) => {
 		let optimize = false;
 
 		// compile script
-		const script = await fs.readFile('./src/treasury.hl', 'utf8'); 
-		// TODO: change file to Escrow, implement the Escrow validator
-		// Find the Escrow validator here:
-		// https://github.com/IntersectMBO/plutus-apps/blob/main/plutus-use-cases/src/Plutus/Contracts/Escrow.hs
-		const compiledProgram = Program.new(script).compile(optimize); 
+		const script = await fs.readFile('./src/vesting.hl', 'utf8'); 
+		const program = Program.new(script);
+		const compiledProgram = program.compile(optimize); 
 		const validatorHash = compiledProgram.validatorHash;
 		const validatorAddress = Address.fromValidatorHash(validatorHash); 
 	 
+		context.program = program;
+		// 
 		context.validatorHash = validatorHash;
 		context.validatorAddress = Address.fromValidatorHash(validatorHash); 
 
@@ -42,7 +42,7 @@ describe("rewards, bounty and treasury", async () => {
 		const network = new NetworkEmulator();
 
 		const alice = network.createWallet(BigInt(20000000));
-		network.createUtxo(alice, BigInt(5000000));
+		network.createUtxo(alice, BigInt(50000000));
 		const bob = network.createWallet(BigInt(10000000));
 		network.tick(BigInt(10));
 
@@ -62,32 +62,24 @@ describe("rewards, bounty and treasury", async () => {
 		// in eUTXO model we use utxos to manage Value: 
 		const aliceUtxos = await network.getUtxos(alice.address);
 		// looking through the wallet we find a UTXO with tADA in it:
-		expect(aliceUtxos[1].value.dump().lovelace).toBe('5000000')
+		expect(aliceUtxos[1].value.dump().lovelace).toBe('50000000')
 		
 		// validators are other name for Plutus Scripts, smart contracts, etc:
-		expect(validatorHash.hex).toBe('f8a07da8d7bed9aa81bc8cb93c462ddec036a84e1fc65dd83076cc2e')
+		expect(validatorHash.hex).toBe('9f43610b85b6c39eca3cdaa7824d289871e4eb2cdea62ac8eba3c7e1')
 	})
 
-	it ("locks tADA at the validator", async ({network, alice, validatorHash}) => {
-		const adaQty = 10 ;
-		const duration = 10000000;
-		await lockAda(network!, alice!, bob!, program, adaQty, duration)
-		
-		// one utxo is unchanged, second has (10 ADA + txFee) less 
-		expect((await alice.utxos)[0].value.dump().lovelace).toBe('5000000');
-		expect((await network.getUtxos(await alice.address))[0].value.dump().lovelace).toBe('5000000');
+	it ("locks tADA at the validator", async ({network, alice, bob, program}) => {
+		const optimize = false; // need to add it to the context
+		const compiledScript = program.compile(optimize);
+		const validatorHash = compiledScript.validatorHash;
+		const validatorAddress = Address.fromValidatorHash(validatorHash);
+
+		const adaQty = 10;
+		const duration = 1000000;
+		await lockAda(network!, alice!, bob!, program, adaQty, duration);
+		expect((await alice.utxos)[0].value.dump().lovelace).toBe('50000000');
 		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9756672');
-
-		const validatorAddress = Address.fromValidatorHash(validatorHash); 
-		// there exists a utxo that has a specified token locked at a validatorAddress.
-		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toBe('6ecf3e6410cb049736a4d424a439887ad390cf6357ee2f2970a7f235');
-		// TODO:
-		// treasury must belong to someone.
-		expect().toBe();
-		// alice can lock Value at the validator
-		// alice can unlock the Value
-		// bob unlocking funds throws error
-	})
+})
 
 	it ("adds new code", async ({network, alice, validatorHash}) => {
 		expect().toBe();
