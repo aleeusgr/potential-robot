@@ -1,0 +1,22 @@
+spending treasury
+
+// https://github.com/IntersectMBO/plutus-apps/blob/main/plutus-use-cases
+
+struct Datum {
+    creator: PubKeyHash
+}
+
+enum Redeemer {
+    Cancel
+}
+
+func main(datum: Datum, redeemer: Redeemer, context: ScriptContext) -> Bool {
+    tx: Tx = context.tx;
+
+    redeemer.switch {
+        Cancel => {
+            // Check that the owner signed the transaction
+            tx.is_signed_by(datum.creator).trace("VS2: ")
+        }
+    }
+}
