@@ -17,7 +17,7 @@ import {
   Value,
 } from "@hyperionbt/helios";
 
-import {lockAda} from './src/treasury-init.ts';
+import {lockAda, cancelProject} from './src/treasury-txs.ts';
 
 describe("rewards, bounty and treasury", async () => {
 	// Background knowledge on testing Plutus:
@@ -78,11 +78,30 @@ describe("rewards, bounty and treasury", async () => {
 		const duration = 1000000; //TODO: remove duration from tests, fix treasury-init.
 		await lockAda(network!, alice!, bob!, program, adaQty, duration); 
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('50000000');
-		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9756672');
+		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9758476');
 		//TODO: assert value in validator utxo: find tokens locked at the validator
-})
+	})
+	it ("owner cancels project", async ({network, alice, bob, program}) => {
+		const optimize = false; // need to add it to the context
+		const compiledScript = program.compile(optimize);
+		const validatorHash = compiledScript.validatorHash;
+		const validatorAddress = Address.fromValidatorHash(validatorHash);
 
-	//TODO: add testing paths 
+		const adaQty = 10;
+		const duration = 1000000;
+		await lockAda(network!, alice!, bob!, program, adaQty, duration);
+		expect((await alice.utxos)[0].value.dump().lovelace).toBe('50000000');
+		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9758476');
+		
+		await cancelProject(network!, alice!, program );
+
+		const oracle = await alice.utxos;
+
+		// think about which is which.
+		expect(oracle[2].value.dump().lovelace).toBe('9558106'); 
+		expect(oracle[1].value.dump().lovelace).toBe('10000000');//  
+		expect(oracle[0].value.dump().lovelace).toBe('50000000');// collateral?
+	})
 	it.skip ("adds new code", async ({network, alice, validatorHash}) => {
 		expect().toBe();
 	})
