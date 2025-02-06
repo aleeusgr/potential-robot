@@ -1,7 +1,6 @@
 spending treasury
 
-// Compare with the Escrow validator here:
-// https://github.com/IntersectMBO/plutus-apps/blob/main/plutus-use-cases/src/Plutus/Contracts/Escrow.hs
+// https://github.com/IntersectMBO/plutus-apps/blob/main/plutus-use-cases
 
 struct Datum {
     creator: PubKeyHash

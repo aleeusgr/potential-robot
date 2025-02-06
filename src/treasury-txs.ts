@@ -116,7 +116,6 @@ export const cancelProject = async (
 		const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
 		const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
 
-		// somehow need to add this to context, defined in src/lockAda
 		const keyMPH = '702cd6229f16532ca9735f65037092d099b0ff78a741c82db0847bbf'
 
 		// with all above, a tx can be built: 

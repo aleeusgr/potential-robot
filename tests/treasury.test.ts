@@ -68,20 +68,19 @@ describe("rewards, bounty and treasury", async () => {
 	})
 
 	// TODO: remove bob
-	it ("locks tADA at the validator", async ({network, alice, bob, program}) => {
+	it ("locks tADA at the validator", async ({network, alice, program}) => {
 		const optimize = false; // need to add it to the context
 		const compiledScript = program.compile(optimize);
 		const validatorHash = compiledScript.validatorHash;
 		const validatorAddress = Address.fromValidatorHash(validatorHash);
 
 		const adaQty = 10;
-		const duration = 1000000; //TODO: remove duration from tests, fix treasury-init.
 		await lockAda(network!, alice!, program, adaQty); 
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('50000000');
 		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9758476');
 		//TODO: assert value in validator utxo: find tokens locked at the validator
 	})
-	it ("owner cancels project", async ({network, alice, bob, program}) => {
+	it ("owner cancels project", async ({network, alice, program}) => {
 		const optimize = false; // need to add it to the context
 		const compiledScript = program.compile(optimize);
 		const validatorHash = compiledScript.validatorHash;
