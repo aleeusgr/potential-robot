@@ -20,12 +20,8 @@ import {
 export const lockAda = async (
 		network: NetworkEmulator,
 		alice : WalletEmulator,
-		// TODO: remove bob
-		bob :  WalletEmulator,
 		program: Program,
-		adaQty : number,
-		// TODO: remove duration
-		duration : number
+		adaQty : number
 		) => {
 	
 	const optimize = false; // isnt there a way to set it globally?
@@ -33,20 +29,14 @@ export const lockAda = async (
 	const validatorHash = compiledScript.validatorHash;
 	const validatorAddress = Address.fromValidatorHash(validatorHash); 
 
-	const benAddr = bob.address;
 	const networkParamsFile = await fs.readFile('./src/preprod.json', 'utf8');
 	const networkParams = new NetworkParams(JSON.parse(networkParamsFile.toString()));
-	const emulatorDate = Number(await networkParams.slotToTime(0n)); 
-	const deadline = new Date(emulatorDate + duration);
-	const benPkh = bob.pubKeyHash;
+
 	const ownerPkh = alice.pubKeyHash;
 
 	const lovelaceAmt = Number(adaQty) * 1000000;
 	const adaAmountVal = new Value(BigInt(lovelaceAmt));
 
-	// TODO: fix Datum.
-	// its really strange why it works, this datum is incorrect
-	// compare with treasury.hl lines 7:9
 	const datum = new ByteArrayData(ownerPkh.bytes);
 	const inlineDatum = Datum.inline(datum);
 

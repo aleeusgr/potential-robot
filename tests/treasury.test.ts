@@ -76,7 +76,7 @@ describe("rewards, bounty and treasury", async () => {
 
 		const adaQty = 10;
 		const duration = 1000000; //TODO: remove duration from tests, fix treasury-init.
-		await lockAda(network!, alice!, bob!, program, adaQty, duration); 
+		await lockAda(network!, alice!, program, adaQty); 
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('50000000');
 		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9758476');
 		//TODO: assert value in validator utxo: find tokens locked at the validator
@@ -89,7 +89,7 @@ describe("rewards, bounty and treasury", async () => {
 
 		const adaQty = 10;
 		const duration = 1000000;
-		await lockAda(network!, alice!, bob!, program, adaQty, duration);
+		await lockAda(network!, alice!, program, adaQty);
 		expect((await alice.utxos)[0].value.dump().lovelace).toBe('50000000');
 		expect((await alice.utxos)[1].value.dump().lovelace).toBe('9758476');
 		
