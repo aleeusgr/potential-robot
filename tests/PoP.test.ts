@@ -24,12 +24,11 @@ describe("a template", async () => {
 	beforeEach(async (context) => { 
 		let optimize = false;
 
-		// compile script
-		const script = await fs.readFile('./src/vesting.hl', 'utf8'); 
+		// compile the script
+		const script = await fs.readFile('./src/PoP.hl', 'utf8'); 
 		const compiledProgram = Program.new(script).compile(optimize); 
 		const validatorHash = compiledProgram.validatorHash;
 		const validatorAddress = Address.fromValidatorHash(validatorHash); 
-	 
 		context.validatorHash = validatorHash;
 		context.validatorAddress = Address.fromValidatorHash(validatorHash); 
 
@@ -37,6 +36,7 @@ describe("a template", async () => {
 		const minAda = BigInt(2000000);  // minimum lovelace needed to send an NFT
 		const network = new NetworkEmulator();
 
+		// Create and fund wallets
 		const alice = network.createWallet(BigInt(20000000));
 		network.createUtxo(alice, BigInt(5000000));
 		const bob = network.createWallet(BigInt(10000000));
@@ -48,14 +48,10 @@ describe("a template", async () => {
 
 	})
 
-	it ("documents the initial state of the Emulator", async ({network, alice, validatorHash}) => {
-		// https://www.hyperion-bt.org/helios-book/api/reference/address.html?highlight=Address#address
-		const aliceUtxos = await network.getUtxos(alice.address);
-		// todo
+	it ("asserts properties", async ({network, alice, validatorHash}) => {
+		const aliceUtxos = await network.getUtxos(alice.address); // https://www.hyperion-bt.org/helios-book/api/reference/address.html?highlight=Address#address
 		expect(alice.address.toHex().length).toBe(58)
-		// todo
 		expect(aliceUtxos[1].value.dump().lovelace).toBe('5000000')
-		// todo
 		expect(validatorHash.hex).toBe('9f43610b85b6c39eca3cdaa7824d289871e4eb2cdea62ac8eba3c7e1')
 	})
 
