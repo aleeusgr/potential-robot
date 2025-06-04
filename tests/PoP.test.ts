@@ -16,7 +16,8 @@ import {
   TxOutput,
   Value,
 } from "@hyperionbt/helios";
-import {lockAda} from './src/vesting-lock.ts';
+import {lockAda} from './src/pop-lock.ts';
+import {publishRelease} from './src/publish-release.ts';
 
 describe("a template", async () => {
 
@@ -64,5 +65,17 @@ describe("a template", async () => {
 		await lockAda(network!, scheduler!, bob!, program, adaQty, duration)
 		const validatorAddress = Address.fromValidatorHash(validatorHash); 
 		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toBe('6ecf3e6410cb049736a4d424a439887ad390cf6357ee2f2970a7f235');
+	})
+	it ("traces user steps", async ({network, scheduler, validatorHash, program, bob}) => {
+		const adaQty = 10 ;
+		const duration = 10000000;
+		await lockAda(network!, scheduler!, bob!, program, adaQty, duration)
+		const validatorAddress = Address.fromValidatorHash(validatorHash); 
+		expect(Object.keys((await network.getUtxos(validatorAddress))[0].value.dump().assets)[0]).toBe('6ecf3e6410cb049736a4d424a439887ad390cf6357ee2f2970a7f235');
+
+		await publishRelease(network!, scheduler!, program );
+
+		// TODO: 
+		expect().toBe()
 	})
 })
