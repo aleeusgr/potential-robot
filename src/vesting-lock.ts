@@ -49,56 +49,10 @@ export const lockAda = async (
 
 	const inputUtxos = await alice.utxos;
 
-
-	const mintScript =`minting nft
-
-	enum Redeemer {
-		Init
-	}
-
-	const TX_ID: ByteArray = #` + inputUtxos[0].txId.hex + `
-	const txId: TxId = TxId::new(TX_ID)
-	const outputId: TxOutputId = TxOutputId::new(txId, ` + inputUtxos[0].utxoIdx + `)
-
-	func main(_, ctx: ScriptContext) -> Bool {
-		tx: Tx = ctx.tx;
-		mph: MintingPolicyHash = ctx.get_current_minting_policy_hash();
-
-		assetclass: AssetClass = AssetClass::new(
-		mph,
-		"Vesting Key".encode_utf8()
-		);
-		value_minted: Value = tx.minted;
-
-		// Validator logic starts
-		(value_minted == Value::new(assetclass, 1)).trace("NFT1: ") &&
-		tx.inputs.any((input: TxInput) -> Bool {
-					(input.output_id == outputId).trace("NFT2: ")
-					}
-		)
-	}`
-
-	const mintProgram = Program.new(mintScript).compile(optimize);
-
-	// Construct the NFT that we will want to send as an output
-	const nftTokenName = ByteArrayData.fromString("Vesting Key").toHex();
-	const tokens: [number[], bigint][] = [[hexToBytes(nftTokenName), BigInt(1)]];
-
-	// Create an empty Redeemer because we must always send a Redeemer with
-	// a plutus script transaction even if we don't actually use it.
-	const mintRedeemer = new ConstrData(0, []);
-
-	const lockedVal = new Value(adaAmountVal.lovelace, new Assets([[mintProgram.mintingPolicyHash, tokens]]));
+	const lockedVal = new Value(adaAmountVal.lovelace);
 
 	const tx = new Tx()
 		.addInputs([inputUtxos[0]])
-		.attachScript(mintProgram)
-		// Indicate the minting we want to include as part of this transaction
-		.mintTokens(
-			mintProgram.mintingPolicyHash,
-			tokens,
-			mintRedeemer
-		)
 		// Add the destination address and the amount of Ada to lock including a datum
 		.addOutput(new TxOutput(validatorAddress, lockedVal, inlineDatum));
 

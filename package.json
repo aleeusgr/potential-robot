@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@hyperionbt/helios": "^0.16.0"
+    "@hyperionbt/helios": "^0.16.7"
   },
   "devDependencies": {
     "@vitest/ui": "^0.30.1",

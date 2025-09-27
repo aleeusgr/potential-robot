@@ -1,4 +1,4 @@
-spending vesting
+spending lottery
 
 struct Datum {
     creator: PubKeyHash
